@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import '../session/app_state.dart';
+import '../session/link_state.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_dims.dart';
 import '../theme/app_text.dart';
 
-/// What the app is currently able to do. Drives every offline affordance.
-enum LinkState { online, offline, syncing }
+export '../session/link_state.dart';
 
 /// A slim strip pinned under the header when there is no signal, or while the
 /// outbox is draining.
@@ -22,6 +23,8 @@ class ConnectionStrip extends StatelessWidget {
   Widget build(BuildContext context) {
     if (state == LinkState.online && queued == 0) return const SizedBox.shrink();
 
+    final s = context.s;
+
     // Online but with items still in the outbox is a draining state, never a
     // finished one. Saying "all synced" while rows are pending is a lie the
     // user would catch.
@@ -34,10 +37,10 @@ class ConnectionStrip extends StatelessWidget {
 
     final text = switch (effective) {
       LinkState.offline => queued > 0
-          ? 'इंटरनेट नहीं है। $queued चीज़ें आपके फ़ोन में सुरक्षित हैं।'
-          : 'इंटरनेट नहीं है। आप काम करते रहिए।',
-      LinkState.syncing => 'सिंक हो रहा है… $queued बची हैं',
-      LinkState.online => 'सब कुछ सिंक हो गया',
+          ? s.offlineNoticeWithCount.replaceFirst('{n}', '$queued')
+          : s.offlineNotice,
+      LinkState.syncing => s.syncing.replaceFirst('{n}', '$queued'),
+      LinkState.online => s.allSynced,
     };
 
     return AnimatedContainer(
@@ -70,13 +73,12 @@ class ConnectionStrip extends StatelessWidget {
 /// Per-item badge. Sits on a product card that has not reached the server yet.
 /// Reads as "saved and waiting", never as "failed".
 class QueuedBadge extends StatelessWidget {
-  const QueuedBadge({super.key, this.compact = false});
-  final bool compact;
+  const QueuedBadge({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: compact ? 7 : 9, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
       decoration: BoxDecoration(
         color: AppColors.white.withValues(alpha: 0.94),
         borderRadius: Radii.pill,
@@ -88,7 +90,7 @@ class QueuedBadge extends StatelessWidget {
           const Icon(Icons.schedule_rounded, size: 12, color: AppColors.offline),
           const SizedBox(width: 5),
           Text(
-            compact ? 'सुरक्षित' : 'फ़ोन में सुरक्षित',
+            context.s.savedOnPhone,
             style: AppText.body(11, weight: FontWeight.w600, color: AppColors.offline),
           ),
         ],

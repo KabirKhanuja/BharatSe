@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:bharatse/features/add_product/add_product_screen.dart';
+import 'package:bharatse/features/seller/add_product_screen.dart';
 import 'package:bharatse/theme/app_theme.dart';
+import 'package:bharatse/session/app_state.dart';
 import 'package:bharatse/widgets/offline.dart';
 
 /// The screen is a long scroll. The default 800x600 test surface only builds
@@ -20,9 +21,13 @@ Future<void> _mount(
     tester.view.resetDevicePixelRatio();
   });
 
-  await tester.pumpWidget(MaterialApp(
-    theme: AppTheme.light,
-    home: AddProductScreen(link: link, queued: queued),
+  final state = AppState()..cycleLinkTo(link);
+  await tester.pumpWidget(AppScope(
+    state: state,
+    child: MaterialApp(
+      theme: AppTheme.light,
+      home: AddProductScreen(link: link, queued: queued),
+    ),
   ));
   await tester.pumpAndSettle();
 }
@@ -50,16 +55,16 @@ void main() {
 
     expect(find.text('फ़ोन में सुरक्षित करें'), findsOneWidget);
     expect(find.text('बाज़ार में भेजें'), findsNothing);
-    expect(find.textContaining('इंटरनेट नहीं है'), findsOneWidget);
-    expect(find.textContaining('1 चीज़ें'), findsOneWidget);
+    expect(find.textContaining('No internet'), findsOneWidget);
+    expect(find.textContaining('1 saved on your phone'), findsOneWidget);
   });
 
   testWidgets('online with nothing queued shows no connection strip',
       (tester) async {
     await _mount(tester);
     expect(find.byType(ConnectionStrip), findsOneWidget);
-    expect(find.textContaining('सिंक'), findsNothing);
-    expect(find.textContaining('इंटरनेट नहीं है'), findsNothing);
+    expect(find.textContaining('Syncing'), findsNothing);
+    expect(find.textContaining('No internet'), findsNothing);
   });
 
   testWidgets('raising hours never leaves the price below the wage floor',
