@@ -5,6 +5,7 @@ import 'package:bharatse/features/buyer/buyer_shell.dart';
 import 'package:bharatse/l10n/lang.dart';
 import 'package:bharatse/session/app_state.dart';
 import 'package:bharatse/theme/app_theme.dart';
+import 'package:bharatse/features/buyer/cart/cart_screen.dart';
 import 'package:bharatse/widgets/top_bar.dart';
 
 Future<AppState> _mount(WidgetTester tester, {Lang lang = Lang.en}) async {
@@ -75,7 +76,10 @@ void main() {
     await _mount(tester);
 
     await tester.tap(find.text('Explore'));
-    await tester.pumpAndSettle();
+    // Not pumpAndSettle: the map shows a spinner while it parses, which never
+    // settles.
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
     expect(find.text('Browse by craft'), findsOneWidget);
 
     await tester.tap(find.text('Profile'));
@@ -116,4 +120,48 @@ void main() {
     expect(find.text('Provenance verified, not claimed'), findsOneWidget);
     expect(find.text('Add to cart'), findsOneWidget);
   });
+
+  testWidgets('cart opens from the header and totals the lines',
+      (tester) async {
+    await _mount(tester);
+
+    await tester.tap(find.byKey(const Key('cart-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(CartScreen), findsOneWidget);
+    // Seeded with Pashmina Shawl 4850 and Handblock Tote Bag 1250.
+    expect(find.text('Pashmina Shawl'), findsOneWidget);
+    expect(find.text('₹6,100'), findsWidgets);
+  });
+
+  testWidgets('changing quantity re-totals, and zero removes the line',
+      (tester) async {
+    final state = await _mount(tester);
+
+    await tester.tap(find.byKey(const Key('cart-button')));
+    await tester.pumpAndSettle();
+
+    state.setQty('p1', 2);
+    await tester.pumpAndSettle();
+    expect(find.text('₹10,950'), findsWidgets);
+
+    state.setQty('p1', 0);
+    await tester.pumpAndSettle();
+    expect(find.text('Pashmina Shawl'), findsNothing);
+    expect(find.text('₹1,250'), findsWidgets);
+  });
+
+  testWidgets('empty cart offers a way out rather than a dead end',
+      (tester) async {
+    final state = await _mount(tester);
+    state.setQty('p1', 0);
+    state.setQty('p3', 0);
+
+    await tester.tap(find.byKey(const Key('cart-button')));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Your cart is empty'), findsOneWidget);
+    expect(find.text('Start exploring'), findsOneWidget);
+  });
+
 }

@@ -36,8 +36,19 @@ class IndiaMapData {
   static String canonical(String mapId) => _idAliases[mapId] ?? mapId;
 
   static Future<IndiaMapData> load() {
-    if (_cached != null) return Future.value(_cached);
-    return _loading ??= _parse();
+    final cached = _cached;
+    if (cached != null) return Future.value(cached);
+
+    // Clear the in-flight future when it settles. Holding on to a failed or
+    // abandoned load would cache the failure forever, so the map could never
+    // recover on a later visit to the tab.
+    return _loading ??= _parse().whenComplete(() => _loading = null);
+  }
+
+  @visibleForTesting
+  static void resetCache() {
+    _cached = null;
+    _loading = null;
   }
 
   static Future<IndiaMapData> _parse() async {
@@ -83,22 +94,38 @@ class IndiaMap extends StatefulWidget {
 class _IndiaMapState extends State<IndiaMap> {
   IndiaMapData? _data;
   String? _pressed;
+  Object? _error;
 
   @override
   void initState() {
     super.initState();
-    IndiaMapData.load().then((d) {
-      if (mounted) setState(() => _data = d);
-    });
+    IndiaMapData.load().then(
+      (d) {
+        if (mounted) setState(() => _data = d);
+      },
+      // A map that fails to parse must not take the tab down with it.
+      onError: (Object e) {
+        if (mounted) setState(() => _error = e);
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final data = _data;
     if (data == null) {
-      return const AspectRatio(
+      // Static placeholder rather than a spinner: parsing takes a few tens of
+      // milliseconds, so a spinner would only flash. It also keeps the tree
+      // settled, which matters for tests and for accessibility announcements.
+      return AspectRatio(
         aspectRatio: 612 / 696,
-        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+        child: Center(
+          child: Icon(
+            _error == null ? Icons.public_outlined : Icons.map_outlined,
+            size: 40,
+            color: AppColors.line,
+          ),
+        ),
       );
     }
 

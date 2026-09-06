@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import '../../data/catalog.dart';
 import '../../session/app_state.dart';
 import '../../theme/app_colors.dart';
-import '../../theme/app_text.dart';
 import '../../widgets/offline.dart';
 import '../../widgets/top_bar.dart';
+import 'cart/cart_screen.dart';
 import 'explore/explore_screen.dart';
+import 'state/state_screen.dart';
 import 'home/home_screen.dart';
 import 'product/product_screen.dart';
 import 'profile/profile_screen.dart';
@@ -24,11 +25,36 @@ class _BuyerShellState extends State<BuyerShell> {
   // screen can be reviewed or captured without clicking through.
   int _tab = const int.fromEnvironment('TAB');
 
+  /// Tabs are built the first time they are opened, then kept alive.
+  /// IndexedStack builds every child eagerly, which would parse the whole
+  /// India map at launch for a tab the user may never visit.
+  late final Set<int> _built = {_tab};
+
+  void _select(int i) => setState(() {
+        _tab = i;
+        _built.add(i);
+      });
+
   void _openProduct(Product p) {
     Navigator.of(context).push(
       MaterialPageRoute(builder: (_) => ProductScreen(product: p)),
     );
   }
+
+  void _openState(CraftState st) {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => StateScreen(state: st)),
+    );
+  }
+
+  void _openCart() {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const CartScreen()),
+    );
+  }
+
+  Widget _lazy(int index, Widget Function() build) =>
+      _built.contains(index) ? build() : const SizedBox.shrink();
 
   @override
   Widget build(BuildContext context) {
@@ -41,98 +67,54 @@ class _BuyerShellState extends State<BuyerShell> {
         bottom: false,
         child: Column(
           children: [
-            TopBar(showTagline: _tab != 2),
+            TopBar(showTagline: _tab != 2, onCart: _openCart),
             ConnectionStrip(state: app.link, queued: app.queued),
             Expanded(
               child: IndexedStack(
                 index: _tab,
                 children: [
-                  HomeScreen(
-                    onExplore: () => setState(() => _tab = 1),
-                    onProduct: _openProduct,
-                    onState: (_) => setState(() => _tab = 1),
+                  _lazy(
+                    0,
+                    () => HomeScreen(
+                      onExplore: () => _select(1),
+                      onProduct: _openProduct,
+                      onState: _openState,
+                    ),
                   ),
-                  const ExploreScreen(),
-                  ProfileScreen(onSwitchToSeller: widget.onSwitchToSeller),
+                  _lazy(1, () => ExploreScreen(onState: _openState)),
+                  _lazy(
+                    2,
+                    () => ProfileScreen(
+                        onSwitchToSeller: widget.onSwitchToSeller),
+                  ),
                 ],
               ),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: Container(
+      bottomNavigationBar: DecoratedBox(
         decoration: const BoxDecoration(
-          color: AppColors.white,
           border: Border(top: BorderSide(color: AppColors.line)),
         ),
-        child: SafeArea(
-          top: false,
-          child: SizedBox(
-            height: 62,
-            child: Row(
-              children: [
-                _NavItem(
-                  icon: Icons.home_outlined,
-                  activeIcon: Icons.home_rounded,
-                  label: s.navHome,
-                  selected: _tab == 0,
-                  onTap: () => setState(() => _tab = 0),
-                ),
-                _NavItem(
-                  icon: Icons.explore_outlined,
-                  activeIcon: Icons.explore_rounded,
-                  label: s.navExplore,
-                  selected: _tab == 1,
-                  onTap: () => setState(() => _tab = 1),
-                ),
-                _NavItem(
-                  icon: Icons.person_outline_rounded,
-                  activeIcon: Icons.person_rounded,
-                  label: s.navProfile,
-                  selected: _tab == 2,
-                  onTap: () => setState(() => _tab = 2),
-                ),
-              ],
+        child: NavigationBar(
+          selectedIndex: _tab,
+          onDestinationSelected: _select,
+          destinations: [
+            NavigationDestination(
+              icon: const Icon(Icons.home_outlined),
+              selectedIcon: const Icon(Icons.home_rounded),
+              label: s.navHome,
             ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _NavItem extends StatelessWidget {
-  const _NavItem({
-    required this.icon,
-    required this.activeIcon,
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final IconData activeIcon;
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = selected ? AppColors.navy : AppColors.inkFaint;
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(selected ? activeIcon : icon, size: 22, color: color),
-            const SizedBox(height: 3),
-            Text(
-              label,
-              style: AppText.navLabel.copyWith(
-                color: color,
-                fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
-              ),
+            NavigationDestination(
+              icon: const Icon(Icons.explore_outlined),
+              selectedIcon: const Icon(Icons.explore_rounded),
+              label: s.navExplore,
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.person_outline_rounded),
+              selectedIcon: const Icon(Icons.person_rounded),
+              label: s.navProfile,
             ),
           ],
         ),
@@ -140,3 +122,4 @@ class _NavItem extends StatelessWidget {
     );
   }
 }
+

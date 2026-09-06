@@ -338,21 +338,6 @@ class AppStrings {
     artisansHere: 'कारीगर यहाँ',
     startShopping: 'खोजना शुरू करें',
     qty: 'संख्या',
-    cart: 'कार्ट',
-    cartEmpty: 'आपका कार्ट खाली है',
-    cartEmptyBody: 'आप जो शिल्प डालेंगे वे यहाँ दिखेंगे।',
-    subtotal: 'कुल सामान',
-    delivery: 'डिलीवरी',
-    freeDelivery: 'मुफ़्त',
-    total: 'कुल',
-    checkout: 'आगे बढ़ें',
-    remove: 'हटाएँ',
-    tapAState: 'शिल्प देखने के लिए राज्य पर टैप करें',
-    craftsFrom: 'यहाँ के शिल्प',
-    theCraft: 'यह शिल्प',
-    artisansHere: 'कारीगर यहाँ',
-    startShopping: 'खोजना शुरू करें',
-    qty: 'संख्या',
   );
 
   static AppStrings of(Lang lang) => lang == Lang.hi ? hi : en;

@@ -20,7 +20,7 @@ class AppState extends ChangeNotifier {
   Role _role = Role.buyer;
   bool _signedIn = false;
   String? _name;
-  int _cartCount = 2;
+  final Map<String, int> _cart = {'p1': 1, 'p3': 1};
   LinkState _link = LinkState.online;
   int _queued = 0;
   final Set<String> _saved = {};
@@ -30,7 +30,8 @@ class AppState extends ChangeNotifier {
   Role get role => _role;
   bool get signedIn => _signedIn;
   String? get name => _name;
-  int get cartCount => _cartCount;
+  Map<String, int> get cart => Map.unmodifiable(_cart);
+  int get cartCount => _cart.values.fold(0, (a, b) => a + b);
   LinkState get link => _link;
   int get queued => _queued;
   Set<String> get saved => _saved;
@@ -70,8 +71,22 @@ class AppState extends ChangeNotifier {
 
   bool isSaved(String productId) => _saved.contains(productId);
 
-  void addToCart() {
-    _cartCount++;
+  void addToCart(String productId) {
+    _cart.update(productId, (q) => q + 1, ifAbsent: () => 1);
+    notifyListeners();
+  }
+
+  void setQty(String productId, int qty) {
+    if (qty <= 0) {
+      _cart.remove(productId);
+    } else {
+      _cart[productId] = qty;
+    }
+    notifyListeners();
+  }
+
+  void removeFromCart(String productId) {
+    _cart.remove(productId);
     notifyListeners();
   }
 

@@ -5,6 +5,7 @@ import '../../../theme/app_colors.dart';
 import '../../../theme/app_dims.dart';
 import '../../../theme/app_text.dart';
 import '../../../widgets/craft_image.dart';
+import '../../../widgets/india_map.dart';
 import '../../../widgets/ornament.dart';
 import '../../../widgets/top_bar.dart';
 
@@ -46,9 +47,9 @@ class ExploreScreen extends StatelessWidget {
         ),
         const SizedBox(height: Gap.xxl),
 
-        // The map from the design goes here once we have a border-accurate
-        // outline. Until then the crafts themselves are the entry point,
-        // which also happens to be the faster path to a product.
+        _MapBlock(onState: onState),
+        const SizedBox(height: Gap.xxl),
+
         _SectionLabel(s.browseByCraft),
         const SizedBox(height: Gap.md),
         const _CategoryGrid(),
@@ -60,6 +61,48 @@ class ExploreScreen extends StatelessWidget {
         const SizedBox(height: Gap.xl),
         const _SupportBanner(),
       ],
+    );
+  }
+}
+
+/// Tappable map of India. States we stock are filled; the rest are muted so
+/// the eye lands where there is something to buy.
+class _MapBlock extends StatelessWidget {
+  const _MapBlock({this.onState});
+  final void Function(CraftState)? onState;
+
+  @override
+  Widget build(BuildContext context) {
+    final s = context.s;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Gap.page),
+      child: Column(
+        children: [
+          IndiaMap(
+            activeIds: craftStateIds,
+            onState: (id) {
+              final match =
+                  Catalog.states.where((st) => st.id == id).firstOrNull;
+              if (match != null) onState?.call(match);
+            },
+          ),
+          const SizedBox(height: Gap.sm),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.touch_app_outlined,
+                  size: 15, color: AppColors.inkFaint),
+              const SizedBox(width: 6),
+              Flexible(
+                child: Text(s.tapAState,
+                    style: AppText.caption,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

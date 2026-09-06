@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'data/catalog.dart';
 import 'features/buyer/buyer_shell.dart';
+import 'features/buyer/cart/cart_screen.dart';
+import 'features/buyer/state/state_screen.dart';
 import 'l10n/lang.dart';
 import 'features/seller/seller_shell.dart';
 import 'session/app_state.dart';
@@ -56,18 +59,29 @@ class _Root extends StatelessWidget {
   Widget build(BuildContext context) {
     final app = context.app;
 
+    // Screenshot and rehearsal harness: --dart-define=SCREEN=cart|state
+    const screen = String.fromEnvironment('SCREEN');
+    if (screen == 'cart') {
+      return const _MaybeFramed(child: CartScreen());
+    }
+    if (screen == 'state') {
+      return _MaybeFramed(child: StateScreen(state: Catalog.stateById('jk')));
+    }
+
     // One codebase, two products. The backend will set the role at login.
     final shell = switch (app.role) {
       Role.buyer => BuyerShell(onSwitchToSeller: () => app.setRole(Role.seller)),
       Role.seller => SellerShell(onSwitchToBuyer: () => app.setRole(Role.buyer)),
     };
 
-    return _PhoneFrame(
+    return _MaybeFramed(
       child: Stack(
-        children: [
-          shell,
-          // Development affordance: flips the connection state without a radio
-          // so the offline story can be rehearsed at a desk. Remove before demo.
+      children: [
+        shell,
+        // Development affordance: flips the connection state without a radio
+        // so the offline story can be rehearsed at a desk. Hidden unless the
+        // build asks for it: --dart-define=DEVTOOLS=true
+        if (const bool.fromEnvironment('DEVTOOLS'))
           Positioned(
             right: 8,
             bottom: 96,
@@ -80,24 +94,25 @@ class _Root extends StatelessWidget {
               ),
             ),
           ),
-        ],
+      ],
       ),
     );
   }
 }
 
-/// Keeps the app at a phone width when it is running in a desktop browser, so
-/// what we review is what a phone actually shows. No effect on a real device.
-class _PhoneFrame extends StatelessWidget {
-  const _PhoneFrame({required this.child});
+/// Screenshot harness only. Chrome headless refuses windows narrower than
+/// about 500px, so reviewing a phone layout in a browser needs the width
+/// pinned. Off unless the build asks: --dart-define=FRAME=true
+class _MaybeFramed extends StatelessWidget {
+  const _MaybeFramed({required this.child});
   final Widget child;
 
   static const _phoneWidth = 412.0;
 
   @override
   Widget build(BuildContext context) {
-    final w = MediaQuery.sizeOf(context).width;
-    if (w <= _phoneWidth + 24) return child;
+    if (!const bool.fromEnvironment('FRAME')) return child;
+    if (MediaQuery.sizeOf(context).width <= _phoneWidth + 24) return child;
 
     return ColoredBox(
       color: const Color(0xFFE9E3DA),

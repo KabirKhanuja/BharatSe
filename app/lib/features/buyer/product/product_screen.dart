@@ -123,7 +123,7 @@ class ProductScreen extends StatelessWidget {
             children: [
               Expanded(
                 child: OutlinedButton(
-                  onPressed: app.addToCart,
+                  onPressed: () => app.addToCart(product.id),
                   style: OutlinedButton.styleFrom(
                     minimumSize: const Size(0, 50),
                     side: const BorderSide(color: AppColors.navy),
