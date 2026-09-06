@@ -14,6 +14,7 @@ class CraftState {
     required this.crafts,
     required this.seed,
     required this.count,
+    required this.heritage,
   });
 
   final String id;
@@ -21,6 +22,9 @@ class CraftState {
   final T crafts;
   final int seed;
   final int count;
+
+  /// What the craft is and where it came from.
+  final T heritage;
 }
 
 class CraftCategory {
@@ -66,6 +70,10 @@ abstract final class Catalog {
       crafts: T('Pashmina, Carpets', 'पश्मीना, कालीन'),
       seed: 0,
       count: 128,
+      heritage: T(
+        'Pashmina comes from the undercoat of the changthangi goat, combed by hand in Ladakh and spun in Srinagar. A single shawl can take four months at the loom.',
+        'पश्मीना चांगथांगी बकरी के भीतरी ऊन से बनता है, जिसे लद्दाख में हाथ से निकाला और श्रीनगर में काता जाता है। एक शॉल बुनने में चार महीने तक लग जाते हैं।',
+      ),
     ),
     CraftState(
       id: 'rj',
@@ -73,6 +81,10 @@ abstract final class Catalog {
       crafts: T('Block Prints, Jewellery', 'ब्लॉक प्रिंट, गहने'),
       seed: 1,
       count: 214,
+      heritage: T(
+        'Bagru and Sanganer print cloth with hand carved teak blocks and dyes made from indigo, pomegranate rind and iron. Every repeat is placed by eye.',
+        'बगरू और सांगानेर में सागौन के हाथ से गढ़े ब्लॉक और नील, अनार के छिलके तथा लोहे से बने रंगों से छपाई होती है। हर छाप आँख के अंदाज़ से लगती है।',
+      ),
     ),
     CraftState(
       id: 'gj',
@@ -80,6 +92,10 @@ abstract final class Catalog {
       crafts: T('Bandhani, Patola', 'बांधनी, पटोला'),
       seed: 2,
       count: 167,
+      heritage: T(
+        'Bandhani is tied before it is dyed. Thousands of tiny knots are made with the fingernail, then opened to reveal the pattern underneath.',
+        'बांधनी पहले बाँधी जाती है, फिर रंगी जाती है। नाखून से हज़ारों छोटी गाँठें लगाई जाती हैं, और खोलने पर नीचे का डिज़ाइन दिखता है।',
+      ),
     ),
     CraftState(
       id: 'mh',
@@ -87,6 +103,10 @@ abstract final class Catalog {
       crafts: T('Paithani, Warli', 'पैठणी, वारली'),
       seed: 3,
       count: 143,
+      heritage: T(
+        'Paithani weaving carries no printed design. The motifs are built thread by thread on the loom, which is why a sari can take a year.',
+        'पैठणी में कोई छपा हुआ डिज़ाइन नहीं होता। बूटे करघे पर धागा दर धागा बनते हैं, इसीलिए एक साड़ी में साल भर लग सकता है।',
+      ),
     ),
     CraftState(
       id: 'wb',
@@ -94,6 +114,10 @@ abstract final class Catalog {
       crafts: T('Kantha, Terracotta', 'कांथा, टेराकोटा'),
       seed: 4,
       count: 189,
+      heritage: T(
+        'Kantha began as thrift. Worn saris were layered and stitched together, and the running stitch that held them became the art itself.',
+        'कांथा की शुरुआत बचत से हुई। पुरानी साड़ियों को परतों में रखकर सिला जाता था, और उन्हें जोड़ने वाला टाँका ही कला बन गया।',
+      ),
     ),
     CraftState(
       id: 'tn',
@@ -101,6 +125,10 @@ abstract final class Catalog {
       crafts: T('Kanjivaram, Brass', 'कांजीवरम, पीतल'),
       seed: 5,
       count: 176,
+      heritage: T(
+        'Swamimalai casts bronze the way the Cholas did, in a mould that must be broken to free the figure. No two pieces can ever be identical.',
+        'स्वामिमलाई में चोल काल की तरह काँसा ढाला जाता है, ऐसे साँचे में जिसे मूर्ति निकालने के लिए तोड़ना पड़ता है। इसलिए कोई दो मूर्तियाँ एक जैसी नहीं होतीं।',
+      ),
     ),
     CraftState(
       id: 'up',
@@ -108,6 +136,10 @@ abstract final class Catalog {
       crafts: T('Chikankari, Zardozi', 'चिकनकारी, ज़रदोज़ी'),
       seed: 1,
       count: 231,
+      heritage: T(
+        'Chikankari is white thread on white cloth, worked in Lucknow in more than thirty stitches, several of which are read from the reverse side.',
+        'चिकनकारी सफ़ेद कपड़े पर सफ़ेद धागे का काम है, जो लखनऊ में तीस से ज़्यादा टाँकों में किया जाता है, जिनमें कई उल्टी तरफ़ से पढ़े जाते हैं।',
+      ),
     ),
     CraftState(
       id: 'hp',
@@ -115,6 +147,10 @@ abstract final class Catalog {
       crafts: T('Shawls, Woollens', 'शॉल, ऊनी कपड़े'),
       seed: 3,
       count: 94,
+      heritage: T(
+        'Kullu shawls carry geometric borders in undyed sheep wool, woven on pit looms in valleys where the wool has to last a winter.',
+        'कुल्लू शॉल में बिना रंगी भेड़ की ऊन से ज्यामितीय किनारे बुने जाते हैं, उन घाटियों के गड्ढा करघों पर जहाँ ऊन को पूरी सर्दी चलना होता है।',
+      ),
     ),
     CraftState(
       id: 'od',
@@ -122,6 +158,10 @@ abstract final class Catalog {
       crafts: T('Pattachitra, Filigree', 'पट्टचित्र, तारकशी'),
       seed: 2,
       count: 112,
+      heritage: T(
+        'Pattachitra is painted on cloth stiffened with tamarind paste, using brushes made from animal hair and colours ground from stone and shell.',
+        'पट्टचित्र इमली की लेई से कड़े किए कपड़े पर बनता है, जानवरों के बाल के ब्रश और पत्थर व सीप से पीसे रंगों से।',
+      ),
     ),
     CraftState(
       id: 'ka',
@@ -129,6 +169,10 @@ abstract final class Catalog {
       crafts: T('Mysore Silk, Sandalwood', 'मैसूर सिल्क, चंदन'),
       seed: 4,
       count: 158,
+      heritage: T(
+        'Channapatna toys are turned on a lathe from ivory wood and coloured with lac, a resin polished to a shine with a screw pine leaf.',
+        'चन्नपटना के खिलौने हाथी दाँत की लकड़ी से खराद पर बनते हैं और लाख से रंगे जाते हैं, जिसे केवड़े के पत्ते से चमकाया जाता है।',
+      ),
     ),
     CraftState(
       id: 'kl',
@@ -136,6 +180,10 @@ abstract final class Catalog {
       crafts: T('Kasavu, Coir', 'कसावु, कॉयर'),
       seed: 5,
       count: 87,
+      heritage: T(
+        'Kasavu is plain cream cotton with a gold border, woven in Balaramapuram on throw shuttle looms that have barely changed in two centuries.',
+        'कसावु सादा क्रीम सूती कपड़ा है जिसके किनारे पर सुनहरी ज़री होती है, जो बलरामपुरम के उन करघों पर बुना जाता है जो दो सदियों में मुश्किल से बदले हैं।',
+      ),
     ),
     CraftState(
       id: 'mp',
@@ -143,6 +191,10 @@ abstract final class Catalog {
       crafts: T('Bamboo, Dhokra', 'बाँस, ढोकरा'),
       seed: 0,
       count: 103,
+      heritage: T(
+        'Dhokra has been cast for more than four thousand years. The wax model is destroyed in the making, so the object can never be repeated.',
+        'ढोकरा चार हज़ार साल से ढाला जा रहा है। मोम का नमूना बनाते समय ही नष्ट हो जाता है, इसलिए वही चीज़ दोबारा नहीं बन सकती।',
+      ),
     ),
   ];
 
@@ -191,10 +243,10 @@ abstract final class Catalog {
       stateId: 'tn',
       artisan: T('R. Karthikeyan', 'आर. कार्तिकेयन'),
       material: T('Cast brass', 'ढला हुआ पीतल'),
-      technique: T('Lost-wax casting', 'मोम विधि से ढलाई'),
+      technique: T('Lost wax casting', 'मोम विधि से ढलाई'),
       hours: 22,
       story: T(
-        'Cast in Swamimalai using the lost-wax method his family has used for '
+        'Cast in Swamimalai using the lost wax method his family has used for '
         'six generations.',
         'स्वामिमलाई में छह पीढ़ियों से चली आ रही मोम विधि से ढाला गया।',
       ),
@@ -258,7 +310,7 @@ abstract final class Catalog {
       stateId: 'mp',
       artisan: T('Budhram Maravi', 'बुधराम मरावी'),
       material: T('Bell metal', 'काँसा'),
-      technique: T('Dhokra lost-wax', 'ढोकरा मोम विधि'),
+      technique: T('Dhokra lost wax', 'ढोकरा मोम विधि'),
       hours: 28,
       story: T(
         'A four thousand year old casting technique, still done without a mould '

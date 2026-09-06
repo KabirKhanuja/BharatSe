@@ -65,6 +65,21 @@ class AppStrings {
     required this.newArrivals,
     required this.trustTitle,
     required this.trustBody,
+    required this.cart,
+    required this.cartEmpty,
+    required this.cartEmptyBody,
+    required this.subtotal,
+    required this.delivery,
+    required this.freeDelivery,
+    required this.total,
+    required this.checkout,
+    required this.remove,
+    required this.tapAState,
+    required this.craftsFrom,
+    required this.theCraft,
+    required this.artisansHere,
+    required this.startShopping,
+    required this.qty,
   });
 
   final String tagline;
@@ -145,6 +160,23 @@ class AppStrings {
   final String trustTitle;
   final String trustBody;
 
+  // cart and state
+  final String cart;
+  final String cartEmpty;
+  final String cartEmptyBody;
+  final String subtotal;
+  final String delivery;
+  final String freeDelivery;
+  final String total;
+  final String checkout;
+  final String remove;
+  final String tapAState;
+  final String craftsFrom;
+  final String theCraft;
+  final String artisansHere;
+  final String startShopping;
+  final String qty;
+
   static const AppStrings en = AppStrings(
     tagline: 'From the people of Bharat, for Bharat',
     navHome: 'Home',
@@ -210,6 +242,21 @@ class AppStrings {
     trustBody:
         'Scan the tag on the product and see who made it, where, and how long '
         'it took. Provenance verified, not claimed.',
+    cart: 'Cart',
+    cartEmpty: 'Your cart is empty',
+    cartEmptyBody: 'Crafts you add will appear here.',
+    subtotal: 'Subtotal',
+    delivery: 'Delivery',
+    freeDelivery: 'Free',
+    total: 'Total',
+    checkout: 'Proceed to checkout',
+    remove: 'Remove',
+    tapAState: 'Tap a state to see its crafts',
+    craftsFrom: 'Crafts from',
+    theCraft: 'The craft',
+    artisansHere: 'artisans here',
+    startShopping: 'Start exploring',
+    qty: 'Qty',
   );
 
   static const AppStrings hi = AppStrings(
@@ -276,6 +323,36 @@ class AppStrings {
     trustBody:
         'सामान पर लगा टैग स्कैन कीजिए और देखिए किसने बनाया, कहाँ बनाया, और '
         'कितना समय लगा। पहचान जाँची गई है, सिर्फ़ दावा नहीं।',
+    cart: 'कार्ट',
+    cartEmpty: 'आपका कार्ट खाली है',
+    cartEmptyBody: 'आप जो शिल्प डालेंगे वे यहाँ दिखेंगे।',
+    subtotal: 'कुल सामान',
+    delivery: 'डिलीवरी',
+    freeDelivery: 'मुफ़्त',
+    total: 'कुल',
+    checkout: 'आगे बढ़ें',
+    remove: 'हटाएँ',
+    tapAState: 'शिल्प देखने के लिए राज्य पर टैप करें',
+    craftsFrom: 'यहाँ के शिल्प',
+    theCraft: 'यह शिल्प',
+    artisansHere: 'कारीगर यहाँ',
+    startShopping: 'खोजना शुरू करें',
+    qty: 'संख्या',
+    cart: 'कार्ट',
+    cartEmpty: 'आपका कार्ट खाली है',
+    cartEmptyBody: 'आप जो शिल्प डालेंगे वे यहाँ दिखेंगे।',
+    subtotal: 'कुल सामान',
+    delivery: 'डिलीवरी',
+    freeDelivery: 'मुफ़्त',
+    total: 'कुल',
+    checkout: 'आगे बढ़ें',
+    remove: 'हटाएँ',
+    tapAState: 'शिल्प देखने के लिए राज्य पर टैप करें',
+    craftsFrom: 'यहाँ के शिल्प',
+    theCraft: 'यह शिल्प',
+    artisansHere: 'कारीगर यहाँ',
+    startShopping: 'खोजना शुरू करें',
+    qty: 'संख्या',
   );
 
   static AppStrings of(Lang lang) => lang == Lang.hi ? hi : en;
