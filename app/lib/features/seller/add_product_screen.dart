@@ -12,6 +12,7 @@ import '../../session/app_state.dart';
 import '../../theme/app_colors.dart';
 import '../../theme/app_dims.dart';
 import '../../theme/app_text.dart';
+import '../../util/catalogue_images.dart';
 import '../../util/format.dart';
 import '../../util/wage_floor.dart';
 import '../../widgets/craft_image.dart';
@@ -36,10 +37,31 @@ class _AddProductScreenState extends State<AddProductScreen>
     with SingleTickerProviderStateMixin {
   final _clientId = const Uuid().v4();
 
+  /// Four is what the server accepts. It is repeated here so the counter and
+  /// the add tile agree with the rule, not because the phone is what enforces
+  /// it: the cap that protects the bill lives in the API.
+  static const _maxPhotos = 4;
+
   final List<String> _photos = [];
+
+  /// Which photo the model runs on. The artisan picks her best shot rather than
+  /// the pipeline assuming it was the first one she happened to take.
+  int _heroIndex = 0;
+
   bool _recording = false;
   bool _working = false;
   String? _error;
+
+  /// The enhanced set, once the server has produced it. Null until then, and
+  /// deliberately not cleared when photos change: a generation has already been
+  /// paid for and throwing it away on an edit would charge for it twice.
+  ListingImages? _images;
+  bool _enhancing = false;
+  String? _enhanceError;
+
+  /// Image generation is billed per call, so it happens once on its own and
+  /// every further run is something the artisan asked for by tapping.
+  bool _enhanceAttempted = false;
 
   GeneratedListing? _listing;
   PriceBand? _band;
@@ -66,9 +88,77 @@ class _AddProductScreenState extends State<AddProductScreen>
       computeFloor(materialCost: _materialCost, hours: _hours).floor;
 
   // ------------------------------------------------------------------ photos
+  /// Camera or gallery, because an artisan often shoots a batch of work in
+  /// daylight and lists it that evening. Forcing a reshoot under a bare bulb
+  /// would recreate the exact photo problem this screen exists to solve.
   Future<void> _addPhoto() async {
-    final path = await context.app.capture.takePhoto();
-    if (path != null && mounted) setState(() => _photos.add(path));
+    if (_photos.length >= _maxPhotos) return;
+
+    final fromCamera = await showModalBottomSheet<bool>(
+      context: context,
+      backgroundColor: AppColors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+      ),
+      builder: _photoSourceSheet,
+    );
+    if (fromCamera == null || !mounted) return;
+
+    final capture = context.app.capture;
+    final path =
+        fromCamera ? await capture.takePhoto() : await capture.pickFromGallery();
+    if (path == null || !mounted) return;
+
+    setState(() => _photos.add(path));
+  }
+
+  void _removePhoto(int index) {
+    setState(() {
+      _photos.removeAt(index);
+      // Keep the chosen photo chosen. Without this, deleting anything above the
+      // hero silently moves the selection onto a different picture.
+      if (_photos.isEmpty) {
+        _heroIndex = 0;
+      } else if (index == _heroIndex) {
+        _heroIndex = 0;
+      } else if (index < _heroIndex) {
+        _heroIndex -= 1;
+      }
+    });
+  }
+
+  // ----------------------------------------------------------------- enhance
+  /// Upload every photo and have exactly one of them redrawn as a catalogue
+  /// image. The server decides which rules apply; this only asks.
+  ///
+  /// Failure is not fatal anywhere in this flow. The originals are on the phone
+  /// and in storage, and a listing with the artisan's own photograph is worth
+  /// more than an error message.
+  Future<void> _enhance() async {
+    if (_photos.isEmpty || _enhancing) return;
+
+    setState(() {
+      _enhancing = true;
+      _enhanceError = null;
+      _enhanceAttempted = true;
+    });
+
+    try {
+      final result = await context.app.api.enhanceListingImages(
+        imagePaths: _photos,
+        clientId: _clientId,
+        label: _listing?.titleEn ?? '',
+        enhanceIndex: _heroIndex,
+      );
+      if (!mounted) return;
+      setState(() => _images = result);
+    } on ApiException catch (error) {
+      if (!mounted) return;
+      setState(() => _enhanceError =
+          error.isOffline ? context.s.offlineNotice : context.s.couldNotImprove);
+    } finally {
+      if (mounted) setState(() => _enhancing = false);
+    }
   }
 
   // --------------------------------------------------------------- recording
@@ -125,6 +215,13 @@ class _AddProductScreenState extends State<AddProductScreen>
     } finally {
       if (mounted) setState(() => _working = false);
     }
+
+    // The review panel appears now, and the before and after is part of it, so
+    // this is the moment to spend the one generation. Guarded so it happens
+    // once: re-running is a tap the artisan makes deliberately.
+    if (mounted && _photos.isNotEmpty && !_enhanceAttempted) {
+      await _enhance();
+    }
   }
 
   // ----------------------------------------------------------------- pricing
@@ -164,6 +261,15 @@ class _AddProductScreenState extends State<AddProductScreen>
   Future<void> _publish() async {
     final app = context.app;
 
+    // A listing published without its photos ever leaving the phone is the one
+    // failure the artisan cannot see and cannot fix. If the enhance pass never
+    // ran, run it now. Still exactly one generation, and still not fatal: the
+    // outbox publishes either way.
+    if (_photos.isNotEmpty && _images == null && !_enhancing) {
+      await _enhance();
+      if (!mounted) return;
+    }
+
     await app.sync.enqueue(
       clientId: _clientId,
       entity: 'product',
@@ -199,7 +305,12 @@ class _AddProductScreenState extends State<AddProductScreen>
       materialCost: _materialCost,
       priceFloor: _floor,
       price: _price ?? _floor,
-      imagePaths: _photos,
+      // Enhanced image first when we have one, so the catalogue and anything
+      // else reading only the primary image gets the good one.
+      imagePaths: catalogueImages(
+        heroUrl: _images?.heroUrl,
+        originals: _photos,
+      ),
     ));
 
     if (!mounted) return;
@@ -306,7 +417,7 @@ class _AddProductScreenState extends State<AddProductScreen>
                 ],
               ),
             ),
-            Text('${_photos.length}/10',
+            Text('${_photos.length}/$_maxPhotos',
                 style: AppText.body(13,
                     weight: FontWeight.w600, color: AppColors.maroon)),
           ],
@@ -316,13 +427,86 @@ class _AddProductScreenState extends State<AddProductScreen>
           height: 104,
           child: ListView.separated(
             scrollDirection: Axis.horizontal,
-            itemCount: _photos.length + 1,
+            itemCount: _photos.length + (_canAddPhoto ? 1 : 0),
             separatorBuilder: (_, __) => const SizedBox(width: Gap.md),
-            itemBuilder: (context, i) =>
-                i == 0 ? _addTile() : _thumb(i - 1),
+            itemBuilder: (context, i) {
+              if (!_canAddPhoto) return _thumb(i);
+              return i == 0 ? _addTile() : _thumb(i - 1);
+            },
           ),
         ),
+        // Only worth saying once there is actually a choice to make.
+        if (_photos.length > 1) ...[
+          const SizedBox(height: Gap.sm),
+          Text(s.tapToSetMain, style: AppText.caption),
+        ],
       ],
+    );
+  }
+
+  bool get _canAddPhoto => _photos.length < _maxPhotos;
+
+  /// Camera or gallery. Two large targets and nothing else, because the person
+  /// reading this may not read.
+  Widget _photoSourceSheet(BuildContext sheetContext) {
+    final s = context.s;
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(Gap.page, Gap.lg, Gap.page, Gap.lg),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(s.photoSource, style: AppText.label),
+            const SizedBox(height: Gap.md),
+            _sourceTile(
+              icon: Icons.photo_camera_outlined,
+              label: s.takePhotoAction,
+              onTap: () => Navigator.of(sheetContext).pop(true),
+            ),
+            const SizedBox(height: Gap.sm),
+            _sourceTile(
+              icon: Icons.photo_library_outlined,
+              label: s.chooseFromGallery,
+              onTap: () => Navigator.of(sheetContext).pop(false),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _sourceTile({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: Radii.md,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: Gap.md, vertical: 16),
+        decoration: BoxDecoration(
+          color: AppColors.cream,
+          borderRadius: Radii.md,
+          border: Border.all(
+            color: AppColors.terracotta.withValues(alpha: 0.25),
+            width: 1.1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, size: 22, color: AppColors.terracotta),
+            const SizedBox(width: Gap.md),
+            Expanded(
+              child: Text(label,
+                  style: AppText.body(15, weight: FontWeight.w500)),
+            ),
+            const Icon(Icons.chevron_right_rounded,
+                size: 20, color: AppColors.terracotta),
+          ],
+        ),
+      ),
     );
   }
 
@@ -357,34 +541,67 @@ class _AddProductScreenState extends State<AddProductScreen>
   }
 
   Widget _thumb(int i) {
-    return SizedBox(
-      width: 104,
-      child: Stack(
-        children: [
-          Positioned.fill(
-            child: ClipRRect(
-              borderRadius: Radii.md,
-              child: kIsWeb
-                  ? const CraftImage(seed: 1, icon: Icons.checkroom_rounded)
-                  : Image.file(File(_photos[i]), fit: BoxFit.cover),
-            ),
-          ),
-          Positioned(
-            top: 5,
-            right: 5,
-            child: GestureDetector(
-              onTap: () => setState(() => _photos.removeAt(i)),
-              child: Container(
-                width: 22,
-                height: 22,
-                decoration: const BoxDecoration(
-                    color: AppColors.ink, shape: BoxShape.circle),
-                child: const Icon(Icons.close_rounded,
-                    size: 14, color: AppColors.white),
+    final isHero = i == _heroIndex;
+    return GestureDetector(
+      // Tapping picks which photo the model improves. The whole tile is the
+      // target, not a small radio button.
+      onTap: () => setState(() => _heroIndex = i),
+      child: SizedBox(
+        width: 104,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: ClipRRect(
+                borderRadius: Radii.md,
+                child: kIsWeb
+                    ? const CraftImage(seed: 1, icon: Icons.checkroom_rounded)
+                    : Image.file(File(_photos[i]), fit: BoxFit.cover),
               ),
             ),
-          ),
-        ],
+            // The chosen photo is outlined rather than dimmed, so nothing on
+            // screen ever looks broken or disabled.
+            if (isHero)
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: Radii.md,
+                    border: Border.all(color: AppColors.maroon, width: 2.5),
+                  ),
+                ),
+              ),
+            if (isHero)
+              Positioned(
+                bottom: 5,
+                left: 5,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                  decoration: BoxDecoration(
+                    color: AppColors.maroon,
+                    borderRadius: Radii.sm,
+                  ),
+                  child: Text(context.s.mainPhoto,
+                      style: AppText.body(10,
+                          weight: FontWeight.w600, color: AppColors.white)),
+                ),
+              ),
+            Positioned(
+              top: 5,
+              right: 5,
+              child: GestureDetector(
+                onTap: () => _removePhoto(i),
+                child: Container(
+                  width: 22,
+                  height: 22,
+                  decoration: const BoxDecoration(
+                      color: AppColors.ink, shape: BoxShape.circle),
+                  child: const Icon(Icons.close_rounded,
+                      size: 14, color: AppColors.white),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -489,40 +706,140 @@ class _AddProductScreenState extends State<AddProductScreen>
     );
   }
 
+  /// The before and after.
+  ///
+  /// This used to render the artisan's own photo twice with a colour filter on
+  /// one of them. It now shows what the server actually produced, which means
+  /// it also has to show the states that mock could not have: working, failed,
+  /// and improved without the model because the network was gone.
   Widget _enhancedImages() {
     final s = context.s;
+
     return Panel(
       icon: Icons.auto_fix_high_outlined,
       title: s.enhancedImages,
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(child: _framed(s.beforeLabel, dim: true)),
-          const SizedBox(width: Gap.md),
-          Expanded(child: _framed(s.afterLabel, dim: false, accent: true)),
+          if (_enhancing)
+            _enhanceStatus(
+              child: const SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation(AppColors.maroon),
+                ),
+              ),
+              // Generation takes tens of seconds. Saying so beats a spinner
+              // that looks stuck.
+              label: s.improvingPhoto,
+            )
+          else if (_images != null)
+            Row(
+              children: [
+                Expanded(child: _beforeFrame(s.beforeLabel)),
+                const SizedBox(width: Gap.md),
+                Expanded(child: _afterFrame(s.afterLabel, _images!.heroUrl)),
+              ],
+            )
+          else
+            _enhanceStatus(
+              child: const Icon(Icons.auto_fix_high_outlined,
+                  size: 18, color: AppColors.terracotta),
+              label: _enhanceError ?? s.improvePhoto,
+            ),
+
+          if (!_enhancing && (_images == null || _enhanceError != null)) ...[
+            const SizedBox(height: Gap.md),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: _enhance,
+                icon: const Icon(Icons.refresh_rounded, size: 18),
+                label: Text(s.improvePhoto),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: AppColors.maroon,
+                  side: const BorderSide(color: AppColors.maroon, width: 1.2),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: Radii.sm),
+                ),
+              ),
+            ),
+          ],
+
+          // The offline pass is a real result, not a failure, but the artisan
+          // should know which one she is looking at.
+          if (_images != null && _images!.method == 'cutout') ...[
+            const SizedBox(height: Gap.sm),
+            Text(s.improvedOffline, style: AppText.caption),
+          ],
         ],
       ),
     );
   }
 
-  Widget _framed(String label, {required bool dim, bool accent = false}) {
+  Widget _enhanceStatus({required Widget child, required String label}) {
+    return Row(
+      children: [
+        child,
+        const SizedBox(width: Gap.md),
+        Expanded(child: Text(label, style: AppText.caption)),
+      ],
+    );
+  }
+
+  Widget _beforeFrame(String label) {
+    final hasPhoto = _heroIndex < _photos.length;
+    return _frame(
+      label,
+      accent: false,
+      child: kIsWeb || !hasPhoto
+          ? const CraftImage(seed: 0, dim: true)
+          : Image.file(File(_photos[_heroIndex]), fit: BoxFit.cover),
+    );
+  }
+
+  Widget _afterFrame(String label, String url) {
+    return _frame(
+      label,
+      accent: true,
+      child: Image.network(
+        url,
+        fit: BoxFit.cover,
+        loadingBuilder: (context, child, progress) => progress == null
+            ? child
+            : Container(
+                color: AppColors.cream,
+                alignment: Alignment.center,
+                child: const SizedBox(
+                  width: 18,
+                  height: 18,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation(AppColors.maroon),
+                  ),
+                ),
+              ),
+        // The image is in storage either way. A thumbnail that will not load on
+        // a thin connection is not a reason to hide the result.
+        errorBuilder: (context, error, stack) => Container(
+          color: AppColors.cream,
+          alignment: Alignment.center,
+          child: const Icon(Icons.image_outlined,
+              size: 22, color: AppColors.terracotta),
+        ),
+      ),
+    );
+  }
+
+  Widget _frame(String label, {required Widget child, required bool accent}) {
     return AspectRatio(
       aspectRatio: 1.05,
       child: Stack(
         children: [
           Positioned.fill(
-            child: ClipRRect(
-              borderRadius: Radii.md,
-              child: kIsWeb
-                  ? CraftImage(seed: dim ? 0 : 1, dim: dim)
-                  : ColorFiltered(
-                      colorFilter: dim
-                          ? const ColorFilter.mode(
-                              Color(0x22FFFFFF), BlendMode.lighten)
-                          : const ColorFilter.mode(
-                              Colors.transparent, BlendMode.dst),
-                      child: Image.file(File(_photos.first), fit: BoxFit.cover),
-                    ),
-            ),
+            child: ClipRRect(borderRadius: Radii.md, child: child),
           ),
           Positioned(
             top: 7,

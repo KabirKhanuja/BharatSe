@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
 import '../../../data/local/product_store.dart';
@@ -9,7 +6,7 @@ import '../../../theme/app_colors.dart';
 import '../../../theme/app_dims.dart';
 import '../../../theme/app_text.dart';
 import '../../../util/format.dart';
-import '../../../widgets/craft_image.dart';
+import '../../../widgets/product_thumb.dart';
 
 /// The artisan's catalogue.
 ///
@@ -138,11 +135,10 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
           SizedBox(
             width: 68,
             height: 68,
-            child: ClipRRect(
+            child: ProductThumb(
+              source: product.imagePaths.firstOrNull,
               borderRadius: Radii.sm,
-              child: (product.imagePaths.isEmpty || kIsWeb)
-                  ? const CraftImage(seed: 2, icon: Icons.checkroom_rounded)
-                  : Image.file(File(product.imagePaths.first), fit: BoxFit.cover),
+              seed: 2,
             ),
           ),
           const SizedBox(width: Gap.md),

@@ -165,6 +165,63 @@ void main() {
     expect(result.listing.estimatedHours, 7.0);
     expect(result.listing.tags, hasLength(3));
   });
+
+  test('listing images parse, and only the hero carries an enhanced url', () {
+    final result = ListingImages.fromJson({
+      'product_id': 'c0ffee00-0000-4000-8000-000000000001',
+      'client_id': 'abc-123',
+      'images': [
+        {
+          'position': 0,
+          'original_url': 'https://x/o/p/original/b.jpg',
+          'enhanced_url': 'https://x/o/p/enhanced/z.png',
+          'is_hero': true,
+        },
+        {
+          'position': 1,
+          'original_url': 'https://x/o/p/original/a.jpg',
+          'enhanced_url': null,
+          'is_hero': false,
+        },
+      ],
+      'hero_url': 'https://x/o/p/enhanced/z.png',
+      'method': 'generative',
+      'enhanced_count': 1,
+    });
+
+    expect(result.images, hasLength(2));
+    expect(result.wasEnhanced, isTrue);
+    // Exactly one photo carries a generated image, whatever the count. This is
+    // the whole cost story of the feature in one assertion.
+    expect(result.images.where((i) => i.enhancedUrl != null), hasLength(1));
+    // The enhanced photo is stored first, so a consumer reading only the
+    // primary image gets the good one.
+    expect(result.hero!.position, 0);
+    expect(result.heroUrl, endsWith('.png'));
+  });
+
+  test('an unreachable model still returns the artisan her own photo', () {
+    // The server falls back rather than failing, so a listing is never
+    // imageless because an API was down.
+    final result = ListingImages.fromJson({
+      'product_id': 'c0ffee00-0000-4000-8000-000000000002',
+      'client_id': 'abc-124',
+      'images': [
+        {
+          'position': 0,
+          'original_url': 'https://x/o/p/original/only.jpg',
+          'enhanced_url': null,
+          'is_hero': true,
+        },
+      ],
+      'hero_url': 'https://x/o/p/original/only.jpg',
+      'method': 'none',
+      'enhanced_count': 0,
+    });
+
+    expect(result.wasEnhanced, isFalse);
+    expect(result.heroUrl, isNotEmpty);
+  });
 }
 
 /// Small shim so the parsing above reads clearly.

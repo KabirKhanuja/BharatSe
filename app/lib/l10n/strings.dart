@@ -93,6 +93,15 @@ class AppStrings {
     required this.enhancedImages,
     required this.beforeLabel,
     required this.afterLabel,
+    required this.takePhotoAction,
+    required this.chooseFromGallery,
+    required this.photoSource,
+    required this.mainPhoto,
+    required this.tapToSetMain,
+    required this.improvingPhoto,
+    required this.improvePhoto,
+    required this.couldNotImprove,
+    required this.improvedOffline,
     required this.productStory,
     required this.suggestedPrice,
     required this.priceIsFair,
@@ -229,6 +238,15 @@ class AppStrings {
   final String enhancedImages;
   final String beforeLabel;
   final String afterLabel;
+  final String takePhotoAction;
+  final String chooseFromGallery;
+  final String photoSource;
+  final String mainPhoto;
+  final String tapToSetMain;
+  final String improvingPhoto;
+  final String improvePhoto;
+  final String couldNotImprove;
+  final String improvedOffline;
   final String productStory;
   final String suggestedPrice;
   final String priceIsFair;
@@ -348,6 +366,15 @@ class AppStrings {
     enhancedImages: 'Improved pictures',
     beforeLabel: 'Before',
     afterLabel: 'After',
+    takePhotoAction: 'Take a photo',
+    chooseFromGallery: 'Choose from gallery',
+    photoSource: 'Add a picture',
+    mainPhoto: 'Main',
+    tapToSetMain: 'Tap a picture to make it the main one',
+    improvingPhoto: 'Making your picture better',
+    improvePhoto: 'Improve picture',
+    couldNotImprove: 'Could not improve the picture',
+    improvedOffline: 'Improved on this phone',
     productStory: 'The story of this piece',
     suggestedPrice: 'Suggested price',
     priceIsFair: 'Fair for today\'s market',
@@ -467,6 +494,15 @@ class AppStrings {
     enhancedImages: 'बेहतर की गई तस्वीरें',
     beforeLabel: 'पहले',
     afterLabel: 'बाद में',
+    takePhotoAction: 'फ़ोटो खींचिए',
+    chooseFromGallery: 'गैलरी से चुनिए',
+    photoSource: 'तस्वीर जोड़िए',
+    mainPhoto: 'मुख्य',
+    tapToSetMain: 'मुख्य बनाने के लिए तस्वीर पर टैप कीजिए',
+    improvingPhoto: 'आपकी तस्वीर बेहतर की जा रही है',
+    improvePhoto: 'तस्वीर बेहतर करें',
+    couldNotImprove: 'तस्वीर बेहतर नहीं हो सकी',
+    improvedOffline: 'इसी फ़ोन पर बेहतर की गई',
     productStory: 'सामान की कहानी',
     suggestedPrice: 'सुझाया गया दाम',
     priceIsFair: 'आज के बाज़ार के हिसाब से सही',

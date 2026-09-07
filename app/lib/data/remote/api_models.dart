@@ -232,3 +232,78 @@ class PassportIssue {
         publicKeyHex: json['public_key_hex'] as String? ?? '',
       );
 }
+
+/// One stored photo of a product, as the server keeps it.
+class ListingImage {
+  const ListingImage({
+    required this.position,
+    required this.originalUrl,
+    this.enhancedUrl,
+    this.isHero = false,
+  });
+
+  final int position;
+  final String originalUrl;
+
+  /// Set on the hero only. Every other photo is stored as the artisan took it.
+  final String? enhancedUrl;
+  final bool isHero;
+
+  factory ListingImage.fromJson(Map<String, dynamic> json) => ListingImage(
+        position: (json['position'] as num?)?.toInt() ?? 0,
+        originalUrl: json['original_url'] as String? ?? '',
+        enhancedUrl: json['enhanced_url'] as String?,
+        isHero: json['is_hero'] as bool? ?? false,
+      );
+}
+
+/// The result of preparing one product's photos.
+///
+/// `enhancedCount` is 0 or 1. Image generation is the only call in this app
+/// billed per invocation, and the ceiling is enforced by the server rather than
+/// trusted to the phone.
+class ListingImages {
+  const ListingImages({
+    required this.productId,
+    required this.clientId,
+    required this.images,
+    required this.heroUrl,
+    required this.method,
+    required this.enhancedCount,
+  });
+
+  final String productId;
+  final String clientId;
+  final List<ListingImage> images;
+
+  /// What the listing shows. The enhanced image when there is one, and the
+  /// artisan's own photo when the model was unreachable, so a listing is never
+  /// imageless because an API was down.
+  final String heroUrl;
+
+  /// "generative", "cutout" or "none". Worth surfacing: an artisan should know
+  /// whether she is looking at the good pass or the offline one.
+  final String method;
+  final int enhancedCount;
+
+  bool get wasEnhanced => enhancedCount > 0;
+
+  ListingImage? get hero {
+    for (final image in images) {
+      if (image.isHero) return image;
+    }
+    return images.isEmpty ? null : images.first;
+  }
+
+  factory ListingImages.fromJson(Map<String, dynamic> json) => ListingImages(
+        productId: json['product_id'] as String? ?? '',
+        clientId: json['client_id'] as String? ?? '',
+        images: (json['images'] as List?)
+                ?.map((e) => ListingImage.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            const [],
+        heroUrl: json['hero_url'] as String? ?? '',
+        method: json['method'] as String? ?? 'none',
+        enhancedCount: (json['enhanced_count'] as num?)?.toInt() ?? 0,
+      );
+}

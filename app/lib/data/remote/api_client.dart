@@ -37,6 +37,12 @@ class ApiClient {
   static const _shortTimeout = Duration(seconds: 12);
   static const _uploadTimeout = Duration(seconds: 90);
 
+  /// Image generation alone is tens of seconds, and this call also uploads
+  /// every photo to storage first. The budget has to exceed what the server is
+  /// willing to spend or the phone gives up on work that then completes and is
+  /// thrown away, having already been paid for.
+  static const _enhanceTimeout = Duration(seconds: 180);
+
   set token(String? value) => _token = value;
   bool get isAuthenticated => _token != null;
 
@@ -180,6 +186,40 @@ class ApiClient {
           _fail(await http.Response.fromStream(streamed));
         }
         return streamed.stream.toBytes();
+      });
+
+  /// Every photo of one product, uploaded together, one of them enhanced.
+  ///
+  /// `clientId` is the same id the outbox will publish under. That is what
+  /// attaches these images to the listing without either call knowing about the
+  /// other: whichever arrives first creates the row, and the second fills in
+  /// its half.
+  ///
+  /// `enhanceIndex` picks which photo the model runs on. The server enforces
+  /// both the photo cap and the one-generation rule, so this is a request and
+  /// not a promise.
+  Future<ListingImages> enhanceListingImages({
+    required List<String> imagePaths,
+    required String clientId,
+    String label = '',
+    int enhanceIndex = 0,
+  }) =>
+      _guard(() async {
+        final request = http.MultipartRequest('POST', _uri('/images/listing'))
+          ..headers.addAll({if (_token != null) 'authorization': 'Bearer $_token'})
+          ..fields['client_id'] = clientId
+          ..fields['label'] = label
+          ..fields['enhance_index'] = '$enhanceIndex';
+
+        for (final path in imagePaths) {
+          request.files.add(await http.MultipartFile.fromPath('images', path));
+        }
+
+        final streamed = await request.send().timeout(_enhanceTimeout);
+        final response = await http.Response.fromStream(streamed);
+        if (response.statusCode >= 400) _fail(response);
+
+        return ListingImages.fromJson(jsonDecode(response.body));
       });
 
   // ---------------------------------------------------------------- products
