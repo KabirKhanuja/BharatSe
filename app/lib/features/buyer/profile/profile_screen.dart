@@ -7,7 +7,10 @@ import '../../../theme/app_text.dart';
 import '../../../widgets/language_sheet.dart';
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key, this.onSwitchToSeller});
+  const ProfileScreen({super.key, this.controller, this.onSwitchToSeller});
+
+  /// Owned by the shell so tapping the active tab can scroll it to the top.
+  final ScrollController? controller;
   final VoidCallback? onSwitchToSeller;
 
   @override
@@ -16,6 +19,7 @@ class ProfileScreen extends StatelessWidget {
     final s = ProfileStrings.of(app.lang);
 
     return ListView(
+      controller: controller,
       padding: const EdgeInsets.fromLTRB(
         Gap.page,
         Gap.sm,

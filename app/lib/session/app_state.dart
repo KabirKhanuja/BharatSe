@@ -6,6 +6,7 @@ import '../l10n/lang.dart';
 import '../l10n/strings.dart';
 import '../services/auth_service.dart';
 import '../services/capture_service.dart';
+import '../data/catalog.dart';
 import '../data/local/outbox_repository.dart';
 import '../data/local/product_store.dart';
 import '../services/sync_service.dart';
@@ -130,6 +131,54 @@ class AppState extends ChangeNotifier {
   }
   late SyncService sync;
   ProductStore products = MemoryProductStore();
+
+  /// The buyer catalogue, loaded from the server.
+  ///
+  /// States, their crafts and the heritage text stay in [Catalog] because they
+  /// are editorial content about Indian craft rather than data, and there is no
+  /// table for them. Only the products are live.
+  List<Product> _products = const [];
+  bool _catalogLoading = false;
+  bool _catalogLoaded = false;
+  String? _catalogError;
+
+  List<Product> get catalogProducts => _products;
+  bool get catalogLoading => _catalogLoading;
+  bool get catalogLoaded => _catalogLoaded;
+  String? get catalogError => _catalogError;
+
+  Product? productById(String id) {
+    for (final product in _products) {
+      if (product.id == id) return product;
+    }
+    return null;
+  }
+
+  List<Product> productsForState(String stateId) => [
+        for (final product in _products)
+          if (product.stateId == stateId) product,
+      ];
+
+  Future<void> loadCatalog({bool force = false}) async {
+    if (_catalogLoading || (_catalogLoaded && !force)) return;
+
+    _catalogLoading = true;
+    _catalogError = null;
+    notifyListeners();
+
+    try {
+      final rows = await api.catalogProducts(limit: 100);
+      _products = [for (final row in rows) Product.fromApi(row)];
+      _catalogLoaded = true;
+    } on ApiException catch (error) {
+      // Keep whatever we already had. A buyer scrolling on a bad connection
+      // should not have the shelf emptied under them.
+      _catalogError = error.isOffline ? null : error.message;
+    } finally {
+      _catalogLoading = false;
+      notifyListeners();
+    }
+  }
 
   /// Where this artisan stands in identity review.
   ///

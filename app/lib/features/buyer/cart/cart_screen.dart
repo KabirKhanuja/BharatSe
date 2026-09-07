@@ -5,7 +5,7 @@ import '../../../theme/app_colors.dart';
 import '../../../theme/app_dims.dart';
 import '../../../theme/app_text.dart';
 import '../../../util/format.dart';
-import '../../../widgets/craft_image.dart';
+import '../../../widgets/product_thumb.dart';
 
 class CartScreen extends StatelessWidget {
   const CartScreen({super.key});
@@ -17,7 +17,8 @@ class CartScreen extends StatelessWidget {
     final entries = app.cart.entries.toList();
 
     final items = [
-      for (final e in entries) (Catalog.productById(e.key), e.value),
+      for (final e in entries)
+        if (app.productById(e.key) case final product?) (product, e.value),
     ];
     final subtotal =
         items.fold<int>(0, (sum, it) => sum + it.$1.price * it.$2);
@@ -126,10 +127,11 @@ class _CartTile extends StatelessWidget {
               SizedBox(
                 width: 72,
                 height: 72,
-                child: CraftImage(
-                    seed: product.seed,
-                    icon: product.icon,
-                    borderRadius: Radii.sm),
+                child: ProductThumb(
+                  source: product.imageUrl,
+                  seed: product.seed,
+                  icon: product.icon,
+                  borderRadius: Radii.sm),
               ),
               const SizedBox(width: Gap.md),
               Expanded(

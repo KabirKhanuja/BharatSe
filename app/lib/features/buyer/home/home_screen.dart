@@ -10,7 +10,10 @@ import '../../../widgets/product_card.dart';
 import '../../../widgets/section_header.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key, this.onExplore, this.onProduct, this.onState});
+  const HomeScreen({super.key, this.controller, this.onExplore, this.onProduct, this.onState});
+
+  /// Owned by the shell so tapping the active tab can scroll it to the top.
+  final ScrollController? controller;
 
   final VoidCallback? onExplore;
   final void Function(Product)? onProduct;
@@ -19,6 +22,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      controller: controller,
       padding: const EdgeInsets.only(bottom: Gap.section),
       children: [
         _Hero(onExplore: onExplore),
@@ -292,7 +296,11 @@ class _ProductStrip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final products = Catalog.products.skip(skip).take(6).toList();
+    final products = context.app.catalogProducts.skip(skip).take(6).toList();
+
+    // Nothing to show yet is a real state, not an error: the catalogue is
+    // still loading, or this buyer has no signal.
+    if (products.isEmpty) return const SizedBox.shrink();
 
     return SizedBox(
       height: 296,

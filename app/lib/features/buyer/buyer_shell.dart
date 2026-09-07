@@ -30,10 +30,49 @@ class _BuyerShellState extends State<BuyerShell> {
   /// India map at launch for a tab the user may never visit.
   late final Set<int> _built = {_tab};
 
-  void _select(int i) => setState(() {
-        _tab = i;
-        _built.add(i);
-      });
+  /// One controller per tab, so tapping the tab you are already on can scroll
+  /// that tab back to the top. Standard on every app people already use, and
+  /// its absence is felt rather than noticed.
+  final _controllers = List.generate(3, (_) => ScrollController());
+
+  @override
+  void initState() {
+    super.initState();
+    // Fetched once when the buyer arrives rather than per screen, so Home,
+    // Explore and the state pages all read the same list.
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => context.app.loadCatalog(),
+    );
+  }
+
+  void _select(int i) {
+    if (i == _tab) {
+      _scrollToTop(i);
+      return;
+    }
+    setState(() {
+      _tab = i;
+      _built.add(i);
+    });
+  }
+
+  void _scrollToTop(int index) {
+    final controller = _controllers[index];
+    if (!controller.hasClients || controller.offset <= 0) return;
+    controller.animateTo(
+      0,
+      duration: const Duration(milliseconds: 320),
+      curve: Curves.easeOutCubic,
+    );
+  }
+
+  @override
+  void dispose() {
+    for (final controller in _controllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
 
   void _openProduct(Product p) {
     Navigator.of(context).push(
@@ -76,16 +115,25 @@ class _BuyerShellState extends State<BuyerShell> {
                   _lazy(
                     0,
                     () => HomeScreen(
+                      controller: _controllers[0],
                       onExplore: () => _select(1),
                       onProduct: _openProduct,
                       onState: _openState,
                     ),
                   ),
-                  _lazy(1, () => ExploreScreen(onState: _openState)),
+                  _lazy(
+                    1,
+                    () => ExploreScreen(
+                      controller: _controllers[1],
+                      onState: _openState,
+                    ),
+                  ),
                   _lazy(
                     2,
                     () => ProfileScreen(
-                        onSwitchToSeller: widget.onSwitchToSeller),
+                      controller: _controllers[2],
+                      onSwitchToSeller: widget.onSwitchToSeller,
+                    ),
                   ),
                 ],
               ),

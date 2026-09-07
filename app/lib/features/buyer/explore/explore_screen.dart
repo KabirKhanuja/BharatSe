@@ -10,7 +10,10 @@ import '../../../widgets/ornament.dart';
 import '../../../widgets/top_bar.dart';
 
 class ExploreScreen extends StatefulWidget {
-  const ExploreScreen({super.key, this.onState});
+  const ExploreScreen({super.key, this.controller, this.onState});
+
+  /// Owned by the shell so tapping the active tab can scroll it to the top.
+  final ScrollController? controller;
   final void Function(CraftState)? onState;
 
   @override
@@ -25,7 +28,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
     if (query.isEmpty) return const [];
 
     return Catalog.states.where((state) {
-      final products = Catalog.products.where(
+      final products = context.app.catalogProducts.where(
         (product) => product.stateId == state.id,
       );
       final stateText = [
@@ -58,6 +61,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
     final hi = context.lang.name == 'hi';
 
     return ListView(
+      controller: widget.controller,
       padding: const EdgeInsets.fromLTRB(0, Gap.sm, 0, Gap.section),
       children: [
         Center(
@@ -159,7 +163,7 @@ class _SearchResultCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final lang = context.lang;
     final s = context.s;
-    final products = Catalog.products
+    final products = context.app.catalogProducts
         .where((product) => product.stateId == state.id)
         .toList();
 
@@ -254,13 +258,14 @@ class _MapBlock extends StatelessWidget {
       child: Column(
         children: [
           IndiaMap(
+            // Every state opens. The tint still marks where we actually have
+            // goods, so the map keeps guiding without creating dead ends.
             activeIds: craftStateIds,
-            onState: (id) {
-              final match = Catalog.states
-                  .where((st) => st.id == id)
-                  .firstOrNull;
-              if (match != null) onState?.call(match);
-            },
+            onState: (id, name) => onState?.call(
+              Catalog.hasState(id)
+                  ? Catalog.stateById(id)
+                  : Catalog.placeholderFor(id, name),
+            ),
           ),
           const SizedBox(height: Gap.sm),
           Row(

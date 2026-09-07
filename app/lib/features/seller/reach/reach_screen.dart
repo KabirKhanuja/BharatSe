@@ -8,6 +8,7 @@ import '../../../theme/app_colors.dart';
 import '../../../theme/app_dims.dart';
 import '../../../theme/app_text.dart';
 import '../../../util/format.dart';
+import '../../../widgets/product_thumb.dart';
 
 /// Where a listing goes once she publishes it.
 ///
@@ -21,10 +22,19 @@ import '../../../util/format.dart';
 /// integration is Catalog plus Lead Ads rather than a direct post. Every badge
 /// on this screen says which is which rather than implying they all work.
 class ReachScreen extends StatefulWidget {
-  const ReachScreen({super.key, this.productTitle = '', this.price});
+  const ReachScreen({
+    super.key,
+    this.productTitle = '',
+    this.price,
+    this.imagePath,
+  });
 
   final String productTitle;
   final int? price;
+
+  /// The listing photo, so the ad preview shows the real piece rather than a
+  /// stand-in. A preview of someone else's product teaches nothing.
+  final String? imagePath;
 
   @override
   State<ReachScreen> createState() => _ReachScreenState();
@@ -132,6 +142,24 @@ class _ReachScreenState extends State<ReachScreen> {
           _reachSummary(s),
           const SizedBox(height: Gap.xl),
 
+          _sectionLabel(s.adPreview, s.adPreviewSub),
+          const SizedBox(height: Gap.md),
+          _adPreview(s),
+          const SizedBox(height: Gap.xl),
+
+          _sectionLabel(s.audienceTitle, s.audienceSub),
+          const SizedBox(height: Gap.md),
+          _audience(s),
+          const SizedBox(height: Gap.xl),
+
+          _sectionLabel(s.expectedResults, ''),
+          const SizedBox(height: Gap.md),
+          _expected(s),
+          const SizedBox(height: Gap.xl),
+
+          _budget(s),
+          const SizedBox(height: Gap.xl),
+
           Text(s.reachChannels, style: AppText.label),
           const SizedBox(height: Gap.md),
 
@@ -139,6 +167,22 @@ class _ReachScreenState extends State<ReachScreen> {
             _channelTile(i, s),
             const SizedBox(height: Gap.sm),
           ],
+
+          const SizedBox(height: Gap.sm),
+          // Says out loud why Marketplace is not a direct post. Better to state
+          // the constraint than to be asked about it.
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Icon(Icons.info_outline_rounded,
+                  size: 13, color: AppColors.inkFaint),
+              const SizedBox(width: 6),
+              Expanded(
+                child: Text(s.marketplaceNote,
+                    style: AppText.body(11, color: AppColors.inkFaint, height: 1.4)),
+              ),
+            ],
+          ),
         ],
       ),
       bottomNavigationBar: Container(
@@ -166,6 +210,247 @@ class _ReachScreenState extends State<ReachScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _sectionLabel(String title, String subtitle) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: AppText.label),
+        if (subtitle.isNotEmpty) ...[
+          const SizedBox(height: 2),
+          Text(subtitle, style: AppText.caption),
+        ],
+      ],
+    );
+  }
+
+  /// A mock of the listing as it appears in a Facebook feed.
+  ///
+  /// Worth building rather than describing: an artisan who has never run an ad
+  /// has no picture in her head of what "we will publish this for you" means,
+  /// and neither does a judge.
+  Widget _adPreview(AppStrings s) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.white,
+        borderRadius: Radii.md,
+        border: Border.all(color: AppColors.line),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // The chrome a Facebook post carries, so it reads as a feed item.
+          Padding(
+            padding: const EdgeInsets.all(Gap.md),
+            child: Row(
+              children: [
+                Container(
+                  width: 34,
+                  height: 34,
+                  decoration: const BoxDecoration(
+                    color: Color(0xFF1877F2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.storefront_rounded,
+                      size: 18, color: Colors.white),
+                ),
+                const SizedBox(width: Gap.sm),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('BharatSe',
+                          style: AppText.body(13.5, weight: FontWeight.w700)),
+                      Row(
+                        children: [
+                          Text(s.sponsored,
+                              style: AppText.body(11, color: AppColors.inkFaint)),
+                          const SizedBox(width: 4),
+                          const Icon(Icons.public,
+                              size: 11, color: AppColors.inkFaint),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const Icon(Icons.more_horiz, size: 18, color: AppColors.inkFaint),
+              ],
+            ),
+          ),
+
+          AspectRatio(
+            aspectRatio: 1.25,
+            child: ProductThumb(
+              source: widget.imagePath,
+              borderRadius: BorderRadius.zero,
+              seed: 1,
+            ),
+          ),
+
+          Container(
+            color: const Color(0xFFF0F2F5),
+            padding: const EdgeInsets.all(Gap.md),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.price != null ? inr(widget.price!) : '',
+                        style: AppText.body(16, weight: FontWeight.w700),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        widget.productTitle.isEmpty
+                            ? s.channelMarketplace
+                            : widget.productTitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppText.body(13),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(s.listedNow,
+                          style: AppText.body(11, color: AppColors.inkFaint)),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: Gap.md, vertical: 7),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1877F2),
+                    borderRadius: Radii.sm,
+                  ),
+                  child: Text('Message',
+                      style: AppText.body(12.5,
+                          weight: FontWeight.w600, color: Colors.white)),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// Targeting, expressed as things an artisan would recognise rather than as
+  /// ad platform jargon.
+  Widget _audience(AppStrings s) {
+    final chips = [
+      (Icons.pan_tool_alt_outlined, s.audHandmade),
+      (Icons.chair_outlined, s.audHomeDecor),
+      (Icons.location_on_outlined, s.audNearby),
+      (Icons.card_giftcard_outlined, s.audGifting),
+      (Icons.celebration_outlined, s.audFestive),
+    ];
+
+    return Wrap(
+      spacing: Gap.sm,
+      runSpacing: Gap.sm,
+      children: [
+        for (final (icon, label) in chips)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: Gap.md, vertical: 7),
+            decoration: BoxDecoration(
+              color: AppColors.white,
+              borderRadius: Radii.pill,
+              border: Border.all(color: AppColors.line),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(icon, size: 14, color: AppColors.terracotta),
+                const SizedBox(width: 6),
+                Text(label, style: AppText.body(12.5)),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+
+  /// Scaled from the selected channels, so toggling one visibly changes the
+  /// forecast instead of showing a constant that nobody believes.
+  Widget _expected(AppStrings s) {
+    final views = (_totalReach * 0.045).round();
+    final taps = (views * 0.06).round();
+    final enquiries = (taps * 0.09).round();
+
+    final stats = [
+      (s.expViews, views, Icons.visibility_outlined),
+      (s.expClicks, taps, Icons.touch_app_outlined),
+      (s.expEnquiries, enquiries, Icons.chat_bubble_outline_rounded),
+    ];
+
+    return Row(
+      children: [
+        for (final (label, value, icon) in stats) ...[
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: Gap.lg),
+              decoration: BoxDecoration(
+                color: AppColors.white,
+                borderRadius: Radii.md,
+                border: Border.all(color: AppColors.line),
+              ),
+              child: Column(
+                children: [
+                  Icon(icon, size: 17, color: AppColors.terracotta),
+                  const SizedBox(height: 6),
+                  Text(
+                    value >= 1000
+                        ? '${(value / 1000).toStringAsFixed(1)}k'
+                        : '$value',
+                    style: AppText.body(18, weight: FontWeight.w700),
+                  ),
+                  Text(label, style: AppText.caption),
+                ],
+              ),
+            ),
+          ),
+          if (label != s.expEnquiries) const SizedBox(width: Gap.sm),
+        ],
+      ],
+    );
+  }
+
+  /// The answer to the question every artisan asks next.
+  Widget _budget(AppStrings s) {
+    return Container(
+      padding: const EdgeInsets.all(Gap.lg),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF4F0E6),
+        borderRadius: Radii.md,
+        border: Border.all(color: AppColors.gold.withValues(alpha: 0.45)),
+      ),
+      child: Row(
+        children: [
+          const Icon(Icons.savings_outlined, size: 22, color: AppColors.gold),
+          const SizedBox(width: Gap.md),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(s.budgetTitle,
+                    style: AppText.body(14, weight: FontWeight.w600)),
+                const SizedBox(height: 2),
+                Text(s.budgetSub, style: AppText.caption),
+              ],
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Text('₹40', style: AppText.body(18, weight: FontWeight.w700)),
+              Text(s.perDay, style: AppText.caption),
+            ],
+          ),
+        ],
       ),
     );
   }

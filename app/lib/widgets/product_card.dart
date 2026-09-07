@@ -5,7 +5,7 @@ import '../theme/app_colors.dart';
 import '../theme/app_dims.dart';
 import '../theme/app_text.dart';
 import '../util/format.dart';
-import 'craft_image.dart';
+import 'product_thumb.dart';
 
 /// Product tile used on Home and in every grid.
 class ProductCard extends StatelessWidget {
@@ -40,10 +40,11 @@ class ProductCard extends StatelessWidget {
               children: [
                 AspectRatio(
                   aspectRatio: 1.05,
-                  child: CraftImage(
+                  child: ProductThumb(
+                    source: product.imageUrl,
+                    borderRadius: BorderRadius.zero,
                     seed: product.seed,
                     icon: product.icon,
-                    borderRadius: BorderRadius.zero,
                   ),
                 ),
                 Positioned(

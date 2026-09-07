@@ -5,7 +5,7 @@ import '../../../theme/app_colors.dart';
 import '../../../theme/app_dims.dart';
 import '../../../theme/app_text.dart';
 import '../../../util/format.dart';
-import '../../../widgets/craft_image.dart';
+import '../../../widgets/product_thumb.dart';
 
 class ProductScreen extends StatelessWidget {
   const ProductScreen({super.key, required this.product});
@@ -56,10 +56,11 @@ class ProductScreen extends StatelessWidget {
               const SizedBox(width: Gap.sm),
             ],
             flexibleSpace: FlexibleSpaceBar(
-              background: CraftImage(
+              background: ProductThumb(
+                source: product.imageUrl,
+                borderRadius: BorderRadius.zero,
                 seed: product.seed,
                 icon: product.icon,
-                borderRadius: BorderRadius.zero,
               ),
             ),
           ),

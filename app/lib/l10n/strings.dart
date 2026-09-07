@@ -193,6 +193,25 @@ class AppStrings {
     required this.liveChannel,
     required this.leadsInbox,
     required this.noLeadsYet,
+    required this.adPreview,
+    required this.adPreviewSub,
+    required this.sponsored,
+    required this.listedNow,
+    required this.audienceTitle,
+    required this.audienceSub,
+    required this.audHandmade,
+    required this.audHomeDecor,
+    required this.audNearby,
+    required this.audGifting,
+    required this.audFestive,
+    required this.expectedResults,
+    required this.expViews,
+    required this.expClicks,
+    required this.expEnquiries,
+    required this.budgetTitle,
+    required this.budgetSub,
+    required this.perDay,
+    required this.marketplaceNote,
   });
 
   final String tagline;
@@ -408,6 +427,25 @@ class AppStrings {
   final String liveChannel;
   final String leadsInbox;
   final String noLeadsYet;
+  final String adPreview;
+  final String adPreviewSub;
+  final String sponsored;
+  final String listedNow;
+  final String audienceTitle;
+  final String audienceSub;
+  final String audHandmade;
+  final String audHomeDecor;
+  final String audNearby;
+  final String audGifting;
+  final String audFestive;
+  final String expectedResults;
+  final String expViews;
+  final String expClicks;
+  final String expEnquiries;
+  final String budgetTitle;
+  final String budgetSub;
+  final String perDay;
+  final String marketplaceNote;
 
   static const AppStrings en = AppStrings(
     tagline: 'From the people of Bharat, for Bharat',
@@ -602,6 +640,25 @@ class AppStrings {
     liveChannel: 'Live',
     leadsInbox: 'Enquiries',
     noLeadsYet: 'No enquiries yet',
+    adPreview: 'How your listing will look',
+    adPreviewSub: 'The same photo and price, shown where buyers already are',
+    sponsored: 'Sponsored',
+    listedNow: 'Just listed',
+    audienceTitle: 'Who will see it',
+    audienceSub: 'Chosen from what you made and where you are',
+    audHandmade: 'Buys handmade',
+    audHomeDecor: 'Home decor',
+    audNearby: 'Within 50 km',
+    audGifting: 'Gift shoppers',
+    audFestive: 'Festive season',
+    expectedResults: 'What to expect in a week',
+    expViews: 'Views',
+    expClicks: 'Taps',
+    expEnquiries: 'Enquiries',
+    budgetTitle: 'Ad spend',
+    budgetSub: 'Paid by the scheme, not by you',
+    perDay: 'per day',
+    marketplaceNote: 'Marketplace has no public listing API, so this goes out through the Meta catalogue and Lead Ads.',
   );
 
   static const AppStrings hi = AppStrings(
@@ -797,6 +854,25 @@ class AppStrings {
     liveChannel: 'चालू',
     leadsInbox: 'पूछताछ',
     noLeadsYet: 'अभी कोई पूछताछ नहीं',
+    adPreview: 'आपकी लिस्टिंग ऐसी दिखेगी',
+    adPreviewSub: 'वही फ़ोटो और दाम, वहाँ जहाँ खरीदार पहले से हैं',
+    sponsored: 'प्रायोजित',
+    listedNow: 'अभी डाला गया',
+    audienceTitle: 'यह किसे दिखेगा',
+    audienceSub: 'आपने क्या बनाया और आप कहाँ हैं, उसी से चुना गया',
+    audHandmade: 'हस्तशिल्प खरीदते हैं',
+    audHomeDecor: 'घर की सजावट',
+    audNearby: '50 किमी के अंदर',
+    audGifting: 'तोहफ़े खरीदने वाले',
+    audFestive: 'त्योहारों का मौसम',
+    expectedResults: 'एक हफ़्ते में क्या उम्मीद करें',
+    expViews: 'देखा गया',
+    expClicks: 'टैप',
+    expEnquiries: 'पूछताछ',
+    budgetTitle: 'विज्ञापन खर्च',
+    budgetSub: 'योजना भरती है, आप नहीं',
+    perDay: 'रोज़',
+    marketplaceNote: 'Marketplace की कोई पब्लिक लिस्टिंग API नहीं है, इसलिए यह Meta कैटलॉग और Lead Ads से जाता है।',
   );
 
   /// English is the reviewed fallback while additional UI translations are
@@ -994,6 +1070,25 @@ class AppStrings {
     liveChannel: 'Live',
     leadsInbox: 'Enquiries',
     noLeadsYet: 'No enquiries yet',
+    adPreview: 'How your listing will look',
+    adPreviewSub: 'The same photo and price, shown where buyers already are',
+    sponsored: 'Sponsored',
+    listedNow: 'Just listed',
+    audienceTitle: 'Who will see it',
+    audienceSub: 'Chosen from what you made and where you are',
+    audHandmade: 'Buys handmade',
+    audHomeDecor: 'Home decor',
+    audNearby: 'Within 50 km',
+    audGifting: 'Gift shoppers',
+    audFestive: 'Festive season',
+    expectedResults: 'What to expect in a week',
+    expViews: 'Views',
+    expClicks: 'Taps',
+    expEnquiries: 'Enquiries',
+    budgetTitle: 'Ad spend',
+    budgetSub: 'Paid by the scheme, not by you',
+    perDay: 'per day',
+    marketplaceNote: 'Marketplace has no public listing API, so this goes out through the Meta catalogue and Lead Ads.',
   );
 
   static const AppStrings bn = AppStrings(
@@ -1184,6 +1279,25 @@ class AppStrings {
     liveChannel: 'Live',
     leadsInbox: 'Enquiries',
     noLeadsYet: 'No enquiries yet',
+    adPreview: 'How your listing will look',
+    adPreviewSub: 'The same photo and price, shown where buyers already are',
+    sponsored: 'Sponsored',
+    listedNow: 'Just listed',
+    audienceTitle: 'Who will see it',
+    audienceSub: 'Chosen from what you made and where you are',
+    audHandmade: 'Buys handmade',
+    audHomeDecor: 'Home decor',
+    audNearby: 'Within 50 km',
+    audGifting: 'Gift shoppers',
+    audFestive: 'Festive season',
+    expectedResults: 'What to expect in a week',
+    expViews: 'Views',
+    expClicks: 'Taps',
+    expEnquiries: 'Enquiries',
+    budgetTitle: 'Ad spend',
+    budgetSub: 'Paid by the scheme, not by you',
+    perDay: 'per day',
+    marketplaceNote: 'Marketplace has no public listing API, so this goes out through the Meta catalogue and Lead Ads.',
   );
 
   static const AppStrings ta = AppStrings(
@@ -1374,6 +1488,25 @@ class AppStrings {
     liveChannel: 'Live',
     leadsInbox: 'Enquiries',
     noLeadsYet: 'No enquiries yet',
+    adPreview: 'How your listing will look',
+    adPreviewSub: 'The same photo and price, shown where buyers already are',
+    sponsored: 'Sponsored',
+    listedNow: 'Just listed',
+    audienceTitle: 'Who will see it',
+    audienceSub: 'Chosen from what you made and where you are',
+    audHandmade: 'Buys handmade',
+    audHomeDecor: 'Home decor',
+    audNearby: 'Within 50 km',
+    audGifting: 'Gift shoppers',
+    audFestive: 'Festive season',
+    expectedResults: 'What to expect in a week',
+    expViews: 'Views',
+    expClicks: 'Taps',
+    expEnquiries: 'Enquiries',
+    budgetTitle: 'Ad spend',
+    budgetSub: 'Paid by the scheme, not by you',
+    perDay: 'per day',
+    marketplaceNote: 'Marketplace has no public listing API, so this goes out through the Meta catalogue and Lead Ads.',
   );
 
   static const AppStrings te = AppStrings(
@@ -1564,6 +1697,25 @@ class AppStrings {
     liveChannel: 'Live',
     leadsInbox: 'Enquiries',
     noLeadsYet: 'No enquiries yet',
+    adPreview: 'How your listing will look',
+    adPreviewSub: 'The same photo and price, shown where buyers already are',
+    sponsored: 'Sponsored',
+    listedNow: 'Just listed',
+    audienceTitle: 'Who will see it',
+    audienceSub: 'Chosen from what you made and where you are',
+    audHandmade: 'Buys handmade',
+    audHomeDecor: 'Home decor',
+    audNearby: 'Within 50 km',
+    audGifting: 'Gift shoppers',
+    audFestive: 'Festive season',
+    expectedResults: 'What to expect in a week',
+    expViews: 'Views',
+    expClicks: 'Taps',
+    expEnquiries: 'Enquiries',
+    budgetTitle: 'Ad spend',
+    budgetSub: 'Paid by the scheme, not by you',
+    perDay: 'per day',
+    marketplaceNote: 'Marketplace has no public listing API, so this goes out through the Meta catalogue and Lead Ads.',
   );
 
   static const AppStrings gu = AppStrings(
@@ -1754,6 +1906,25 @@ class AppStrings {
     liveChannel: 'Live',
     leadsInbox: 'Enquiries',
     noLeadsYet: 'No enquiries yet',
+    adPreview: 'How your listing will look',
+    adPreviewSub: 'The same photo and price, shown where buyers already are',
+    sponsored: 'Sponsored',
+    listedNow: 'Just listed',
+    audienceTitle: 'Who will see it',
+    audienceSub: 'Chosen from what you made and where you are',
+    audHandmade: 'Buys handmade',
+    audHomeDecor: 'Home decor',
+    audNearby: 'Within 50 km',
+    audGifting: 'Gift shoppers',
+    audFestive: 'Festive season',
+    expectedResults: 'What to expect in a week',
+    expViews: 'Views',
+    expClicks: 'Taps',
+    expEnquiries: 'Enquiries',
+    budgetTitle: 'Ad spend',
+    budgetSub: 'Paid by the scheme, not by you',
+    perDay: 'per day',
+    marketplaceNote: 'Marketplace has no public listing API, so this goes out through the Meta catalogue and Lead Ads.',
   );
 
   static const AppStrings kn = AppStrings(
@@ -1944,6 +2115,25 @@ class AppStrings {
     liveChannel: 'Live',
     leadsInbox: 'Enquiries',
     noLeadsYet: 'No enquiries yet',
+    adPreview: 'How your listing will look',
+    adPreviewSub: 'The same photo and price, shown where buyers already are',
+    sponsored: 'Sponsored',
+    listedNow: 'Just listed',
+    audienceTitle: 'Who will see it',
+    audienceSub: 'Chosen from what you made and where you are',
+    audHandmade: 'Buys handmade',
+    audHomeDecor: 'Home decor',
+    audNearby: 'Within 50 km',
+    audGifting: 'Gift shoppers',
+    audFestive: 'Festive season',
+    expectedResults: 'What to expect in a week',
+    expViews: 'Views',
+    expClicks: 'Taps',
+    expEnquiries: 'Enquiries',
+    budgetTitle: 'Ad spend',
+    budgetSub: 'Paid by the scheme, not by you',
+    perDay: 'per day',
+    marketplaceNote: 'Marketplace has no public listing API, so this goes out through the Meta catalogue and Lead Ads.',
   );
 
   static const AppStrings od = AppStrings(
@@ -2134,6 +2324,25 @@ class AppStrings {
     liveChannel: 'Live',
     leadsInbox: 'Enquiries',
     noLeadsYet: 'No enquiries yet',
+    adPreview: 'How your listing will look',
+    adPreviewSub: 'The same photo and price, shown where buyers already are',
+    sponsored: 'Sponsored',
+    listedNow: 'Just listed',
+    audienceTitle: 'Who will see it',
+    audienceSub: 'Chosen from what you made and where you are',
+    audHandmade: 'Buys handmade',
+    audHomeDecor: 'Home decor',
+    audNearby: 'Within 50 km',
+    audGifting: 'Gift shoppers',
+    audFestive: 'Festive season',
+    expectedResults: 'What to expect in a week',
+    expViews: 'Views',
+    expClicks: 'Taps',
+    expEnquiries: 'Enquiries',
+    budgetTitle: 'Ad spend',
+    budgetSub: 'Paid by the scheme, not by you',
+    perDay: 'per day',
+    marketplaceNote: 'Marketplace has no public listing API, so this goes out through the Meta catalogue and Lead Ads.',
   );
 
   static const AppStrings pa = AppStrings(
@@ -2324,6 +2533,25 @@ class AppStrings {
     liveChannel: 'Live',
     leadsInbox: 'Enquiries',
     noLeadsYet: 'No enquiries yet',
+    adPreview: 'How your listing will look',
+    adPreviewSub: 'The same photo and price, shown where buyers already are',
+    sponsored: 'Sponsored',
+    listedNow: 'Just listed',
+    audienceTitle: 'Who will see it',
+    audienceSub: 'Chosen from what you made and where you are',
+    audHandmade: 'Buys handmade',
+    audHomeDecor: 'Home decor',
+    audNearby: 'Within 50 km',
+    audGifting: 'Gift shoppers',
+    audFestive: 'Festive season',
+    expectedResults: 'What to expect in a week',
+    expViews: 'Views',
+    expClicks: 'Taps',
+    expEnquiries: 'Enquiries',
+    budgetTitle: 'Ad spend',
+    budgetSub: 'Paid by the scheme, not by you',
+    perDay: 'per day',
+    marketplaceNote: 'Marketplace has no public listing API, so this goes out through the Meta catalogue and Lead Ads.',
   );
 
   static AppStrings of(Lang lang) => switch (lang) {

@@ -22,7 +22,7 @@ class StateScreen extends StatelessWidget {
     final s = context.s;
     final lang = context.lang;
     final products =
-        Catalog.products.where((p) => p.stateId == state.id).toList();
+        context.app.productsForState(state.id);
 
     return Scaffold(
       backgroundColor: AppColors.cream,
@@ -93,8 +93,9 @@ class StateScreen extends StatelessWidget {
               const SizedBox(height: Gap.lg),
 
               // The heritage note. This is the "history about the product"
-              // half of the brief.
-              Card(
+              // half of the brief. Hidden when there are no products, because
+              // the empty block below already carries this text.
+              if (products.isNotEmpty) Card(
                 elevation: 0,
                 margin: EdgeInsets.zero,
                 color: AppColors.white,
@@ -135,9 +136,30 @@ class StateScreen extends StatelessWidget {
           if (products.isEmpty)
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.all(Gap.section),
-                child: Center(
-                  child: Text(s.emptyWishlist, style: AppText.caption),
+                padding: const EdgeInsets.fromLTRB(
+                    Gap.page, 0, Gap.page, Gap.section),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(Gap.xl),
+                  decoration: BoxDecoration(
+                    color: AppColors.creamAlt,
+                    borderRadius: Radii.md,
+                    border: Border.all(color: AppColors.line),
+                  ),
+                  child: Column(
+                    children: [
+                      const Icon(Icons.explore_off_outlined,
+                          size: 34, color: AppColors.inkFaint),
+                      const SizedBox(height: Gap.md),
+                      Text(s.noProductsYet,
+                          style: AppText.body(15, weight: FontWeight.w600)),
+                      const SizedBox(height: Gap.sm),
+                      Text(state.heritage(lang),
+                          textAlign: TextAlign.center,
+                          style: AppText.body(12.5,
+                              color: AppColors.inkMuted, height: 1.5)),
+                    ],
+                  ),
                 ),
               ),
             )

@@ -83,7 +83,9 @@ class IndiaMap extends StatefulWidget {
     this.activeIds = const {},
   });
 
-  final void Function(String stateId) onState;
+  /// Called with the state's id and its name, so a caller can open a state we
+  /// carry no products for without inventing a label.
+  final void Function(String stateId, String stateName) onState;
   final String? selectedId;
   final Set<String> activeIds;
 
@@ -141,13 +143,9 @@ class _IndiaMapState extends State<IndiaMap> {
               final p = details.localPosition / scale;
               // Reverse order so smaller states drawn last win the hit.
               for (final st in data.states.reversed) {
-                if (widget.activeIds.isNotEmpty &&
-                    !widget.activeIds.contains(st.id)) {
-                  continue;
-                }
                 if (st.path.contains(p)) {
                   setState(() => _pressed = st.id);
-                  widget.onState(st.id);
+                  widget.onState(st.id, st.name);
                   return;
                 }
               }

@@ -307,6 +307,22 @@ class ApiClient {
         return SyncResult.fromJson(jsonDecode(response.body));
       });
 
+  // ---------------------------------------------------------------- catalogue
+  /// The public buyer catalogue. No auth: a shopper browsing has no account.
+  Future<List<Map<String, dynamic>>> catalogProducts({
+    int limit = 60,
+    int offset = 0,
+  }) =>
+      _guard(() async {
+        final response = await _client
+            .get(_uri('/catalog/products', {'limit': limit, 'offset': offset}))
+            .timeout(_shortTimeout);
+        if (response.statusCode >= 400) _fail(response);
+
+        final items = (jsonDecode(response.body)['items'] as List?) ?? const [];
+        return items.cast<Map<String, dynamic>>();
+      });
+
   // ------------------------------------------------------------ verification
   Future<VerificationStatus> verificationStatus() => _guard(() async {
         final response = await _client

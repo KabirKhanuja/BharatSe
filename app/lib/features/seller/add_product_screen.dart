@@ -373,6 +373,8 @@ class _AddProductScreenState extends State<AddProductScreen>
         builder: (_) => ReachScreen(
           productTitle: _listing?.titleEn ?? '',
           price: _price ?? _floor,
+          imagePath: _images?.heroUrl ??
+              (_photos.isNotEmpty ? _photos[_heroIndex] : null),
         ),
       ),
     );
