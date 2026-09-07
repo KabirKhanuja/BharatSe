@@ -21,6 +21,7 @@ dependencies:
   # Pinned to 6.x: record 7 needs Dart 3.12 and this Flutter ships 3.11.5.
   # Upgrading Flutter the night before a demo is not a trade worth making.
   record: ^6.0.0
+  speech_to_text: ^7.0.0
   image_picker: ^1.1.2
   permission_handler: ^12.0.0
 
@@ -44,8 +45,6 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/
-    - assets/svg/
     - assets/map/
 
   fonts:

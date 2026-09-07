@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:speech_to_text/speech_to_text.dart';
 import '../session/app_state.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_dims.dart';
@@ -37,7 +38,9 @@ class TopBar extends StatelessWidget {
           Expanded(
             child: Center(
               child: Wordmark(
-                script: app.lang.name == 'hi' ? Script.devanagari : Script.latin,
+                script: app.lang.name == 'hi'
+                    ? Script.devanagari
+                    : Script.latin,
                 size: 25,
                 showTagline: showTagline,
               ),
@@ -87,8 +90,12 @@ class _CartButton extends StatelessWidget {
               child: Text(
                 '$count',
                 textAlign: TextAlign.center,
-                style: AppText.body(10.5,
-                    weight: FontWeight.w700, color: AppColors.white, height: 1.25),
+                style: AppText.body(
+                  10.5,
+                  weight: FontWeight.w700,
+                  color: AppColors.white,
+                  height: 1.25,
+                ),
               ),
             ),
           ),
@@ -98,10 +105,65 @@ class _CartButton extends StatelessWidget {
 }
 
 /// The search field used on Explore, and behind the header search icon.
-class SearchField extends StatelessWidget {
-  const SearchField({super.key, this.onTap, this.autofocus = false});
+class SearchField extends StatefulWidget {
+  const SearchField({
+    super.key,
+    this.onTap,
+    this.onChanged,
+    this.autofocus = false,
+  });
   final VoidCallback? onTap;
+  final ValueChanged<String>? onChanged;
   final bool autofocus;
+
+  @override
+  State<SearchField> createState() => _SearchFieldState();
+}
+
+class _SearchFieldState extends State<SearchField> {
+  final _controller = TextEditingController();
+  final _speech = SpeechToText();
+  bool _isListening = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _speech.stop();
+    super.dispose();
+  }
+
+  Future<void> _toggleListening() async {
+    if (_isListening) {
+      await _speech.stop();
+      if (mounted) setState(() => _isListening = false);
+      return;
+    }
+
+    final available = await _speech.initialize(
+      onStatus: (status) {
+        if (status == 'done' || status == 'notListening') {
+          if (mounted) setState(() => _isListening = false);
+        }
+      },
+      onError: (_) {
+        if (mounted) setState(() => _isListening = false);
+      },
+    );
+    if (!available || !mounted) return;
+
+    setState(() => _isListening = true);
+    await _speech.listen(
+      onResult: (result) {
+        final text = result.recognizedWords;
+        _controller.value = _controller.value.copyWith(
+          text: text,
+          selection: TextSelection.collapsed(offset: text.length),
+          composing: TextRange.empty,
+        );
+        widget.onChanged?.call(text);
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,8 +181,10 @@ class SearchField extends StatelessWidget {
           const SizedBox(width: Gap.sm),
           Expanded(
             child: TextField(
-              autofocus: autofocus,
-              onTap: onTap,
+              controller: _controller,
+              autofocus: widget.autofocus,
+              onTap: widget.onTap,
+              onChanged: widget.onChanged,
               style: AppText.body(14),
               decoration: InputDecoration(
                 isDense: true,
@@ -134,9 +198,13 @@ class SearchField extends StatelessWidget {
           // side gets the same affordance because many buyers are regional
           // language speakers too.
           IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.mic_none_rounded, size: 20),
-            color: AppColors.terracotta,
+            onPressed: _toggleListening,
+            tooltip: _isListening ? 'Stop voice search' : 'Search by voice',
+            icon: Icon(
+              _isListening ? Icons.stop_rounded : Icons.mic_none_rounded,
+              size: 20,
+            ),
+            color: _isListening ? AppColors.maroon : AppColors.terracotta,
           ),
         ],
       ),

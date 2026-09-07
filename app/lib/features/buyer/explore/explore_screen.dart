@@ -9,9 +9,48 @@ import '../../../widgets/india_map.dart';
 import '../../../widgets/ornament.dart';
 import '../../../widgets/top_bar.dart';
 
-class ExploreScreen extends StatelessWidget {
+class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key, this.onState});
   final void Function(CraftState)? onState;
+
+  @override
+  State<ExploreScreen> createState() => _ExploreScreenState();
+}
+
+class _ExploreScreenState extends State<ExploreScreen> {
+  String _query = '';
+
+  List<CraftState> get _results {
+    final query = _query.trim().toLowerCase();
+    if (query.isEmpty) return const [];
+
+    return Catalog.states.where((state) {
+      final products = Catalog.products.where(
+        (product) => product.stateId == state.id,
+      );
+      final stateText = [
+        state.name.en,
+        state.name.hi,
+        state.crafts.en,
+        state.crafts.hi,
+        state.heritage.en,
+        state.heritage.hi,
+        ...products.expand(
+          (product) => [
+            product.name.en,
+            product.name.hi,
+            product.artisan.en,
+            product.artisan.hi,
+            product.material.en,
+            product.material.hi,
+            product.technique.en,
+            product.technique.hi,
+          ],
+        ),
+      ].join(' ').toLowerCase();
+      return stateText.contains(query);
+    }).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,13 +80,19 @@ class ExploreScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: Gap.xl),
-        const Padding(
+        Padding(
           padding: EdgeInsets.symmetric(horizontal: Gap.page),
-          child: SearchField(),
+          child: SearchField(
+            onChanged: (value) => setState(() => _query = value),
+          ),
         ),
+        if (_query.trim().isNotEmpty) ...[
+          const SizedBox(height: Gap.md),
+          _SearchResults(results: _results, onState: widget.onState),
+        ],
         const SizedBox(height: Gap.xxl),
 
-        _MapBlock(onState: onState),
+        _MapBlock(onState: widget.onState),
         const SizedBox(height: Gap.xxl),
 
         _SectionLabel(s.browseByCraft),
@@ -57,10 +102,140 @@ class ExploreScreen extends StatelessWidget {
 
         _SectionLabel(s.allStates),
         const SizedBox(height: Gap.md),
-        _StateList(onState: onState),
+        _StateList(onState: widget.onState),
         const SizedBox(height: Gap.xl),
         const _SupportBanner(),
       ],
+    );
+  }
+}
+
+class _SearchResults extends StatelessWidget {
+  const _SearchResults({required this.results, this.onState});
+  final List<CraftState> results;
+  final void Function(CraftState)? onState;
+
+  @override
+  Widget build(BuildContext context) {
+    final lang = context.lang;
+    final s = context.s;
+
+    if (results.isEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Gap.page),
+        child: Text(s.allStates, style: AppText.caption),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Gap.page),
+          child: Text(
+            s.allStates,
+            style: lang.name == 'hi'
+                ? AppText.sectionTitleHi
+                : AppText.sectionTitleEn,
+          ),
+        ),
+        const SizedBox(height: Gap.sm),
+        for (final state in results)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(Gap.page, 0, Gap.page, Gap.sm),
+            child: _SearchResultCard(state: state, onState: onState),
+          ),
+      ],
+    );
+  }
+}
+
+class _SearchResultCard extends StatelessWidget {
+  const _SearchResultCard({required this.state, this.onState});
+  final CraftState state;
+  final void Function(CraftState)? onState;
+
+  @override
+  Widget build(BuildContext context) {
+    final lang = context.lang;
+    final s = context.s;
+    final products = Catalog.products
+        .where((product) => product.stateId == state.id)
+        .toList();
+
+    return GestureDetector(
+      onTap: () => onState?.call(state),
+      child: Container(
+        padding: const EdgeInsets.all(Gap.md),
+        decoration: BoxDecoration(
+          color: AppColors.creamAlt,
+          borderRadius: Radii.md,
+          border: Border.all(
+            color: AppColors.terracotta.withValues(alpha: .35),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                SizedBox(
+                  width: 48,
+                  height: 48,
+                  child: CraftImage(
+                    seed: state.seed,
+                    icon: Icons.landscape_outlined,
+                    borderRadius: Radii.sm,
+                  ),
+                ),
+                const SizedBox(width: Gap.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        state.name.call(lang),
+                        style: AppText.body(
+                          16,
+                          weight: FontWeight.w700,
+                          color: AppColors.ink,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(state.crafts.call(lang), style: AppText.caption),
+                    ],
+                  ),
+                ),
+                Text('${state.count} ${s.craftsCount}', style: AppText.caption),
+              ],
+            ),
+            const SizedBox(height: Gap.md),
+            Text(
+              state.heritage.call(lang),
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: AppText.body(
+                12.5,
+                color: AppColors.inkMuted,
+                height: 1.35,
+              ),
+            ),
+            if (products.isNotEmpty) ...[
+              const SizedBox(height: Gap.sm),
+              Text(s.craftsFrom, style: AppText.caption),
+              const SizedBox(height: 3),
+              Wrap(
+                spacing: Gap.sm,
+                runSpacing: 3,
+                children: [
+                  for (final product in products.take(3))
+                    Text(product.name.call(lang), style: AppText.link),
+                ],
+              ),
+            ],
+          ],
+        ),
+      ),
     );
   }
 }
@@ -81,8 +256,9 @@ class _MapBlock extends StatelessWidget {
           IndiaMap(
             activeIds: craftStateIds,
             onState: (id) {
-              final match =
-                  Catalog.states.where((st) => st.id == id).firstOrNull;
+              final match = Catalog.states
+                  .where((st) => st.id == id)
+                  .firstOrNull;
               if (match != null) onState?.call(match);
             },
           ),
@@ -90,14 +266,19 @@ class _MapBlock extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.touch_app_outlined,
-                  size: 15, color: AppColors.inkFaint),
+              const Icon(
+                Icons.touch_app_outlined,
+                size: 15,
+                color: AppColors.inkFaint,
+              ),
               const SizedBox(width: 6),
               Flexible(
-                child: Text(s.tapAState,
-                    style: AppText.caption,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
+                child: Text(
+                  s.tapAState,
+                  style: AppText.caption,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),
@@ -214,19 +395,29 @@ class _StateList extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(st.name(lang),
-                              style: AppText.body(14.5,
-                                  weight: FontWeight.w600, color: AppColors.ink)),
+                          Text(
+                            st.name(lang),
+                            style: AppText.body(
+                              14.5,
+                              weight: FontWeight.w600,
+                              color: AppColors.ink,
+                            ),
+                          ),
                           const SizedBox(height: 2),
                           Text(st.crafts(lang), style: AppText.caption),
                         ],
                       ),
                     ),
-                    Text('${st.count} ${s.craftsCount}',
-                        style: AppText.body(11.5, color: AppColors.inkFaint)),
+                    Text(
+                      '${st.count} ${s.craftsCount}',
+                      style: AppText.body(11.5, color: AppColors.inkFaint),
+                    ),
                     const SizedBox(width: Gap.sm),
-                    const Icon(Icons.chevron_right_rounded,
-                        size: 20, color: AppColors.inkFaint),
+                    const Icon(
+                      Icons.chevron_right_rounded,
+                      size: 20,
+                      color: AppColors.inkFaint,
+                    ),
                   ],
                 ),
               ),
@@ -255,16 +446,24 @@ class _SupportBanner extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Icon(Icons.volunteer_activism_outlined,
-                size: 26, color: AppColors.terracotta),
+            const Icon(
+              Icons.volunteer_activism_outlined,
+              size: 26,
+              color: AppColors.terracotta,
+            ),
             const SizedBox(width: Gap.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(s.supportTitle,
-                      style: AppText.body(14,
-                          weight: FontWeight.w600, color: AppColors.ink)),
+                  Text(
+                    s.supportTitle,
+                    style: AppText.body(
+                      14,
+                      weight: FontWeight.w600,
+                      color: AppColors.ink,
+                    ),
+                  ),
                   const SizedBox(height: 3),
                   Text(s.supportBody, style: AppText.caption),
                   const SizedBox(height: Gap.sm),
@@ -272,8 +471,11 @@ class _SupportBanner extends StatelessWidget {
                     children: [
                       Text(s.learnMore, style: AppText.link),
                       const SizedBox(width: 2),
-                      const Icon(Icons.chevron_right_rounded,
-                          size: 17, color: AppColors.terracotta),
+                      const Icon(
+                        Icons.chevron_right_rounded,
+                        size: 17,
+                        color: AppColors.terracotta,
+                      ),
                     ],
                   ),
                 ],
