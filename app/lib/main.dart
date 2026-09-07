@@ -135,7 +135,7 @@ class _Root extends StatelessWidget {
       // No local role switch. Role is decided by the server at sign up, and
       // flipping it here only produces 403s from every seller endpoint.
       Role.buyer => const BuyerShell(),
-      Role.seller => SellerShell(onSwitchToBuyer: () => app.setRole(Role.buyer)),
+      Role.seller => const SellerShell(),
     };
 
     return _MaybeFramed(

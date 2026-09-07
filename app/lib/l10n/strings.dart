@@ -162,6 +162,11 @@ class AppStrings {
     required this.passwordTooShort,
     required this.signOut,
     required this.changeRole,
+    required this.tapToSpeak,
+    required this.tapToStop,
+    required this.recordingFor,
+    required this.improvingPicture,
+    required this.improvePictureNow,
   });
 
   final String tagline;
@@ -346,6 +351,11 @@ class AppStrings {
   final String passwordTooShort;
   final String signOut;
   final String changeRole;
+  final String tapToSpeak;
+  final String tapToStop;
+  final String recordingFor;
+  final String improvingPicture;
+  final String improvePictureNow;
 
   static const AppStrings en = AppStrings(
     tagline: 'From the people of Bharat, for Bharat',
@@ -509,6 +519,11 @@ class AppStrings {
     passwordTooShort: 'Use at least six characters',
     signOut: 'Sign out',
     changeRole: 'Switch account type',
+    tapToSpeak: 'Tap and tell us about your product',
+    tapToStop: 'Tap to stop',
+    recordingFor: 'Listening',
+    improvingPicture: 'Improving your picture',
+    improvePictureNow: 'Improve picture',
   );
 
   static const AppStrings hi = AppStrings(
@@ -673,6 +688,11 @@ class AppStrings {
     passwordTooShort: 'कम से कम छह अक्षर रखिए',
     signOut: 'साइन आउट',
     changeRole: 'खाते का प्रकार बदलें',
+    tapToSpeak: 'टैप करके अपने सामान के बारे में बताइए',
+    tapToStop: 'रोकने के लिए टैप करें',
+    recordingFor: 'सुन रहे हैं',
+    improvingPicture: 'तस्वीर बेहतर की जा रही है',
+    improvePictureNow: 'तस्वीर बेहतर करें',
   );
 
   /// English is the reviewed fallback while additional UI translations are

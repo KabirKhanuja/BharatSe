@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -50,6 +51,8 @@ class _AddProductScreenState extends State<AddProductScreen>
 
   bool _recording = false;
   bool _working = false;
+  Duration _elapsed = Duration.zero;
+  Timer? _ticker;
   String? _error;
 
   /// The enhanced set, once the server has produced it. Null until then, and
@@ -77,6 +80,7 @@ class _AddProductScreenState extends State<AddProductScreen>
 
   @override
   void dispose() {
+    _ticker?.cancel();
     _pulse.dispose();
     super.dispose();
   }
@@ -91,6 +95,16 @@ class _AddProductScreenState extends State<AddProductScreen>
   /// Camera or gallery, because an artisan often shoots a batch of work in
   /// daylight and lists it that evening. Forcing a reshoot under a bare bulb
   /// would recreate the exact photo problem this screen exists to solve.
+  /// Kick off enhancement in the background the moment a photo lands.
+  ///
+  /// Generation takes about twenty seconds. Starting it here means it runs
+  /// while she is describing the piece, so by the time the listing text comes
+  /// back the picture is usually ready too.
+  void _enhanceInBackground() {
+    if (_photos.isEmpty || _enhancing || _images != null) return;
+    unawaited(_enhance());
+  }
+
   Future<void> _addPhoto() async {
     if (_photos.length >= _maxPhotos) return;
 
@@ -110,6 +124,7 @@ class _AddProductScreenState extends State<AddProductScreen>
     if (path == null || !mounted) return;
 
     setState(() => _photos.add(path));
+    _enhanceInBackground();
   }
 
   void _removePhoto(int index) {
@@ -167,17 +182,36 @@ class _AddProductScreenState extends State<AddProductScreen>
   }
 
   // --------------------------------------------------------------- recording
-  Future<void> _startRecording() async {
+  /// Tap to start, tap again to stop.
+  ///
+  /// Hold to talk looked tidier and was worse: the gesture misfires, there is
+  /// no way to tell whether it is listening, and a hold that ends early sends
+  /// a fragment the model then invents a product from.
+  Future<void> _toggleRecording() async {
+    if (_working) return;
+    if (_recording) {
+      await _stopRecording();
+      return;
+    }
+
     final capture = context.app.capture;
     if (!await capture.startRecording()) {
       if (mounted) setState(() => _error = context.s.micNeeded);
       return;
     }
+
     _pulse.repeat(reverse: true);
+    _elapsed = Duration.zero;
+    _ticker?.cancel();
+    _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() => _elapsed += const Duration(seconds: 1));
+    });
+
     if (mounted) setState(() => _recording = true);
   }
 
   Future<void> _stopRecording() async {
+    _ticker?.cancel();
     _pulse.stop();
     _pulse.value = 0;
 
@@ -619,8 +653,9 @@ class _AddProductScreenState extends State<AddProductScreen>
     final label = _working
         ? s.preparing
         : _recording
-            ? s.listening
-            : s.holdToDescribe;
+            ? '${s.recordingFor}  ${_elapsed.inMinutes}:'
+                '${(_elapsed.inSeconds % 60).toString().padLeft(2, '0')}'
+            : s.tapToSpeak;
 
     return Container(
       width: double.infinity,
@@ -634,8 +669,7 @@ class _AddProductScreenState extends State<AddProductScreen>
         children: [
           GestureDetector(
             key: const Key('mic'),
-            onLongPressStart: (_) => _working ? null : _startRecording(),
-            onLongPressEnd: (_) => _stopRecording(),
+            onTap: _toggleRecording,
             child: AnimatedBuilder(
               animation: _pulse,
               builder: (context, _) {
@@ -660,7 +694,7 @@ class _AddProductScreenState extends State<AddProductScreen>
                           child: CircularProgressIndicator(
                               strokeWidth: 2, color: AppColors.white),
                         )
-                      : const Icon(Icons.mic_rounded,
+                      : Icon(_recording ? Icons.stop_rounded : Icons.mic_rounded,
                           color: AppColors.white, size: 26),
                 );
               },
@@ -673,7 +707,7 @@ class _AddProductScreenState extends State<AddProductScreen>
                   weight: FontWeight.w600,
                   color: _recording ? AppColors.maroon : AppColors.ink)),
           const SizedBox(height: 3),
-          Text(_recording ? s.releaseToFinish : s.inYourLanguage,
+          Text(_recording ? s.tapToStop : s.inYourLanguage,
               textAlign: TextAlign.center, style: AppText.caption),
         ],
       ),

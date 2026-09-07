@@ -15,8 +15,7 @@ import 'verification/verification_screen.dart';
 /// Two places to be: her catalogue, and adding to it. Everything else an
 /// artisan needs is inside those two.
 class SellerShell extends StatefulWidget {
-  const SellerShell({super.key, this.onSwitchToBuyer});
-  final VoidCallback? onSwitchToBuyer;
+  const SellerShell({super.key});
 
   @override
   State<SellerShell> createState() => _SellerShellState();
@@ -69,9 +68,9 @@ class _SellerShellState extends State<SellerShell> {
                 children: [
                   const Expanded(child: Wordmark(size: 23, showTagline: true)),
                   IconButton(
-                    tooltip: s.switchToSeller,
-                    onPressed: widget.onSwitchToBuyer,
-                    icon: const Icon(Icons.swap_horiz_rounded),
+                    tooltip: s.signOut,
+                    onPressed: () => context.app.signOutEverywhere(),
+                    icon: const Icon(Icons.logout_rounded),
                     color: AppColors.inkMuted,
                   ),
                 ],

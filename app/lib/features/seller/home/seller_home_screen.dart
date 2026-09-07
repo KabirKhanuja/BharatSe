@@ -24,6 +24,7 @@ class SellerHomeScreen extends StatefulWidget {
 class _SellerHomeScreenState extends State<SellerHomeScreen> {
   List<LocalProduct> _products = const [];
   bool _loading = true;
+  String? _error;
 
   @override
   void initState() {
@@ -32,12 +33,22 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
   }
 
   Future<void> _load() async {
-    final items = await context.app.products.all();
-    if (mounted) {
+    // Anything thrown here used to leave _loading true forever, which is what
+    // the endless spinner was. An empty catalogue and a failed read are
+    // different things and the screen now says which.
+    try {
+      final items = await context.app.products.all();
+      if (!mounted) return;
       setState(() {
         _products = items;
-        _loading = false;
+        _error = null;
       });
+    } catch (error) {
+      debugPrint('[seller] could not read local products: $error');
+      if (!mounted) return;
+      setState(() => _error = '$error');
+    } finally {
+      if (mounted) setState(() => _loading = false);
     }
   }
 
@@ -79,7 +90,9 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
           ),
           const SizedBox(height: Gap.md),
 
-          if (_products.isEmpty)
+          if (_error != null)
+            _failed(s)
+          else if (_products.isEmpty)
             _empty(s)
           else
             for (final product in _products) ...[
@@ -113,6 +126,21 @@ class _SellerHomeScreenState extends State<SellerHomeScreen> {
                 style: AppText.body(14.5,
                     weight: FontWeight.w600, color: AppColors.white)),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _failed(dynamic s) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: Gap.section),
+      child: Column(
+        children: [
+          const Icon(Icons.error_outline_rounded, size: 40, color: AppColors.inkFaint),
+          const SizedBox(height: Gap.lg),
+          Text(s.couldNotGenerate, style: AppText.body(15, weight: FontWeight.w600)),
+          const SizedBox(height: Gap.lg),
+          OutlinedButton(onPressed: _load, child: Text(s.tryAgain)),
         ],
       ),
     );

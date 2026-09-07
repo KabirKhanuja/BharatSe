@@ -148,7 +148,13 @@ class ApiClient {
       _guard(() async {
         final request = http.MultipartRequest('POST', _uri('/listings/generate'))
           ..headers.addAll({if (_token != null) 'authorization': 'Bearer $_token'})
-          ..files.add(await http.MultipartFile.fromPath('audio', audioPath));
+          ..files.add(await http.MultipartFile.fromPath(
+            'audio',
+            audioPath,
+            // record writes 16 kHz mono WAV. Saying so matters because the
+            // server hands the mime type straight to the model.
+            contentType: MediaType('audio', 'wav'),
+          ));
 
         if (language != null) request.fields['language'] = language;
 
@@ -197,7 +203,11 @@ class ApiClient {
   Future<List<int>> cutout(String imagePath) => _guard(() async {
         final request = http.MultipartRequest('POST', _uri('/images/cutout'))
           ..headers.addAll({if (_token != null) 'authorization': 'Bearer $_token'})
-          ..files.add(await http.MultipartFile.fromPath('image', imagePath));
+          ..files.add(await http.MultipartFile.fromPath(
+            'image',
+            imagePath,
+            contentType: _mediaTypeFor(imagePath),
+          ));
 
         final streamed = await request.send().timeout(_uploadTimeout);
         if (streamed.statusCode >= 400) {
@@ -211,7 +221,11 @@ class ApiClient {
         final request = http.MultipartRequest('POST', _uri('/images/studio'))
           ..headers.addAll({if (_token != null) 'authorization': 'Bearer $_token'})
           ..fields['aspect'] = aspect
-          ..files.add(await http.MultipartFile.fromPath('image', imagePath));
+          ..files.add(await http.MultipartFile.fromPath(
+            'image',
+            imagePath,
+            contentType: _mediaTypeFor(imagePath),
+          ));
 
         final streamed = await request.send().timeout(_uploadTimeout);
         if (streamed.statusCode >= 400) {
@@ -244,7 +258,11 @@ class ApiClient {
           ..fields['enhance_index'] = '$enhanceIndex';
 
         for (final path in imagePaths) {
-          request.files.add(await http.MultipartFile.fromPath('images', path));
+          request.files.add(await http.MultipartFile.fromPath(
+            'images',
+            path,
+            contentType: _mediaTypeFor(path),
+          ));
         }
 
         final streamed = await request.send().timeout(_enhanceTimeout);

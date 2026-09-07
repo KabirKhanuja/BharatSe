@@ -66,7 +66,7 @@ class CaptureService {
   }
 
   /// Returns the file path, or null if the note was too short to be speech.
-  Future<String?> stopRecording({Duration minimum = const Duration(milliseconds: 700)}) async {
+  Future<String?> stopRecording({Duration minimum = const Duration(milliseconds: 1500)}) async {
     if (!_recording) return null;
 
     final path = await _recorder.stop();
