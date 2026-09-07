@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:bharatse/features/buyer/buyer_shell.dart';
+import 'package:bharatse/features/buyer/explore/explore_screen.dart';
 import 'package:bharatse/l10n/lang.dart';
 import 'package:bharatse/session/app_state.dart';
 import 'package:bharatse/theme/app_theme.dart';
@@ -17,10 +18,12 @@ Future<AppState> _mount(WidgetTester tester, {Lang lang = Lang.en}) async {
   });
 
   final state = AppState(lang: lang);
-  await tester.pumpWidget(AppScope(
-    state: state,
-    child: MaterialApp(theme: AppTheme.light, home: const BuyerShell()),
-  ));
+  await tester.pumpWidget(
+    AppScope(
+      state: state,
+      child: MaterialApp(theme: AppTheme.light, home: const BuyerShell()),
+    ),
+  );
   await tester.pumpAndSettle();
   return state;
 }
@@ -44,21 +47,23 @@ void main() {
     expect(find.text('Orders'), findsNothing);
   });
 
-  testWidgets('header carries search and a cart with its count',
-      (tester) async {
+  testWidgets('header carries search and a cart with its count', (
+    tester,
+  ) async {
     await _mount(tester);
 
     expect(find.byIcon(Icons.search_rounded), findsWidgets);
     expect(find.byKey(const Key('cart-button')), findsOneWidget);
     // The badge shows the item count seeded into the session.
-    expect(find.descendant(
-      of: find.byType(TopBar),
-      matching: find.text('2'),
-    ), findsOneWidget);
+    expect(
+      find.descendant(of: find.byType(TopBar), matching: find.text('2')),
+      findsOneWidget,
+    );
   });
 
-  testWidgets('switching language re-renders chrome AND content',
-      (tester) async {
+  testWidgets('switching language re-renders chrome AND content', (
+    tester,
+  ) async {
     final state = await _mount(tester);
 
     expect(find.text('Made by hand.'), findsOneWidget);
@@ -87,8 +92,31 @@ void main() {
     expect(find.text('My orders'), findsOneWidget);
   });
 
-  testWidgets('signed-out profile offers sign in, signed-in does not',
-      (tester) async {
+  testWidgets('explore search shows matching state details', (tester) async {
+    await _mount(tester);
+
+    await tester.tap(find.text('Explore'));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    final exploreSearch = find.descendant(
+      of: find.byType(ExploreScreen),
+      matching: find.byType(TextField),
+    );
+    await tester.enterText(exploreSearch, 'Jammu');
+    await tester.pump();
+
+    expect(find.text('Jammu & Kashmir'), findsWidgets);
+    expect(
+      find.textContaining('Pashmina comes from the undercoat'),
+      findsOneWidget,
+    );
+    expect(find.text('Pashmina Shawl'), findsOneWidget);
+  });
+
+  testWidgets('signed-out profile offers sign in, signed-in does not', (
+    tester,
+  ) async {
     final state = await _mount(tester);
 
     await tester.tap(find.text('Profile'));
@@ -121,8 +149,9 @@ void main() {
     expect(find.text('Add to cart'), findsOneWidget);
   });
 
-  testWidgets('cart opens from the header and totals the lines',
-      (tester) async {
+  testWidgets('cart opens from the header and totals the lines', (
+    tester,
+  ) async {
     await _mount(tester);
 
     await tester.tap(find.byKey(const Key('cart-button')));
@@ -134,8 +163,9 @@ void main() {
     expect(find.text('₹6,100'), findsWidgets);
   });
 
-  testWidgets('changing quantity re-totals, and zero removes the line',
-      (tester) async {
+  testWidgets('changing quantity re-totals, and zero removes the line', (
+    tester,
+  ) async {
     final state = await _mount(tester);
 
     await tester.tap(find.byKey(const Key('cart-button')));
@@ -151,8 +181,9 @@ void main() {
     expect(find.text('₹1,250'), findsWidgets);
   });
 
-  testWidgets('empty cart offers a way out rather than a dead end',
-      (tester) async {
+  testWidgets('empty cart offers a way out rather than a dead end', (
+    tester,
+  ) async {
     final state = await _mount(tester);
     state.setQty('p1', 0);
     state.setQty('p3', 0);
@@ -163,5 +194,4 @@ void main() {
     expect(find.text('Your cart is empty'), findsOneWidget);
     expect(find.text('Start exploring'), findsOneWidget);
   });
-
 }
