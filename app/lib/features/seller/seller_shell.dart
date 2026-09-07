@@ -8,6 +8,7 @@ import '../../widgets/offline.dart';
 import '../../widgets/wordmark.dart';
 import 'add_product_screen.dart';
 import 'home/seller_home_screen.dart';
+import 'reach/reach_screen.dart';
 import 'verification/verification_screen.dart';
 
 /// The artisan product.
@@ -67,6 +68,14 @@ class _SellerShellState extends State<SellerShell> {
               child: Row(
                 children: [
                   const Expanded(child: Wordmark(size: 23, showTagline: true)),
+                  IconButton(
+                    tooltip: s.reachTitle,
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const ReachScreen()),
+                    ),
+                    icon: const Icon(Icons.campaign_outlined),
+                    color: AppColors.terracotta,
+                  ),
                   IconButton(
                     tooltip: s.signOut,
                     onPressed: () => context.app.signOutEverywhere(),

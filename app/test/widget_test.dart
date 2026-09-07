@@ -53,7 +53,9 @@ void main() {
     await _mount(tester);
 
     expect(find.text('Add photo or video'), findsOneWidget);
-    expect(find.text('Hold and tell us about your product'), findsOneWidget);
+    // Tap to start, not hold. Hold to talk misfired on device and gave no
+    // feedback about whether it was listening.
+    expect(find.text('Tap and tell us about your product'), findsOneWidget);
     expect(find.text('In your own language'), findsOneWidget);
   });
 

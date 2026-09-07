@@ -4,6 +4,7 @@ import '../session/app_state.dart';
 import '../theme/app_colors.dart';
 import '../theme/app_dims.dart';
 import '../theme/app_text.dart';
+import 'language_sheet.dart';
 import 'wordmark.dart';
 
 /// Shared buyer header: menu, wordmark, search and cart.
@@ -31,7 +32,7 @@ class TopBar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           IconButton(
-            onPressed: onMenu,
+            onPressed: onMenu ?? () => _showAccountSheet(context),
             icon: const Icon(Icons.menu_rounded),
             color: AppColors.ink,
           ),
@@ -46,17 +47,61 @@ class TopBar extends StatelessWidget {
               ),
             ),
           ),
-          IconButton(
-            onPressed: onSearch,
-            icon: const Icon(Icons.search_rounded),
-            color: AppColors.ink,
-          ),
           _CartButton(count: app.cartCount, onTap: onCart),
           const SizedBox(width: Gap.xs),
         ],
       ),
     );
   }
+}
+
+/// What the menu opens. Small on purpose: the only thing a buyer actually
+/// needs from here today is a way out, and offering a drawer full of dead
+/// entries is worse than offering one that works.
+Future<void> _showAccountSheet(BuildContext context) async {
+  final app = context.app;
+  final s = context.s;
+
+  await showModalBottomSheet<void>(
+    context: context,
+    builder: (sheetContext) => SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: const Icon(Icons.person_outline_rounded),
+            title: Text(app.signedIn ? (app.name ?? s.guestName) : s.guestName,
+                style: AppText.body(15, weight: FontWeight.w600)),
+            subtitle: Text(
+              app.role == Role.seller ? s.continueAsSeller : s.continueAsBuyer,
+              style: AppText.caption,
+            ),
+          ),
+          const Divider(height: 1),
+          ListTile(
+            leading: const Icon(Icons.translate_rounded),
+            title: Text(s.language, style: AppText.body(15)),
+            trailing: Text(app.lang.nativeName, style: AppText.caption),
+            onTap: () {
+              Navigator.of(sheetContext).pop();
+              showLanguageSheet(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.logout_rounded, color: AppColors.maroon),
+            title: Text(s.signOut,
+                style: AppText.body(15,
+                    weight: FontWeight.w600, color: AppColors.maroon)),
+            onTap: () {
+              Navigator.of(sheetContext).pop();
+              app.signOutEverywhere();
+            },
+          ),
+          const SizedBox(height: Gap.sm),
+        ],
+      ),
+    ),
+  );
 }
 
 class _CartButton extends StatelessWidget {

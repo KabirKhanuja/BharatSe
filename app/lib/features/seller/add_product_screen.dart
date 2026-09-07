@@ -20,6 +20,7 @@ import '../../widgets/craft_image.dart';
 import '../../widgets/offline.dart';
 import '../../widgets/panel.dart';
 import '../../widgets/wordmark.dart';
+import 'reach/reach_screen.dart';
 
 /// The listing flow. Photo, then hold the mic and talk, and the rest fills
 /// itself in.
@@ -360,7 +361,21 @@ class _AddProductScreenState extends State<AddProductScreen>
         content: Text(offline ? context.s.savedOnPhone : context.s.published),
       ),
     );
-    Navigator.of(context).maybePop();
+
+    if (offline) {
+      // Nothing has gone anywhere yet, so showing reach would be a lie.
+      Navigator.of(context).maybePop();
+      return;
+    }
+
+    await Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => ReachScreen(
+          productTitle: _listing?.titleEn ?? '',
+          price: _price ?? _floor,
+        ),
+      ),
+    );
   }
 
   @override
@@ -946,8 +961,10 @@ class _AddProductScreenState extends State<AddProductScreen>
                             weight: FontWeight.w600, color: AppColors.maroon)),
                     const SizedBox(height: 3),
                     if (band != null)
-                      Text('${inr(band.p10)} ${s.priceRange} ${inr(band.p90)}',
-                          style: AppText.caption),
+                      Text(
+                        '${s.betweenPrices} ${inr(band.p10)} \u2013 ${inr(band.p90)}',
+                        style: AppText.caption,
+                      ),
                   ],
                 ),
               ),
@@ -965,10 +982,87 @@ class _AddProductScreenState extends State<AddProductScreen>
               ),
             ],
           ),
+          if (band != null && band.rationale.isNotEmpty) ...[
+            const SizedBox(height: Gap.md),
+            _rationale(band),
+          ],
+          if (band != null && band.comparables.isNotEmpty) ...[
+            const SizedBox(height: Gap.md),
+            _comparables(band),
+          ],
           const SizedBox(height: Gap.md),
           _floorBar(),
         ],
       ),
+    );
+  }
+
+  /// Why this number, in her own language, in one or two sentences.
+  ///
+  /// A price with no reason is something to argue with. A price with a reason
+  /// is something to decide about.
+  Widget _rationale(PriceBand band) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(Gap.md),
+      decoration: BoxDecoration(
+        color: AppColors.cream,
+        borderRadius: Radii.sm,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.lightbulb_outline_rounded,
+                  size: 14, color: AppColors.gold),
+              const SizedBox(width: 6),
+              Text(context.s.priceRationale,
+                  style: AppText.body(11.5,
+                      weight: FontWeight.w700, color: AppColors.inkMuted)),
+            ],
+          ),
+          const SizedBox(height: 6),
+          Text(band.rationale,
+              style: AppText.body(12.5, color: AppColors.ink, height: 1.55)),
+        ],
+      ),
+    );
+  }
+
+  /// The listings the price was actually placed against.
+  ///
+  /// Shown because "the market says so" is only credible if you can see the
+  /// market. These are real rows from the catalogue, not an average.
+  Widget _comparables(PriceBand band) {
+    final s = context.s;
+    final items = band.comparables.take(3).toList();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('${s.comparedWith} \u00b7 ${band.comparables.length} ${s.similarItems}',
+            style: AppText.body(11.5, color: AppColors.inkFaint)),
+        const SizedBox(height: Gap.sm),
+        for (final item in items)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(item.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: AppText.body(12, color: AppColors.inkMuted)),
+                ),
+                const SizedBox(width: Gap.sm),
+                Text(inr(item.price),
+                    style: AppText.body(12,
+                        weight: FontWeight.w600, color: AppColors.ink)),
+              ],
+            ),
+          ),
+      ],
     );
   }
 

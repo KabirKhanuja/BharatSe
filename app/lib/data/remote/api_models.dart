@@ -114,6 +114,20 @@ class FloorBreakdown {
       );
 }
 
+class Comparable {
+  const Comparable({required this.title, required this.price, this.material});
+
+  final String title;
+  final int price;
+  final String? material;
+
+  factory Comparable.fromJson(Map<String, dynamic> json) => Comparable(
+        title: json['title'] as String? ?? '',
+        price: (json['price'] as num?)?.toInt() ?? 0,
+        material: json['material'] as String?,
+      );
+}
+
 class PriceBand {
   const PriceBand({
     required this.p10,
@@ -124,6 +138,10 @@ class PriceBand {
     required this.modelUsed,
     required this.liftedToFloor,
     required this.note,
+    this.method = 'cost',
+    this.rationale = '',
+    this.confidence = 'low',
+    this.comparables = const [],
   });
 
   final int p10;
@@ -138,6 +156,16 @@ class PriceBand {
   final bool liftedToFloor;
   final String note;
 
+  /// How the number was reached: "market" when it was placed against real
+  /// listings, "reasoned" with none to compare, "cost" when it is arithmetic.
+  /// Worth showing, because presenting a markup as market analysis is a lie.
+  final String method;
+  final String rationale;
+  final String confidence;
+  final List<Comparable> comparables;
+
+  bool get isMarketBased => method == 'market';
+
   factory PriceBand.fromJson(Map<String, dynamic> json) => PriceBand(
         p10: (json['p10'] as num).toInt(),
         p50: (json['p50'] as num).toInt(),
@@ -148,6 +176,12 @@ class PriceBand {
         modelUsed: json['model_used'] as bool? ?? false,
         liftedToFloor: json['lifted_to_floor'] as bool? ?? false,
         note: json['note'] as String? ?? '',
+        method: json['method'] as String? ?? 'cost',
+        rationale: json['rationale'] as String? ?? '',
+        confidence: json['confidence'] as String? ?? 'low',
+        comparables: ((json['comparables'] as List?) ?? const [])
+            .map((e) => Comparable.fromJson(e as Map<String, dynamic>))
+            .toList(),
       );
 }
 

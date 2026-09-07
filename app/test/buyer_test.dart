@@ -47,18 +47,25 @@ void main() {
     expect(find.text('Orders'), findsNothing);
   });
 
-  testWidgets('header carries search and a cart with its count', (
+  testWidgets('header carries a cart and a menu, but no search', (
     tester,
   ) async {
-    await _mount(tester);
+    final state = await _mount(tester);
 
-    expect(find.byIcon(Icons.search_rounded), findsWidgets);
     expect(find.byKey(const Key('cart-button')), findsOneWidget);
-    // The badge shows the item count seeded into the session.
+    expect(find.byIcon(Icons.menu_rounded), findsOneWidget);
+
+    // Search lives on Explore. Two entry points to one feature is clutter.
     expect(
-      find.descendant(of: find.byType(TopBar), matching: find.text('2')),
-      findsOneWidget,
+      find.descendant(
+        of: find.byType(TopBar),
+        matching: find.byIcon(Icons.search_rounded),
+      ),
+      findsNothing,
     );
+
+    // A new buyer's cart is empty, so there is no badge at all.
+    expect(state.cartCount, 0);
   });
 
   testWidgets('switching language re-renders chrome AND content', (
@@ -149,16 +156,18 @@ void main() {
     expect(find.text('Add to cart'), findsOneWidget);
   });
 
-  testWidgets('cart opens from the header and totals the lines', (
+  testWidgets('cart opens from the header and totals what was added', (
     tester,
   ) async {
-    await _mount(tester);
+    final state = await _mount(tester);
+    state.addToCart('p1'); // Pashmina Shawl, 4850
+    state.addToCart('p3'); // Handblock Tote Bag, 1250
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('cart-button')));
     await tester.pumpAndSettle();
 
     expect(find.byType(CartScreen), findsOneWidget);
-    // Seeded with Pashmina Shawl 4850 and Handblock Tote Bag 1250.
     expect(find.text('Pashmina Shawl'), findsOneWidget);
     expect(find.text('₹6,100'), findsWidgets);
   });
@@ -167,6 +176,9 @@ void main() {
     tester,
   ) async {
     final state = await _mount(tester);
+    state.addToCart('p1');
+    state.addToCart('p3');
+    await tester.pumpAndSettle();
 
     await tester.tap(find.byKey(const Key('cart-button')));
     await tester.pumpAndSettle();
@@ -181,12 +193,8 @@ void main() {
     expect(find.text('₹1,250'), findsWidgets);
   });
 
-  testWidgets('empty cart offers a way out rather than a dead end', (
-    tester,
-  ) async {
-    final state = await _mount(tester);
-    state.setQty('p1', 0);
-    state.setQty('p3', 0);
+  testWidgets('a new buyer sees an empty cart with a way out', (tester) async {
+    await _mount(tester);
 
     await tester.tap(find.byKey(const Key('cart-button')));
     await tester.pumpAndSettle();

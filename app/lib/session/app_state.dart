@@ -168,7 +168,7 @@ class AppState extends ChangeNotifier {
   Role _role = Role.buyer;
   bool _signedIn = false;
   String? _name;
-  final Map<String, int> _cart = {'p1': 1, 'p3': 1};
+  final Map<String, int> _cart = {};
   final Set<String> _saved = {};
 
   Lang get lang => _lang;

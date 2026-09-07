@@ -4,6 +4,7 @@ import '../../../session/app_state.dart';
 import '../../../theme/app_colors.dart';
 import '../../../theme/app_dims.dart';
 import '../../../theme/app_text.dart';
+import '../../../widgets/language_sheet.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key, this.onSwitchToSeller});
@@ -46,7 +47,7 @@ class ProfileScreen extends StatelessWidget {
               icon: Icons.translate_rounded,
               label: s.language,
               trailingText: app.lang.nativeName,
-              onTap: () => _pickLanguage(context),
+              onTap: () => showLanguageSheet(context),
             ),
             _Tile(icon: Icons.help_outline_rounded, label: s.help),
             _Tile(icon: Icons.info_outline_rounded, label: s.about),
@@ -58,87 +59,6 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  static Future<void> _pickLanguage(BuildContext context) async {
-    final app = context.app;
-    final copy = ProfileStrings.of(app.lang);
-    await showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: AppColors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
-      ),
-      builder: (sheetContext) {
-        final height = (MediaQuery.sizeOf(sheetContext).height * 0.8)
-            .clamp(320.0, 560.0)
-            .toDouble();
-
-        return SafeArea(
-          child: SizedBox(
-            height: height,
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(
-                Gap.page,
-                Gap.xl,
-                Gap.page,
-                Gap.lg,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(copy.chooseLanguage, style: AppText.sectionTitleEn),
-                  const SizedBox(height: Gap.lg),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: Lang.values.length,
-                      itemBuilder: (context, index) {
-                        final lang = Lang.values[index];
-                        return InkWell(
-                  onTap: () {
-                    app.setLang(lang);
-                    Navigator.of(sheetContext).pop();
-                  },
-                  borderRadius: Radii.md,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: Gap.md),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                lang.nativeName,
-                                style: AppText.body(
-                                  15.5,
-                                  weight: FontWeight.w600,
-                                ),
-                              ),
-                              if (lang.nativeName != lang.englishName)
-                                Text(lang.englishName, style: AppText.caption),
-                            ],
-                          ),
-                        ),
-                        if (app.lang == lang)
-                          const Icon(
-                            Icons.check_circle_rounded,
-                            color: AppColors.terracotta,
-                            size: 21,
-                          ),
-                      ],
-                    ),
-                  ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
 }
 
 class _IdentityCard extends StatelessWidget {

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- The cream from the supplied artwork, so the icon matches the app. -->
+    <color name="ic_launcher_background">#F0EDE6</color>
+</resources>
