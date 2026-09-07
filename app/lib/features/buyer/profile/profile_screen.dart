@@ -12,33 +12,46 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final app = context.app;
-    final s = context.s;
+    final s = ProfileStrings.of(app.lang);
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(Gap.page, Gap.sm, Gap.page, Gap.section),
+      padding: const EdgeInsets.fromLTRB(
+        Gap.page,
+        Gap.sm,
+        Gap.page,
+        Gap.section,
+      ),
       children: [
         _IdentityCard(),
         const SizedBox(height: Gap.xl),
-        _Group(children: [
-          _Tile(icon: Icons.receipt_long_outlined, label: s.myOrders, trailingText: '3'),
-          _Tile(
-            icon: Icons.favorite_border_rounded,
-            label: s.wishlist,
-            trailingText: '${app.saved.length}',
-          ),
-          _Tile(icon: Icons.location_on_outlined, label: s.addresses),
-        ]),
+        _Group(
+          children: [
+            _Tile(
+              icon: Icons.receipt_long_outlined,
+              label: s.myOrders,
+              trailingText: '3',
+            ),
+            _Tile(
+              icon: Icons.favorite_border_rounded,
+              label: s.wishlist,
+              trailingText: '${app.saved.length}',
+            ),
+            _Tile(icon: Icons.location_on_outlined, label: s.addresses),
+          ],
+        ),
         const SizedBox(height: Gap.lg),
-        _Group(children: [
-          _Tile(
-            icon: Icons.translate_rounded,
-            label: s.language,
-            trailingText: app.lang.nativeName,
-            onTap: () => _pickLanguage(context),
-          ),
-          _Tile(icon: Icons.help_outline_rounded, label: s.help),
-          _Tile(icon: Icons.info_outline_rounded, label: s.about),
-        ]),
+        _Group(
+          children: [
+            _Tile(
+              icon: Icons.translate_rounded,
+              label: s.language,
+              trailingText: app.lang.nativeName,
+              onTap: () => _pickLanguage(context),
+            ),
+            _Tile(icon: Icons.help_outline_rounded, label: s.help),
+            _Tile(icon: Icons.info_outline_rounded, label: s.about),
+          ],
+        ),
         const SizedBox(height: Gap.xl),
         if (onSwitchToSeller != null) _SellerCard(onTap: onSwitchToSeller),
       ],
@@ -47,23 +60,39 @@ class ProfileScreen extends StatelessWidget {
 
   static Future<void> _pickLanguage(BuildContext context) async {
     final app = context.app;
+    final copy = ProfileStrings.of(app.lang);
     await showModalBottomSheet<void>(
       context: context,
       backgroundColor: AppColors.white,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
       ),
-      builder: (sheetContext) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(Gap.page, Gap.xl, Gap.page, Gap.lg),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(app.s.chooseLanguage, style: AppText.sectionTitleEn),
-              const SizedBox(height: Gap.lg),
-              for (final lang in Lang.values)
-                InkWell(
+      builder: (sheetContext) {
+        final height = (MediaQuery.sizeOf(sheetContext).height * 0.8)
+            .clamp(320.0, 560.0)
+            .toDouble();
+
+        return SafeArea(
+          child: SizedBox(
+            height: height,
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(
+                Gap.page,
+                Gap.xl,
+                Gap.page,
+                Gap.lg,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(copy.chooseLanguage, style: AppText.sectionTitleEn),
+                  const SizedBox(height: Gap.lg),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: Lang.values.length,
+                      itemBuilder: (context, index) {
+                        final lang = Lang.values[index];
+                        return InkWell(
                   onTap: () {
                     app.setLang(lang);
                     Navigator.of(sheetContext).pop();
@@ -77,25 +106,37 @@ class ProfileScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(lang.nativeName,
-                                  style: AppText.body(15.5,
-                                      weight: FontWeight.w600)),
+                              Text(
+                                lang.nativeName,
+                                style: AppText.body(
+                                  15.5,
+                                  weight: FontWeight.w600,
+                                ),
+                              ),
                               if (lang.nativeName != lang.englishName)
                                 Text(lang.englishName, style: AppText.caption),
                             ],
                           ),
                         ),
                         if (app.lang == lang)
-                          const Icon(Icons.check_circle_rounded,
-                              color: AppColors.terracotta, size: 21),
+                          const Icon(
+                            Icons.check_circle_rounded,
+                            color: AppColors.terracotta,
+                            size: 21,
+                          ),
                       ],
                     ),
                   ),
-                ),
-            ],
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -104,7 +145,7 @@ class _IdentityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final app = context.app;
-    final s = context.s;
+    final s = ProfileStrings.of(app.lang);
     final signedIn = app.signedIn;
 
     return Container(
@@ -130,11 +171,15 @@ class _IdentityCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(signedIn ? (app.name ?? '') : s.guestName,
-                    style: AppText.body(16.5, weight: FontWeight.w600)),
+                Text(
+                  signedIn ? (app.name ?? '') : s.guestName,
+                  style: AppText.body(16.5, weight: FontWeight.w600),
+                ),
                 const SizedBox(height: 2),
-                Text(signedIn ? '+91 98••• ••210' : s.guestSub,
-                    style: AppText.caption),
+                Text(
+                  signedIn ? '+91 98••• ••210' : s.guestSub,
+                  style: AppText.caption,
+                ),
               ],
             ),
           ),
@@ -147,9 +192,14 @@ class _IdentityCard extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: Gap.lg),
                 shape: const RoundedRectangleBorder(borderRadius: Radii.sm),
               ),
-              child: Text(s.signIn,
-                  style: AppText.body(13.5,
-                      weight: FontWeight.w600, color: AppColors.white)),
+              child: Text(
+                s.signIn,
+                style: AppText.body(
+                  13.5,
+                  weight: FontWeight.w600,
+                  color: AppColors.white,
+                ),
+              ),
             )
           else
             IconButton(
@@ -207,18 +257,26 @@ class _Tile extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Gap.lg, vertical: Gap.md),
+        padding: const EdgeInsets.symmetric(
+          horizontal: Gap.lg,
+          vertical: Gap.md,
+        ),
         child: Row(
           children: [
             Icon(icon, size: 19, color: AppColors.terracotta),
             const SizedBox(width: Gap.lg),
             Expanded(child: Text(label, style: AppText.body(14.5))),
             if (trailingText != null)
-              Text(trailingText!,
-                  style: AppText.body(13.5, color: AppColors.inkMuted)),
+              Text(
+                trailingText!,
+                style: AppText.body(13.5, color: AppColors.inkMuted),
+              ),
             const SizedBox(width: Gap.sm),
-            const Icon(Icons.chevron_right_rounded,
-                size: 19, color: AppColors.inkFaint),
+            const Icon(
+              Icons.chevron_right_rounded,
+              size: 19,
+              color: AppColors.inkFaint,
+            ),
           ],
         ),
       ),
@@ -234,7 +292,7 @@ class _SellerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final s = context.s;
+    final s = ProfileStrings.of(context.app.lang);
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -252,27 +310,42 @@ class _SellerCard extends StatelessWidget {
                 color: AppColors.white.withValues(alpha: 0.12),
                 borderRadius: Radii.sm,
               ),
-              child: const Icon(Icons.storefront_outlined,
-                  color: AppColors.white, size: 21),
+              child: const Icon(
+                Icons.storefront_outlined,
+                color: AppColors.white,
+                size: 21,
+              ),
             ),
             const SizedBox(width: Gap.lg),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(s.switchToSeller,
-                      style: AppText.body(14.5,
-                          weight: FontWeight.w600, color: AppColors.white)),
+                  Text(
+                    s.switchToSeller,
+                    style: AppText.body(
+                      14.5,
+                      weight: FontWeight.w600,
+                      color: AppColors.white,
+                    ),
+                  ),
                   const SizedBox(height: 2),
-                  Text(s.sellerModeSub,
-                      style: AppText.body(12,
-                          color: AppColors.white.withValues(alpha: 0.75),
-                          height: 1.3)),
+                  Text(
+                    s.sellerModeSub,
+                    style: AppText.body(
+                      12,
+                      color: AppColors.white.withValues(alpha: 0.75),
+                      height: 1.3,
+                    ),
+                  ),
                 ],
               ),
             ),
-            const Icon(Icons.arrow_forward_rounded,
-                size: 18, color: AppColors.white),
+            const Icon(
+              Icons.arrow_forward_rounded,
+              size: 18,
+              color: AppColors.white,
+            ),
           ],
         ),
       ),
