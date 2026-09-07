@@ -13,7 +13,18 @@ import 'link_state.dart';
 ///
 /// One codebase, two very different products. The backend will decide this at
 /// login; until then [AppState.signIn] stands in for it.
-enum Role { buyer, seller }
+enum Role {
+  buyer,
+  seller;
+
+  /// The API calls a seller an artisan. Translate in one place rather than
+  /// scattering the mismatch, and default to buyer for anything unrecognised so
+  /// an unknown role can never be handed the listing tools.
+  static Role fromApi(String value) =>
+      switch (value.toLowerCase()) { 'artisan' || 'seller' => Role.seller, _ => Role.buyer };
+
+  String get apiValue => this == Role.seller ? 'artisan' : 'buyer';
+}
 
 /// App-wide state that is not owned by any single screen.
 ///
@@ -27,13 +38,18 @@ class AppState extends ChangeNotifier {
     SyncService? sync,
   })  : _lang = lang,
         api = api ?? ApiClient(),
-        capture = capture ?? CaptureService() {
+        _capture = capture {
     this.sync = sync ?? SyncService(api: this.api, outbox: MemoryOutboxStore());
     this.sync.addListener(notifyListeners);
   }
 
   final ApiClient api;
-  final CaptureService capture;
+
+  /// Built on first use, not at startup. Constructing it opens a platform
+  /// channel to the recorder, which a buyer who never touches the microphone
+  /// has no reason to pay for.
+  CaptureService? _capture;
+  CaptureService get capture => _capture ??= CaptureService();
   late SyncService sync;
   ProductStore products = MemoryProductStore();
 
@@ -77,6 +93,42 @@ class AppState extends ChangeNotifier {
 
   /// Stand-in for the real auth call. The role the backend returns is what
   /// decides whether this person sees a storefront or a listing tool.
+  /// Phone number the prototype signs in as.
+  ///
+  /// Stable rather than random, so the same artisan and her catalogue survive a
+  /// reinstall. Google sign in replaces this method and nothing downstream
+  /// changes, because the rest of the app only ever cares about the token and
+  /// the role.
+  static const demoPhone = '9000000001';
+  static const demoOtp = '123456';
+
+  bool _authenticating = false;
+
+  /// Get a token if we do not have one.
+  ///
+  /// Called before anything that needs the server. Failure is deliberately
+  /// silent: with no signal there is no token to be had, and the outbox already
+  /// holds the work until there is.
+  Future<bool> ensureSession() async {
+    if (api.isAuthenticated) return true;
+    if (_authenticating) return false;
+
+    _authenticating = true;
+    try {
+      final token = await api.verifyOtp(demoPhone, demoOtp);
+      signIn(
+        as: Role.fromApi(token.role),
+        name: token.name.isEmpty ? 'Artisan' : token.name,
+        token: token.accessToken,
+      );
+      return true;
+    } on ApiException {
+      return false;
+    } finally {
+      _authenticating = false;
+    }
+  }
+
   void signIn({required Role as, String name = 'Meena Chaudhary', String? token}) {
     if (token != null) api.token = token;
     _signedIn = true;

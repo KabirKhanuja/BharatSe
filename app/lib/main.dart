@@ -56,8 +56,16 @@ class _BharatSeAppState extends State<BharatSeApp> {
     }
 
     final store = await openOutboxStore();
-    final sync = SyncService(api: _state.api, outbox: store);
+    final sync = SyncService(
+      api: _state.api,
+      outbox: store,
+      ensureSession: _state.ensureSession,
+    );
     _state.attachSync(sync);
+
+    // Get a token before the first drain, or every queued row comes back 401
+    // and reads as a network failure.
+    await _state.ensureSession();
     await sync.start();
   }
 

@@ -22,10 +22,14 @@ import '../session/link_state.dart';
 /// foreground and on connectivity change covers everything a person will
 /// actually see.
 class SyncService extends ChangeNotifier {
-  SyncService({required this.api, required this.outbox});
+  SyncService({required this.api, required this.outbox, this.ensureSession});
 
   final ApiClient api;
   final OutboxStore outbox;
+
+  /// Called before a drain so queued work is not sent without a token, which
+  /// the server rejects with a 401 and which reads here as a plain failure.
+  final Future<bool> Function()? ensureSession;
 
   LinkState _link = LinkState.online;
   int _pending = 0;
@@ -107,6 +111,9 @@ class SyncService extends ChangeNotifier {
     notifyListeners();
 
     try {
+      if (ensureSession != null && !api.isAuthenticated) {
+        await ensureSession!();
+      }
       final products =
           items.where((i) => i.entity == 'product').toList(growable: false);
 

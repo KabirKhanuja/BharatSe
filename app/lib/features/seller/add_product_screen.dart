@@ -143,8 +143,13 @@ class _AddProductScreenState extends State<AddProductScreen>
       _enhanceAttempted = true;
     });
 
+    // Read the state once, before any await. Reaching back through context
+    // after an async gap is how you end up touching a disposed widget.
+    final app = context.app;
+
     try {
-      final result = await context.app.api.enhanceListingImages(
+      await app.ensureSession();
+      final result = await app.api.enhanceListingImages(
         imagePaths: _photos,
         clientId: _clientId,
         label: _listing?.titleEn ?? '',
@@ -192,6 +197,7 @@ class _AddProductScreenState extends State<AddProductScreen>
     });
 
     try {
+      await app.ensureSession();
       final result = await app.api.generateListing(
         audioPath: path,
         language: app.lang.name == 'hi' ? 'hi' : null,
