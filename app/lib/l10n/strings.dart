@@ -457,7 +457,8 @@ class AppStrings {
     emptyOrders: 'अभी कोई ऑर्डर नहीं',
     emptyWishlist: 'अभी कुछ सहेजा नहीं गया',
     offlineNotice: 'इंटरनेट नहीं है। काम करते रहिए, कुछ नहीं खोएगा।',
-    offlineNoticeWithCount: 'इंटरनेट नहीं है। {n} चीज़ें फ़ोन में सुरक्षित हैं।',
+    offlineNoticeWithCount:
+        'इंटरनेट नहीं है। {n} चीज़ें फ़ोन में सुरक्षित हैं।',
     syncing: 'सिंक हो रहा है… {n} बची हैं',
     allSynced: 'सब कुछ सिंक हो गया',
     savedOnPhone: 'फ़ोन में सुरक्षित',
@@ -530,5 +531,10 @@ class AppStrings {
     categoryLabel: 'श्रेणी',
   );
 
-  static AppStrings of(Lang lang) => lang == Lang.hi ? hi : en;
+  /// English is the reviewed fallback while additional UI translations are
+  /// added. Data content still uses the selected language when available.
+  static AppStrings of(Lang lang) => switch (lang) {
+    Lang.hi => hi,
+    _ => en,
+  };
 }
