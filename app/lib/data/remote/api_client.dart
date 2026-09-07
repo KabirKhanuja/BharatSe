@@ -3,6 +3,7 @@ import 'dart:io' show File, SocketException;
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 
 import 'api_models.dart';
 
@@ -96,6 +97,37 @@ class ApiClient {
             .post(_uri('/auth/otp/verify'),
                 headers: _headers,
                 body: jsonEncode({'phone': phone, 'code': code}))
+            .timeout(_shortTimeout);
+        if (response.statusCode >= 400) _fail(response);
+
+        final token = AuthToken.fromJson(jsonDecode(response.body));
+        _token = token.accessToken;
+        return token;
+      });
+
+  /// Exchange a Firebase ID token for one of ours.
+  ///
+  /// `role` is only honoured when the account is created. Sending a different
+  /// one later does not change anything, because that would be a way around
+  /// identity verification.
+  Future<AuthToken> signInWithFirebase({
+    required String idToken,
+    required String role,
+    String name = '',
+    bool create = true,
+  }) =>
+      _guard(() async {
+        final response = await _client
+            .post(
+              _uri('/auth/firebase'),
+              headers: {'content-type': 'application/json'},
+              body: jsonEncode({
+                'id_token': idToken,
+                'role': role,
+                'name': name,
+                'create': create,
+              }),
+            )
             .timeout(_shortTimeout);
         if (response.statusCode >= 400) _fail(response);
 
@@ -257,6 +289,45 @@ class ApiClient {
         return SyncResult.fromJson(jsonDecode(response.body));
       });
 
+  // ------------------------------------------------------------ verification
+  Future<VerificationStatus> verificationStatus() => _guard(() async {
+        final response = await _client
+            .get(_uri('/verification/status'), headers: _headers)
+            .timeout(_shortTimeout);
+        if (response.statusCode >= 400) _fail(response);
+        return VerificationStatus.fromJson(jsonDecode(response.body));
+      });
+
+  /// Upload an identity document for review.
+  ///
+  /// Deliberately not queued through the outbox. Everything else an artisan
+  /// does works offline, but this one cannot: there is nothing useful to show
+  /// her until a human on the other end has looked at it.
+  Future<void> submitVerification({
+    required String documentPath,
+    String stateCode = '',
+    String craft = '',
+  }) =>
+      _guard(() async {
+        final request = http.MultipartRequest('POST', _uri('/verification/submit'))
+          ..headers.addAll({if (_token != null) 'authorization': 'Bearer $_token'})
+          ..files.add(await http.MultipartFile.fromPath(
+            'document',
+            documentPath,
+            // MultipartFile does not infer this and defaults to
+            // application/octet-stream, which any server checking content type
+            // will reject.
+            contentType: _mediaTypeFor(documentPath),
+          ));
+
+        if (stateCode.isNotEmpty) request.fields['state_code'] = stateCode;
+        if (craft.isNotEmpty) request.fields['craft'] = craft;
+
+        final streamed = await request.send().timeout(_uploadTimeout);
+        final response = await http.Response.fromStream(streamed);
+        if (response.statusCode >= 400) _fail(response);
+      });
+
   // --------------------------------------------------------------- passports
   Future<PassportIssue> issuePassport(String productId) => _guard(() async {
         final response = await _client
@@ -277,6 +348,18 @@ class ApiClient {
   }
 
   void close() => _client.close();
+}
+
+/// Content type from the file extension, since MultipartFile will not do it.
+MediaType _mediaTypeFor(String path) {
+  final extension = path.toLowerCase().split('.').last;
+  return switch (extension) {
+    'png' => MediaType('image', 'png'),
+    'pdf' => MediaType('application', 'pdf'),
+    'heic' || 'heif' => MediaType('image', 'heic'),
+    'webp' => MediaType('image', 'webp'),
+    _ => MediaType('image', 'jpeg'),
+  };
 }
 
 class ApiException implements Exception {

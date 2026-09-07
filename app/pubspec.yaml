@@ -13,8 +13,18 @@ dependencies:
   flutter_svg: ^2.0.10
   path_drawing: ^1.0.1
 
+  # Identity. Firebase authenticates; the API maps that to a Postgres user and
+  # stays the source of truth for role and verification state.
+  firebase_core: ^3.8.0
+  firebase_auth: ^5.3.4
+  google_sign_in: ^6.2.2
+
+  # Landing background
+  video_player: ^2.9.2
+
   # Network
   http: ^1.2.2
+  http_parser: ^4.1.0
 
   # Capture. `record` emits 16 kHz mono WAV natively, which is exactly what the
   # API wants, so there is no audio conversion step anywhere in this app.
@@ -45,7 +55,10 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/images/
+    - assets/svg/
     - assets/map/
+    - assets/video/
 
   fonts:
     - family: Playfair

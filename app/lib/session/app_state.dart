@@ -1,8 +1,10 @@
 import 'package:flutter/widgets.dart';
 
 import '../data/remote/api_client.dart';
+import '../data/remote/api_models.dart';
 import '../l10n/lang.dart';
 import '../l10n/strings.dart';
+import '../services/auth_service.dart';
 import '../services/capture_service.dart';
 import '../data/local/outbox_repository.dart';
 import '../data/local/product_store.dart';
@@ -50,8 +52,103 @@ class AppState extends ChangeNotifier {
   /// has no reason to pay for.
   CaptureService? _capture;
   CaptureService get capture => _capture ??= CaptureService();
+
+  AuthService? _auth;
+  AuthService get auth => _auth ??= AuthService();
+  set auth(AuthService value) => _auth = value;
+
+  /// Whether the landing screen should still be showing.
+  ///
+  /// Separate from [signedIn] so a cold start can hold the video on screen
+  /// while we exchange a restored Firebase session for our own token, rather
+  /// than flashing the landing page and then jumping away from it.
+  bool _bootstrapping = true;
+  bool get bootstrapping => _bootstrapping;
+
+  void finishBootstrap() {
+    if (!_bootstrapping) return;
+    _bootstrapping = false;
+    notifyListeners();
+  }
+
+  /// Sign in through Firebase, then exchange that for our own token.
+  ///
+  /// The role we send is a request, not a decision: the server only applies it
+  /// when creating the account. Whatever comes back is what this person
+  /// actually is, and that is what the app routes on.
+  Future<void> completeSignIn({
+    required String idToken,
+    required Role wants,
+    String name = '',
+    bool create = true,
+  }) async {
+    final token = await api.signInWithFirebase(
+      idToken: idToken,
+      role: wants.apiValue,
+      name: name,
+      create: create,
+    );
+
+    signIn(
+      as: Role.fromApi(token.role),
+      name: token.name.isEmpty ? name : token.name,
+      token: token.accessToken,
+    );
+
+    if (role == Role.seller) await refreshVerification();
+  }
+
+  /// Restore a session on a cold start, if Firebase still has one.
+  ///
+  /// Deliberately never creates an account. A Firebase session can outlive the
+  /// account it belonged to, or exist before one was ever made, and guessing a
+  /// role here would fix it permanently to whatever we guessed. If the server
+  /// has no account, drop the stale Firebase session and let the landing screen
+  /// ask properly.
+  Future<void> restoreSession() async {
+    try {
+      final idToken = await auth.idToken();
+      if (idToken != null && idToken.isNotEmpty) {
+        await completeSignIn(
+          idToken: idToken,
+          wants: Role.buyer,
+          create: false,
+        );
+      }
+    } on ApiException catch (error) {
+      if (error.statusCode == 404) await auth.signOut();
+    } catch (_) {
+      // No session, or no signal. The landing screen handles both.
+    } finally {
+      finishBootstrap();
+    }
+  }
+
+  Future<void> signOutEverywhere() async {
+    await auth.signOut();
+    signOut();
+  }
   late SyncService sync;
   ProductStore products = MemoryProductStore();
+
+  /// Where this artisan stands in identity review.
+  ///
+  /// Held here rather than fetched per screen, because both the shell and the
+  /// verification screen switch on it and they must never disagree.
+  VerificationStatus _verification = VerificationStatus.unknown;
+  VerificationStatus get verification => _verification;
+
+  /// Ask the server. Silent on failure: with no signal the last known state is
+  /// better than bouncing her out of a screen she is halfway through.
+  Future<void> refreshVerification() async {
+    if (!await ensureSession()) return;
+    try {
+      _verification = await api.verificationStatus();
+      notifyListeners();
+    } on ApiException {
+      // Keep what we had.
+    }
+  }
 
   void attachProducts(ProductStore store) {
     products = store;
@@ -139,6 +236,7 @@ class AppState extends ChangeNotifier {
 
   void signOut() {
     api.token = null;
+    _verification = VerificationStatus.unknown;
     _signedIn = false;
     _role = Role.buyer;
     _name = null;

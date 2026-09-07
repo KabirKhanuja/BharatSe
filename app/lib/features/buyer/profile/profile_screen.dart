@@ -40,7 +40,7 @@ class ProfileScreen extends StatelessWidget {
           _Tile(icon: Icons.info_outline_rounded, label: s.about),
         ]),
         const SizedBox(height: Gap.xl),
-        _SellerCard(onTap: onSwitchToSeller),
+        if (onSwitchToSeller != null) _SellerCard(onTap: onSwitchToSeller),
       ],
     );
   }
@@ -153,7 +153,7 @@ class _IdentityCard extends StatelessWidget {
             )
           else
             IconButton(
-              onPressed: app.signOut,
+              onPressed: app.signOutEverywhere,
               icon: const Icon(Icons.logout_rounded, size: 19),
               color: AppColors.inkMuted,
             ),

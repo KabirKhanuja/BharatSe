@@ -307,3 +307,48 @@ class ListingImages {
         enhancedCount: (json['enhanced_count'] as num?)?.toInt() ?? 0,
       );
 }
+
+
+/// Where an artisan is in identity review.
+///
+/// One state rather than two booleans, because the app has to choose a screen
+/// and deriving that from `submitted && !verified` is the kind of thing that
+/// gets inverted once and then ships.
+enum VerificationState {
+  notSubmitted,
+  pending,
+  approved;
+
+  static VerificationState fromApi(String value) => switch (value) {
+        'approved' => VerificationState.approved,
+        'pending' => VerificationState.pending,
+        _ => VerificationState.notSubmitted,
+      };
+
+  bool get canSell => this == VerificationState.approved;
+}
+
+class VerificationStatus {
+  const VerificationStatus({
+    required this.submitted,
+    required this.isVerified,
+    required this.state,
+  });
+
+  final bool submitted;
+  final bool isVerified;
+  final VerificationState state;
+
+  factory VerificationStatus.fromJson(Map<String, dynamic> json) =>
+      VerificationStatus(
+        submitted: json['submitted'] as bool? ?? false,
+        isVerified: json['is_verified'] as bool? ?? false,
+        state: VerificationState.fromApi(json['state'] as String? ?? ''),
+      );
+
+  static const unknown = VerificationStatus(
+    submitted: false,
+    isVerified: false,
+    state: VerificationState.notSubmitted,
+  );
+}

@@ -1,0 +1,105 @@
+{
+  "project_info": {
+    "project_number": "253195662046",
+    "project_id": "minicart-648ca",
+    "storage_bucket": "minicart-648ca.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:253195662046:android:09b78110f9992a4950884f",
+        "android_client_info": {
+          "package_name": "com.example.lab_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "253195662046-qf7ki2rdi2r4sraa663dpkivrefihdvo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDF4bLsTLC9eselqk7eE7q2rjOx9S9ShzE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "253195662046-qf7ki2rdi2r4sraa663dpkivrefihdvo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:253195662046:android:e002ba9ba84d5ed550884f",
+        "android_client_info": {
+          "package_name": "com.example.sargam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "253195662046-qf7ki2rdi2r4sraa663dpkivrefihdvo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDF4bLsTLC9eselqk7eE7q2rjOx9S9ShzE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "253195662046-qf7ki2rdi2r4sraa663dpkivrefihdvo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:253195662046:android:f051da2848d1ca3950884f",
+        "android_client_info": {
+          "package_name": "com.luminescence.bharatse"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "253195662046-0io07rfsj7pur9d3crrk0iis534irtp4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.luminescence.bharatse",
+            "certificate_hash": "36cf44cee7c3174dbea913c413fcfbb47b862ebf"
+          }
+        },
+        {
+          "client_id": "253195662046-qf7ki2rdi2r4sraa663dpkivrefihdvo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDF4bLsTLC9eselqk7eE7q2rjOx9S9ShzE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "253195662046-qf7ki2rdi2r4sraa663dpkivrefihdvo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

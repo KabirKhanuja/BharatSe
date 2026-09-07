@@ -127,6 +127,41 @@ class AppStrings {
     required this.published,
     required this.draft,
     required this.categoryLabel,
+    required this.verifyTitle,
+    required this.verifySubtitle,
+    required this.verifyWhy,
+    required this.verifyUpload,
+    required this.verifyRetake,
+    required this.verifySubmit,
+    required this.verifySubmitting,
+    required this.verifyPendingTitle,
+    required this.verifyPendingBody,
+    required this.verifyApprovedTitle,
+    required this.verifyFailed,
+    required this.verifyDocumentHint,
+    required this.verifyPrivacy,
+    required this.checkAgain,
+    required this.landingTagline,
+    required this.continueAsBuyer,
+    required this.continueAsSeller,
+    required this.buyerBlurb,
+    required this.sellerBlurb,
+    required this.signInTitle,
+    required this.signUpTitle,
+    required this.emailLabel,
+    required this.passwordLabel,
+    required this.nameLabel,
+    required this.continueWithGoogle,
+    required this.orDivider,
+    required this.haveAccount,
+    required this.noAccount,
+    required this.createAccount,
+    required this.signInAction,
+    required this.signingIn,
+    required this.emailRequired,
+    required this.passwordTooShort,
+    required this.signOut,
+    required this.changeRole,
   });
 
   final String tagline;
@@ -273,6 +308,45 @@ class AppStrings {
   final String draft;
   final String categoryLabel;
 
+  // verification
+  final String verifyTitle;
+  final String verifySubtitle;
+  final String verifyWhy;
+  final String verifyUpload;
+  final String verifyRetake;
+  final String verifySubmit;
+  final String verifySubmitting;
+  final String verifyPendingTitle;
+  final String verifyPendingBody;
+  final String verifyApprovedTitle;
+  final String verifyFailed;
+  final String verifyDocumentHint;
+  final String verifyPrivacy;
+  final String checkAgain;
+
+  // landing and auth
+  final String landingTagline;
+  final String continueAsBuyer;
+  final String continueAsSeller;
+  final String buyerBlurb;
+  final String sellerBlurb;
+  final String signInTitle;
+  final String signUpTitle;
+  final String emailLabel;
+  final String passwordLabel;
+  final String nameLabel;
+  final String continueWithGoogle;
+  final String orDivider;
+  final String haveAccount;
+  final String noAccount;
+  final String createAccount;
+  final String signInAction;
+  final String signingIn;
+  final String emailRequired;
+  final String passwordTooShort;
+  final String signOut;
+  final String changeRole;
+
   static const AppStrings en = AppStrings(
     tagline: 'From the people of Bharat, for Bharat',
     navHome: 'Home',
@@ -400,6 +474,41 @@ class AppStrings {
     published: 'On sale',
     draft: 'Draft',
     categoryLabel: 'Category',
+    verifyTitle: 'Verify who you are',
+    verifySubtitle: 'One time, so buyers know your work is really yours',
+    verifyWhy: 'Every product you list carries your name. We check identity once so nobody else can list under it.',
+    verifyUpload: 'Upload Aadhaar or ID',
+    verifyRetake: 'Choose a different photo',
+    verifySubmit: 'Send for review',
+    verifySubmitting: 'Sending',
+    verifyPendingTitle: 'Sent for review',
+    verifyPendingBody: 'Someone from the ministry will check this. It usually takes a day. You can close the app.',
+    verifyApprovedTitle: 'You are verified',
+    verifyFailed: 'Could not send it just now',
+    verifyDocumentHint: 'A clear photo of the whole card, or a PDF',
+    verifyPrivacy: 'Your document is stored privately and is only seen by the reviewing officer.',
+    checkAgain: 'Check again',
+    landingTagline: 'Handmade, from the people of Bharat',
+    continueAsBuyer: 'I want to buy',
+    continueAsSeller: 'I make things',
+    buyerBlurb: 'Browse crafts from every corner of India',
+    sellerBlurb: 'List your work and reach buyers everywhere',
+    signInTitle: 'Sign in',
+    signUpTitle: 'Create your account',
+    emailLabel: 'Email',
+    passwordLabel: 'Password',
+    nameLabel: 'Your name',
+    continueWithGoogle: 'Continue with Google',
+    orDivider: 'or',
+    haveAccount: 'Already have an account?',
+    noAccount: 'New here?',
+    createAccount: 'Create one',
+    signInAction: 'Sign in',
+    signingIn: 'Signing you in',
+    emailRequired: 'Enter your email and password',
+    passwordTooShort: 'Use at least six characters',
+    signOut: 'Sign out',
+    changeRole: 'Switch account type',
   );
 
   static const AppStrings hi = AppStrings(
@@ -528,6 +637,41 @@ class AppStrings {
     published: 'बिक्री पर',
     draft: 'अधूरा',
     categoryLabel: 'श्रेणी',
+    verifyTitle: 'अपनी पहचान बताइए',
+    verifySubtitle: 'एक बार, ताकि खरीदार जानें कि काम वाकई आपका है',
+    verifyWhy: 'आप जो भी सामान डालेंगी उस पर आपका नाम रहेगा। पहचान एक बार जाँच लेते हैं ताकि कोई और आपके नाम से न बेच सके।',
+    verifyUpload: 'आधार या पहचान पत्र डालें',
+    verifyRetake: 'दूसरी फ़ोटो चुनें',
+    verifySubmit: 'जाँच के लिए भेजें',
+    verifySubmitting: 'भेजा जा रहा है',
+    verifyPendingTitle: 'जाँच के लिए भेज दिया',
+    verifyPendingBody: 'मंत्रालय से कोई इसे देखेगा। आमतौर पर एक दिन लगता है। आप ऐप बंद कर सकती हैं।',
+    verifyApprovedTitle: 'आपकी पहचान जाँच ली गई',
+    verifyFailed: 'अभी भेज नहीं पाए',
+    verifyDocumentHint: 'पूरे कार्ड की साफ़ फ़ोटो, या PDF',
+    verifyPrivacy: 'आपका दस्तावेज़ सुरक्षित रखा जाता है और सिर्फ़ जाँच करने वाले अधिकारी को दिखता है।',
+    checkAgain: 'फिर देखें',
+    landingTagline: 'हाथ से बना, भारत के लोगों से',
+    continueAsBuyer: 'मुझे खरीदना है',
+    continueAsSeller: 'मैं बनाती हूँ',
+    buyerBlurb: 'भारत के हर कोने के शिल्प देखिए',
+    sellerBlurb: 'अपना काम डालिए और हर जगह तक पहुँचिए',
+    signInTitle: 'साइन इन करें',
+    signUpTitle: 'अपना खाता बनाइए',
+    emailLabel: 'ईमेल',
+    passwordLabel: 'पासवर्ड',
+    nameLabel: 'आपका नाम',
+    continueWithGoogle: 'Google से आगे बढ़ें',
+    orDivider: 'या',
+    haveAccount: 'पहले से खाता है?',
+    noAccount: 'नए हैं?',
+    createAccount: 'खाता बनाइए',
+    signInAction: 'साइन इन करें',
+    signingIn: 'साइन इन हो रहा है',
+    emailRequired: 'ईमेल और पासवर्ड डालिए',
+    passwordTooShort: 'कम से कम छह अक्षर रखिए',
+    signOut: 'साइन आउट',
+    changeRole: 'खाते का प्रकार बदलें',
   );
 
   static AppStrings of(Lang lang) => lang == Lang.hi ? hi : en;

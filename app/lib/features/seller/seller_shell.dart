@@ -8,6 +8,7 @@ import '../../widgets/offline.dart';
 import '../../widgets/wordmark.dart';
 import 'add_product_screen.dart';
 import 'home/seller_home_screen.dart';
+import 'verification/verification_screen.dart';
 
 /// The artisan product.
 ///
@@ -24,6 +25,16 @@ class SellerShell extends StatefulWidget {
 class _SellerShellState extends State<SellerShell> {
   final _homeKey = GlobalKey<State<SellerHomeScreen>>();
 
+  @override
+  void initState() {
+    super.initState();
+    // Ask once on entry rather than polling. Approval is a human action that
+    // takes hours, so anything more frequent is wasted requests.
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => context.app.refreshVerification(),
+    );
+  }
+
   Future<void> _openAddProduct() async {
     await Navigator.of(context).push(
       MaterialPageRoute(builder: (_) => const AddProductScreen()),
@@ -36,6 +47,15 @@ class _SellerShellState extends State<SellerShell> {
   Widget build(BuildContext context) {
     final app = context.app;
     final s = context.s;
+
+    // Nothing below this line is reachable until a ministry officer has
+    // approved her. Listing under an unverified identity is the thing the
+    // Craft Passport exists to make impossible.
+    if (!app.verification.state.canSell) {
+      return VerificationScreen(
+        onApproved: () => setState(() {}),
+      );
+    }
 
     return Scaffold(
       backgroundColor: AppColors.cream,

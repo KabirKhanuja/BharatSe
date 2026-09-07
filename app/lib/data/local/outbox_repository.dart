@@ -147,10 +147,15 @@ class MemoryOutboxStore implements OutboxStore {
   Future<void> clear() async => _items.clear();
 }
 
-Future<OutboxStore> openOutboxStore() async {
-  if (kIsWeb) return MemoryOutboxStore();
+/// Takes the database rather than opening its own.
+///
+/// Two `OutboxDb` instances over the same file race each other and can corrupt
+/// it, which drift warns about loudly at runtime. The caller owns the one
+/// instance and hands it to everything that needs it.
+Future<OutboxStore> openOutboxStore(OutboxDb? db) async {
+  if (kIsWeb || db == null) return MemoryOutboxStore();
   try {
-    return DriftOutboxStore(OutboxDb());
+    return DriftOutboxStore(db);
   } catch (error) {
     debugPrint('Outbox database unavailable, falling back to memory: $error');
     return MemoryOutboxStore();

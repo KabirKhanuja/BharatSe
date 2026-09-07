@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android blocks cleartext HTTP by default from API 28 onwards, and it does so
+  silently: the request fails as a connection error, which this app correctly
+  interprets as being offline. That is why sign in appeared to fail after
+  Firebase had already succeeded.
+
+  Cleartext is permitted only for local development addresses. Everything else,
+  including anything we deploy, still requires HTTPS.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <!-- Android emulator's route to the host machine -->
+        <domain includeSubdomains="false">10.0.2.2</domain>
+        <domain includeSubdomains="false">localhost</domain>
+        <domain includeSubdomains="false">127.0.0.1</domain>
+        <!-- A dev machine on the same wifi as a physical device -->
+        <domain includeSubdomains="true">192.168.1.14</domain>
+    </domain-config>
+</network-security-config>

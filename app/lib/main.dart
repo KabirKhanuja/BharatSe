@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart' show debugPrint, kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 
 import 'data/catalog.dart';
+import 'features/auth/landing_screen.dart';
 import 'features/buyer/buyer_shell.dart';
 import 'features/buyer/cart/cart_screen.dart';
 import 'features/buyer/state/state_screen.dart';
@@ -16,9 +18,19 @@ import 'session/app_state.dart';
 import 'session/link_state.dart';
 import 'theme/app_theme.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(AppTheme.systemOverlay);
+
+  // Firebase is not fatal. If it fails to start, the app still runs and the
+  // landing screen simply cannot sign anyone in, which is a better outcome
+  // than a white screen with no explanation.
+  try {
+    await Firebase.initializeApp();
+  } catch (error) {
+    debugPrint('Firebase failed to initialise: $error');
+  }
+
   runApp(const BharatSeApp());
 }
 
@@ -46,16 +58,21 @@ class _BharatSeAppState extends State<BharatSeApp> {
   /// The queue starts in memory so the first frame is never blocked on disk,
   /// then swaps to the durable store as soon as it opens.
   Future<void> _openDurableOutbox() async {
+    // One database instance for the whole app. Two of them over the same file
+    // race and can corrupt it, which is the last thing the offline outbox
+    // should be capable of doing.
+    OutboxDb? db;
     if (!kIsWeb) {
       try {
-        final db = OutboxDb();
+        db = OutboxDb();
         _state.attachProducts(openProductStore(db: db));
       } catch (error) {
-        debugPrint('Local product store unavailable: $error');
+        debugPrint('Local database unavailable, using memory: $error');
+        db = null;
       }
     }
 
-    final store = await openOutboxStore();
+    final store = await openOutboxStore(db);
     final sync = SyncService(
       api: _state.api,
       outbox: store,
@@ -63,9 +80,9 @@ class _BharatSeAppState extends State<BharatSeApp> {
     );
     _state.attachSync(sync);
 
-    // Get a token before the first drain, or every queued row comes back 401
-    // and reads as a network failure.
-    await _state.ensureSession();
+    // Adopt an existing Firebase session if there is one, so a returning user
+    // lands where they left off instead of on the sign in screen.
+    await _state.restoreSession();
     await sync.start();
   }
 
@@ -105,9 +122,19 @@ class _Root extends StatelessWidget {
       return _MaybeFramed(child: StateScreen(state: Catalog.stateById('jk')));
     }
 
-    // One codebase, two products. The backend will set the role at login.
+    // Hold the landing film while a restored session is exchanged for our own
+    // token, so a returning user never sees the landing page flash past.
+    if (app.bootstrapping) return const _Splash();
+
+    // Nobody sees a product surface until they have said who they are.
+    if (!app.signedIn) return const LandingScreen();
+
+    // One codebase, two products. The role comes from Postgres, not from what
+    // the app asked for at sign up.
     final shell = switch (app.role) {
-      Role.buyer => BuyerShell(onSwitchToSeller: () => app.setRole(Role.seller)),
+      // No local role switch. Role is decided by the server at sign up, and
+      // flipping it here only produces 403s from every seller endpoint.
+      Role.buyer => const BuyerShell(),
       Role.seller => SellerShell(onSwitchToBuyer: () => app.setRole(Role.buyer)),
     };
 
@@ -135,6 +162,25 @@ class _Root extends StatelessWidget {
       ),
     );
   }
+}
+
+/// Shown for the moment between launch and knowing whether there is a session.
+/// Deliberately the landing film's own colours, so the transition into either
+/// the landing screen or the app is not a flash of white.
+class _Splash extends StatelessWidget {
+  const _Splash();
+
+  @override
+  Widget build(BuildContext context) => const ColoredBox(
+        color: Color(0xFF2A1B12),
+        child: Center(
+          child: SizedBox(
+            width: 22,
+            height: 22,
+            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white24),
+          ),
+        ),
+      );
 }
 
 /// Screenshot harness only. Chrome headless refuses windows narrower than
