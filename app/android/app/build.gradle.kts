@@ -24,6 +24,8 @@ android {
         applicationId = "com.luminescence.bharatse"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
+        // record 6.x requires 23, and sqlite3_flutter_libs will not link
+        // below it either. Flutter's default is lower.
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

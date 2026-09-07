@@ -80,6 +80,44 @@ class AppStrings {
     required this.artisansHere,
     required this.startShopping,
     required this.qty,
+    required this.addPhotos,
+    required this.addPhotosSub,
+    required this.addPhoto,
+    required this.stepOf,
+    required this.holdToDescribe,
+    required this.inYourLanguage,
+    required this.listening,
+    required this.releaseToFinish,
+    required this.preparing,
+    required this.aiSuggestions,
+    required this.enhancedImages,
+    required this.beforeLabel,
+    required this.afterLabel,
+    required this.productStory,
+    required this.suggestedPrice,
+    required this.priceIsFair,
+    required this.priceRange,
+    required this.neverBelowWage,
+    required this.lowestPrice,
+    required this.productDetails,
+    required this.hoursTaken,
+    required this.publishToMarket,
+    required this.saveOnPhoneCta,
+    required this.hoursUnit,
+    required this.listen,
+    required this.edit,
+    required this.couldNotGenerate,
+    required this.tryAgain,
+    required this.micNeeded,
+    required this.noteTooShort,
+    required this.myProducts,
+    required this.addProduct,
+    required this.noProductsYet,
+    required this.noProductsBody,
+    required this.waitingToSync,
+    required this.published,
+    required this.draft,
+    required this.categoryLabel,
   });
 
   final String tagline;
@@ -177,6 +215,46 @@ class AppStrings {
   final String startShopping;
   final String qty;
 
+  // seller
+  final String addPhotos;
+  final String addPhotosSub;
+  final String addPhoto;
+  final String stepOf;
+  final String holdToDescribe;
+  final String inYourLanguage;
+  final String listening;
+  final String releaseToFinish;
+  final String preparing;
+  final String aiSuggestions;
+  final String enhancedImages;
+  final String beforeLabel;
+  final String afterLabel;
+  final String productStory;
+  final String suggestedPrice;
+  final String priceIsFair;
+  final String priceRange;
+  final String neverBelowWage;
+  final String lowestPrice;
+  final String productDetails;
+  final String hoursTaken;
+  final String publishToMarket;
+  final String saveOnPhoneCta;
+  final String hoursUnit;
+  final String listen;
+  final String edit;
+  final String couldNotGenerate;
+  final String tryAgain;
+  final String micNeeded;
+  final String noteTooShort;
+  final String myProducts;
+  final String addProduct;
+  final String noProductsYet;
+  final String noProductsBody;
+  final String waitingToSync;
+  final String published;
+  final String draft;
+  final String categoryLabel;
+
   static const AppStrings en = AppStrings(
     tagline: 'From the people of Bharat, for Bharat',
     navHome: 'Home',
@@ -257,6 +335,44 @@ class AppStrings {
     artisansHere: 'artisans here',
     startShopping: 'Start exploring',
     qty: 'Qty',
+    addPhotos: 'Add photo or video',
+    addPhotosSub: 'Clear pictures of what you made',
+    addPhoto: 'Add photo',
+    stepOf: 'Step',
+    holdToDescribe: 'Hold and tell us about your product',
+    inYourLanguage: 'In your own language',
+    listening: 'Listening. Keep talking.',
+    releaseToFinish: 'Let go when you are done',
+    preparing: 'Writing your listing',
+    aiSuggestions: 'Prepared for you',
+    enhancedImages: 'Improved pictures',
+    beforeLabel: 'Before',
+    afterLabel: 'After',
+    productStory: 'The story of this piece',
+    suggestedPrice: 'Suggested price',
+    priceIsFair: 'Fair for today\'s market',
+    priceRange: 'Between',
+    neverBelowWage: 'Never less than your own work is worth.',
+    lowestPrice: 'Lowest',
+    productDetails: 'Details',
+    hoursTaken: 'Hours it took',
+    publishToMarket: 'Send to market',
+    saveOnPhoneCta: 'Save on this phone',
+    hoursUnit: 'hours',
+    listen: 'Listen',
+    edit: 'Change',
+    couldNotGenerate: 'Could not write the listing just now',
+    tryAgain: 'Try again',
+    micNeeded: 'The microphone is needed to hear you',
+    noteTooShort: 'That was too short. Hold the button and speak.',
+    myProducts: 'My products',
+    addProduct: 'Add a product',
+    noProductsYet: 'Nothing listed yet',
+    noProductsBody: 'Take a photo, say what it is, and it goes on sale.',
+    waitingToSync: 'Waiting for signal',
+    published: 'On sale',
+    draft: 'Draft',
+    categoryLabel: 'Category',
   );
 
   static const AppStrings hi = AppStrings(
@@ -338,6 +454,44 @@ class AppStrings {
     artisansHere: 'कारीगर यहाँ',
     startShopping: 'खोजना शुरू करें',
     qty: 'संख्या',
+    addPhotos: 'फ़ोटो या वीडियो जोड़ें',
+    addPhotosSub: 'अपने सामान की साफ़ तस्वीरें लगाइए',
+    addPhoto: 'फ़ोटो जोड़ें',
+    stepOf: 'चरण',
+    holdToDescribe: 'दबाकर अपने सामान के बारे में बताइए',
+    inYourLanguage: 'अपनी भाषा में',
+    listening: 'सुन रहे हैं। बोलते रहिए।',
+    releaseToFinish: 'हो जाए तो छोड़ दीजिए',
+    preparing: 'आपकी लिस्टिंग बन रही है',
+    aiSuggestions: 'आपके लिए तैयार किया गया',
+    enhancedImages: 'बेहतर की गई तस्वीरें',
+    beforeLabel: 'पहले',
+    afterLabel: 'बाद में',
+    productStory: 'सामान की कहानी',
+    suggestedPrice: 'सुझाया गया दाम',
+    priceIsFair: 'आज के बाज़ार के हिसाब से सही',
+    priceRange: 'के बीच',
+    neverBelowWage: 'आपकी मेहनत से कम दाम कभी नहीं।',
+    lowestPrice: 'सबसे कम',
+    productDetails: 'सामान का ब्यौरा',
+    hoursTaken: 'कितने घंटे लगे',
+    publishToMarket: 'बाज़ार में भेजें',
+    saveOnPhoneCta: 'इसी फ़ोन में सुरक्षित करें',
+    hoursUnit: 'घंटे',
+    listen: 'सुनें',
+    edit: 'बदलें',
+    couldNotGenerate: 'अभी लिस्टिंग नहीं बन पाई',
+    tryAgain: 'फिर कोशिश करें',
+    micNeeded: 'आपको सुनने के लिए माइक चाहिए',
+    noteTooShort: 'बहुत छोटा था। बटन दबाकर बोलिए।',
+    myProducts: 'मेरा सामान',
+    addProduct: 'नया सामान जोड़ें',
+    noProductsYet: 'अभी कुछ नहीं डाला',
+    noProductsBody: 'फ़ोटो लीजिए, बताइए क्या है, और वह बिकने लगेगा।',
+    waitingToSync: 'सिग्नल का इंतज़ार',
+    published: 'बिक्री पर',
+    draft: 'अधूरा',
+    categoryLabel: 'श्रेणी',
   );
 
   static AppStrings of(Lang lang) => lang == Lang.hi ? hi : en;

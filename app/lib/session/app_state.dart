@@ -1,6 +1,12 @@
 import 'package:flutter/widgets.dart';
+
+import '../data/remote/api_client.dart';
 import '../l10n/lang.dart';
 import '../l10n/strings.dart';
+import '../services/capture_service.dart';
+import '../data/local/outbox_repository.dart';
+import '../data/local/product_store.dart';
+import '../services/sync_service.dart';
 import 'link_state.dart';
 
 /// Which experience the signed-in account gets.
@@ -14,15 +20,42 @@ enum Role { buyer, seller }
 /// Kept deliberately small and dependency-free. When the backend lands, only
 /// [signIn] and [signOut] change.
 class AppState extends ChangeNotifier {
-  AppState({Lang lang = Lang.en}) : _lang = lang;
+  AppState({
+    Lang lang = Lang.en,
+    ApiClient? api,
+    CaptureService? capture,
+    SyncService? sync,
+  })  : _lang = lang,
+        api = api ?? ApiClient(),
+        capture = capture ?? CaptureService() {
+    this.sync = sync ?? SyncService(api: this.api, outbox: MemoryOutboxStore());
+    this.sync.addListener(notifyListeners);
+  }
+
+  final ApiClient api;
+  final CaptureService capture;
+  late SyncService sync;
+  ProductStore products = MemoryProductStore();
+
+  void attachProducts(ProductStore store) {
+    products = store;
+    notifyListeners();
+  }
+
+  /// Swap in the durable outbox once it has opened. Done after construction so
+  /// nothing blocks the first frame on disk IO.
+  void attachSync(SyncService service) {
+    sync.removeListener(notifyListeners);
+    sync = service;
+    sync.addListener(notifyListeners);
+    notifyListeners();
+  }
 
   Lang _lang;
   Role _role = Role.buyer;
   bool _signedIn = false;
   String? _name;
   final Map<String, int> _cart = {'p1': 1, 'p3': 1};
-  LinkState _link = LinkState.online;
-  int _queued = 0;
   final Set<String> _saved = {};
 
   Lang get lang => _lang;
@@ -32,8 +65,8 @@ class AppState extends ChangeNotifier {
   String? get name => _name;
   Map<String, int> get cart => Map.unmodifiable(_cart);
   int get cartCount => _cart.values.fold(0, (a, b) => a + b);
-  LinkState get link => _link;
-  int get queued => _queued;
+  LinkState get link => sync.link;
+  int get queued => sync.pending;
   Set<String> get saved => _saved;
 
   void setLang(Lang lang) {
@@ -44,7 +77,8 @@ class AppState extends ChangeNotifier {
 
   /// Stand-in for the real auth call. The role the backend returns is what
   /// decides whether this person sees a storefront or a listing tool.
-  void signIn({required Role as, String name = 'Meena Chaudhary'}) {
+  void signIn({required Role as, String name = 'Meena Chaudhary', String? token}) {
+    if (token != null) api.token = token;
     _signedIn = true;
     _role = as;
     _name = name;
@@ -52,6 +86,7 @@ class AppState extends ChangeNotifier {
   }
 
   void signOut() {
+    api.token = null;
     _signedIn = false;
     _role = Role.buyer;
     _name = null;
@@ -92,24 +127,16 @@ class AppState extends ChangeNotifier {
 
   /// Sets the connection state directly. Used at startup and by tests.
   void cycleLinkTo(LinkState state) {
-    _link = state;
-    _queued = state == LinkState.online ? 0 : 1;
-    notifyListeners();
+    sync.forceLink(state);
   }
 
   /// Development affordance so the offline story can be rehearsed on a desk.
   void cycleLink() {
-    switch (_link) {
-      case LinkState.online:
-        _link = LinkState.offline;
-        _queued = 1;
-      case LinkState.offline:
-        _link = LinkState.syncing;
-      case LinkState.syncing:
-        _link = LinkState.online;
-        _queued = 0;
-    }
-    notifyListeners();
+    sync.forceLink(switch (sync.link) {
+      LinkState.online => LinkState.offline,
+      LinkState.offline => LinkState.syncing,
+      LinkState.syncing => LinkState.online,
+    });
   }
 }
 

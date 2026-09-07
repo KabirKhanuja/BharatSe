@@ -2,59 +2,84 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:bharatse/features/seller/add_product_screen.dart';
-import 'package:bharatse/theme/app_theme.dart';
 import 'package:bharatse/session/app_state.dart';
+import 'package:bharatse/data/local/outbox_repository.dart';
 import 'package:bharatse/widgets/offline.dart';
 
-/// The screen is a long scroll. The default 800x600 test surface only builds
-/// its top third, so every test mounts it on a tall viewport instead of
-/// scrolling to each assertion.
-Future<void> _mount(
+/// The listing flow starts empty on purpose. Nothing below the microphone
+/// exists until she has actually said something, so these tests assert the
+/// empty state and the offline affordances rather than pre filled content.
+Future<AppState> _mount(
   WidgetTester tester, {
   LinkState link = LinkState.online,
   int queued = 0,
 }) async {
-  tester.view.physicalSize = const Size(430, 2400);
+  tester.view.physicalSize = const Size(412, 1600);
   tester.view.devicePixelRatio = 1.0;
   addTearDown(() {
     tester.view.resetPhysicalSize();
     tester.view.resetDevicePixelRatio();
   });
 
-  final state = AppState()..cycleLinkTo(link);
+  final state = AppState();
+
+  // Queue real items rather than faking a count, so the strip is exercised
+  // through the same path the app uses.
+  for (var i = 0; i < queued; i++) {
+    await state.sync.outbox.enqueue(PendingItem(
+      clientId: 'test-$i',
+      entity: 'product',
+      op: 'upsert',
+      payload: const {},
+      attempts: 0,
+    ));
+  }
+  await state.sync.refreshCount();
+  state.cycleLinkTo(link);
+
   await tester.pumpWidget(AppScope(
     state: state,
-    child: MaterialApp(
-      theme: AppTheme.light,
-      home: AddProductScreen(link: link, queued: queued),
+    child: const MaterialApp(
+      home: AddProductScreen(),
     ),
   ));
   await tester.pumpAndSettle();
+  return state;
 }
 
 void main() {
-  testWidgets('renders the blocks the demo depends on', (tester) async {
+  testWidgets('opens in English, asking for a photo and a voice note',
+      (tester) async {
     await _mount(tester);
 
-    expect(find.text('दबाकर अपने सामान के बारे में बताइए'), findsOneWidget);
-    expect(find.text('बाज़ार में भेजें'), findsOneWidget);
-    expect(find.text('सामान की कहानी'), findsOneWidget);
-    expect(find.textContaining('सबसे कम', findRichText: true), findsOneWidget);
+    expect(find.text('Add photo or video'), findsOneWidget);
+    expect(find.text('Hold and tell us about your product'), findsOneWidget);
+    expect(find.text('In your own language'), findsOneWidget);
   });
 
-  testWidgets('every content block can be played aloud', (tester) async {
+  testWidgets('shows nothing below the microphone until she has spoken',
+      (tester) async {
     await _mount(tester);
 
-    // Story, price and details each carry a speaker. A user who cannot read
-    // must be able to hear anything the AI wrote for her.
-    expect(find.byIcon(Icons.volume_up_rounded), findsNWidgets(3));
+    expect(find.text('The story of this piece'), findsNothing);
+    expect(find.text('Suggested price'), findsNothing);
+    expect(find.text('Details'), findsNothing);
   });
 
-  testWidgets('offline changes the publish affordance and says so', (tester) async {
+  testWidgets('publish is disabled until there is something to publish',
+      (tester) async {
+    await _mount(tester);
+
+    final button = tester.widget<FilledButton>(find.byType(FilledButton).last);
+    expect(button.onPressed, isNull);
+  });
+
+  testWidgets('offline changes the publish wording and says why',
+      (tester) async {
     await _mount(tester, link: LinkState.offline, queued: 1);
 
-    expect(find.text('फ़ोन में सुरक्षित करें'), findsOneWidget);
-    expect(find.text('बाज़ार में भेजें'), findsNothing);
+    expect(find.text('Save on this phone'), findsOneWidget);
+    expect(find.text('Send to market'), findsNothing);
     expect(find.textContaining('No internet'), findsOneWidget);
     expect(find.textContaining('1 saved on your phone'), findsOneWidget);
   });
@@ -62,45 +87,17 @@ void main() {
   testWidgets('online with nothing queued shows no connection strip',
       (tester) async {
     await _mount(tester);
+
     expect(find.byType(ConnectionStrip), findsOneWidget);
-    expect(find.textContaining('Syncing'), findsNothing);
     expect(find.textContaining('No internet'), findsNothing);
+    expect(find.textContaining('Syncing'), findsNothing);
   });
 
-  testWidgets('raising hours never leaves the price below the wage floor',
+  testWidgets('the microphone and the photo tile are both reachable',
       (tester) async {
     await _mount(tester);
 
-    expect(find.text('₹1,250'), findsOneWidget);
-
-    // 7 hours -> 27 hours. Floor becomes 380 + 27*60 = 2000, which overtakes
-    // the 1250 asking price, so the price must be lifted to meet it.
-    final plus = find.byKey(const Key('hours-plus'));
-    for (var i = 0; i < 20; i++) {
-      await tester.tap(plus);
-      await tester.pump();
-    }
-
-    expect(find.text('27 घंटे'), findsOneWidget);
-    expect(find.text('₹2,000'), findsOneWidget);
-    expect(find.text('₹1,250'), findsNothing);
-  });
-
-  testWidgets('lowering hours does not claw the price back down', (tester) async {
-    await _mount(tester);
-
-    final plus = find.byKey(const Key('hours-plus'));
-    for (var i = 0; i < 20; i++) {
-      await tester.tap(plus);
-      await tester.pump();
-    }
-    final minus = find.byKey(const Key('hours-minus'));
-    for (var i = 0; i < 10; i++) {
-      await tester.tap(minus);
-      await tester.pump();
-    }
-
-    // Floor drops to 380 + 17*60 = 1400, but the price she was shown stays.
-    expect(find.text('₹2,000'), findsOneWidget);
+    expect(find.byKey(const Key('mic')), findsOneWidget);
+    expect(find.byKey(const Key('add-photo')), findsOneWidget);
   });
 }

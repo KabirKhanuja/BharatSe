@@ -13,10 +13,32 @@ dependencies:
   flutter_svg: ^2.0.10
   path_drawing: ^1.0.1
 
+  # Network
+  http: ^1.2.2
+
+  # Capture. `record` emits 16 kHz mono WAV natively, which is exactly what the
+  # API wants, so there is no audio conversion step anywhere in this app.
+  # Pinned to 6.x: record 7 needs Dart 3.12 and this Flutter ships 3.11.5.
+  # Upgrading Flutter the night before a demo is not a trade worth making.
+  record: ^6.0.0
+  image_picker: ^1.1.2
+  permission_handler: ^12.0.0
+
+  # Local first storage and the sync outbox
+  drift: ^2.23.0
+  drift_flutter: ^0.2.4
+  sqlite3_flutter_libs: ^0.5.26
+  path_provider: ^2.1.5
+  path: ^1.9.0
+  connectivity_plus: ^7.0.0
+  uuid: ^4.5.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  build_runner: ^2.4.14
+  drift_dev: ^2.23.0
 
 flutter:
   uses-material-design: true
