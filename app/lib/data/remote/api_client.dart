@@ -341,6 +341,8 @@ class ApiClient {
     required String documentPath,
     String stateCode = '',
     String craft = '',
+    String district = '',
+    String cluster = '',
   }) =>
       _guard(() async {
         final request = http.MultipartRequest('POST', _uri('/verification/submit'))
@@ -356,6 +358,8 @@ class ApiClient {
 
         if (stateCode.isNotEmpty) request.fields['state_code'] = stateCode;
         if (craft.isNotEmpty) request.fields['craft'] = craft;
+        if (district.isNotEmpty) request.fields['district'] = district;
+        if (cluster.isNotEmpty) request.fields['cluster'] = cluster;
 
         final streamed = await request.send().timeout(_uploadTimeout);
         final response = await http.Response.fromStream(streamed);

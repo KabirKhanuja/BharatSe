@@ -60,7 +60,9 @@ class ProductCard extends StatelessWidget {
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
-                        saved ? Icons.favorite_rounded : Icons.favorite_border_rounded,
+                        saved
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_border_rounded,
                         size: 16,
                         color: saved ? AppColors.maroon : AppColors.ink,
                       ),
@@ -69,45 +71,64 @@ class ProductCard extends StatelessWidget {
                 ),
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(Gap.md, Gap.sm, Gap.md, Gap.md),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(origin.name(lang).toUpperCase(),
-                      style: AppText.eyebrow, maxLines: 1,
-                      overflow: TextOverflow.ellipsis),
-                  const SizedBox(height: 3),
-                  Text(product.name(lang),
+            // Flexible, not fixed. A grid tile can be shorter than the text
+            // wants, and a hard height there is what produced the striped
+            // overflow bars on the state pages.
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  Gap.md,
+                  Gap.sm,
+                  Gap.md,
+                  Gap.md,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      origin.name(lang).toUpperCase(),
+                      style: AppText.eyebrow,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 3),
+                    Text(
+                      product.name(lang),
                       style: AppText.productName,
                       maxLines: 2,
-                      overflow: TextOverflow.ellipsis),
-                  const SizedBox(height: 5),
-                  Text(inr(product.price), style: AppText.price),
-                  const SizedBox(height: Gap.sm),
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 9,
-                        backgroundColor: AppColors.creamAlt,
-                        child: Text(
-                          product.artisan(lang).characters.first,
-                          style: AppText.body(9.5,
-                              weight: FontWeight.w700, color: AppColors.terracotta),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 5),
+                    Text(inr(product.price), style: AppText.price),
+                    const SizedBox(height: Gap.sm),
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 9,
+                          backgroundColor: AppColors.creamAlt,
+                          child: Text(
+                            product.artisan(lang).characters.first,
+                            style: AppText.body(
+                              9.5,
+                              weight: FontWeight.w700,
+                              color: AppColors.terracotta,
+                            ),
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        child: Text(
-                          '${context.s.byArtisan} ${product.artisan(lang)}',
-                          style: AppText.caption,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        const SizedBox(width: 6),
+                        Expanded(
+                          child: Text(
+                            '${context.s.byArtisan} ${product.artisan(lang)}',
+                            style: AppText.caption,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

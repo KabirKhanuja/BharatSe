@@ -173,7 +173,7 @@ class StateScreen extends StatelessWidget {
                   crossAxisCount: 2,
                   mainAxisSpacing: Gap.md,
                   crossAxisSpacing: Gap.md,
-                  childAspectRatio: 0.66,
+                  childAspectRatio: 0.60,
                 ),
                 itemCount: products.length,
                 itemBuilder: (context, i) => ProductCard(

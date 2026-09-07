@@ -212,6 +212,15 @@ class AppStrings {
     required this.budgetSub,
     required this.perDay,
     required this.marketplaceNote,
+    required this.whereYouWork,
+    required this.whereYouWorkSub,
+    required this.stateLabel,
+    required this.districtLabel,
+    required this.clusterLabel,
+    required this.craftLabel,
+    required this.selectState,
+    required this.required_,
+    required this.justListed,
   });
 
   final String tagline;
@@ -446,6 +455,15 @@ class AppStrings {
   final String budgetSub;
   final String perDay;
   final String marketplaceNote;
+  final String whereYouWork;
+  final String whereYouWorkSub;
+  final String stateLabel;
+  final String districtLabel;
+  final String clusterLabel;
+  final String craftLabel;
+  final String selectState;
+  final String required_;
+  final String justListed;
 
   static const AppStrings en = AppStrings(
     tagline: 'From the people of Bharat, for Bharat',
@@ -659,6 +677,15 @@ class AppStrings {
     budgetSub: 'Paid by the scheme, not by you',
     perDay: 'per day',
     marketplaceNote: 'Marketplace has no public listing API, so this goes out through the Meta catalogue and Lead Ads.',
+    whereYouWork: 'Where you work',
+    whereYouWorkSub: 'Buyers find crafts by state, so this puts you on the map',
+    stateLabel: 'State',
+    districtLabel: 'District or city',
+    clusterLabel: 'Craft cluster',
+    craftLabel: 'What you make',
+    selectState: 'Choose your state',
+    required_: 'Please choose your state',
+    justListed: 'Just listed',
   );
 
   static const AppStrings hi = AppStrings(
@@ -873,6 +900,15 @@ class AppStrings {
     budgetSub: 'योजना भरती है, आप नहीं',
     perDay: 'रोज़',
     marketplaceNote: 'Marketplace की कोई पब्लिक लिस्टिंग API नहीं है, इसलिए यह Meta कैटलॉग और Lead Ads से जाता है।',
+    whereYouWork: 'आप कहाँ काम करती हैं',
+    whereYouWorkSub: 'खरीदार राज्य के हिसाब से शिल्प ढूँढते हैं, इससे आप नक्शे पर आ जाएँगी',
+    stateLabel: 'राज्य',
+    districtLabel: 'ज़िला या शहर',
+    clusterLabel: 'शिल्प क्लस्टर',
+    craftLabel: 'आप क्या बनाती हैं',
+    selectState: 'अपना राज्य चुनिए',
+    required_: 'कृपया अपना राज्य चुनिए',
+    justListed: 'अभी डाला गया',
   );
 
   /// English is the reviewed fallback while additional UI translations are
@@ -1089,6 +1125,15 @@ class AppStrings {
     budgetSub: 'Paid by the scheme, not by you',
     perDay: 'per day',
     marketplaceNote: 'Marketplace has no public listing API, so this goes out through the Meta catalogue and Lead Ads.',
+    whereYouWork: 'Where you work',
+    whereYouWorkSub: 'Buyers find crafts by state, so this puts you on the map',
+    stateLabel: 'State',
+    districtLabel: 'District or city',
+    clusterLabel: 'Craft cluster',
+    craftLabel: 'What you make',
+    selectState: 'Choose your state',
+    required_: 'Please choose your state',
+    justListed: 'Just listed',
   );
 
   static const AppStrings bn = AppStrings(
@@ -1298,6 +1343,15 @@ class AppStrings {
     budgetSub: 'Paid by the scheme, not by you',
     perDay: 'per day',
     marketplaceNote: 'Marketplace has no public listing API, so this goes out through the Meta catalogue and Lead Ads.',
+    whereYouWork: 'Where you work',
+    whereYouWorkSub: 'Buyers find crafts by state, so this puts you on the map',
+    stateLabel: 'State',
+    districtLabel: 'District or city',
+    clusterLabel: 'Craft cluster',
+    craftLabel: 'What you make',
+    selectState: 'Choose your state',
+    required_: 'Please choose your state',
+    justListed: 'Just listed',
   );
 
   static const AppStrings ta = AppStrings(
@@ -1507,6 +1561,15 @@ class AppStrings {
     budgetSub: 'Paid by the scheme, not by you',
     perDay: 'per day',
     marketplaceNote: 'Marketplace has no public listing API, so this goes out through the Meta catalogue and Lead Ads.',
+    whereYouWork: 'Where you work',
+    whereYouWorkSub: 'Buyers find crafts by state, so this puts you on the map',
+    stateLabel: 'State',
+    districtLabel: 'District or city',
+    clusterLabel: 'Craft cluster',
+    craftLabel: 'What you make',
+    selectState: 'Choose your state',
+    required_: 'Please choose your state',
+    justListed: 'Just listed',
   );
 
   static const AppStrings te = AppStrings(
@@ -1716,6 +1779,15 @@ class AppStrings {
     budgetSub: 'Paid by the scheme, not by you',
     perDay: 'per day',
     marketplaceNote: 'Marketplace has no public listing API, so this goes out through the Meta catalogue and Lead Ads.',
+    whereYouWork: 'Where you work',
+    whereYouWorkSub: 'Buyers find crafts by state, so this puts you on the map',
+    stateLabel: 'State',
+    districtLabel: 'District or city',
+    clusterLabel: 'Craft cluster',
+    craftLabel: 'What you make',
+    selectState: 'Choose your state',
+    required_: 'Please choose your state',
+    justListed: 'Just listed',
   );
 
   static const AppStrings gu = AppStrings(
@@ -1925,6 +1997,15 @@ class AppStrings {
     budgetSub: 'Paid by the scheme, not by you',
     perDay: 'per day',
     marketplaceNote: 'Marketplace has no public listing API, so this goes out through the Meta catalogue and Lead Ads.',
+    whereYouWork: 'Where you work',
+    whereYouWorkSub: 'Buyers find crafts by state, so this puts you on the map',
+    stateLabel: 'State',
+    districtLabel: 'District or city',
+    clusterLabel: 'Craft cluster',
+    craftLabel: 'What you make',
+    selectState: 'Choose your state',
+    required_: 'Please choose your state',
+    justListed: 'Just listed',
   );
 
   static const AppStrings kn = AppStrings(
@@ -2134,6 +2215,15 @@ class AppStrings {
     budgetSub: 'Paid by the scheme, not by you',
     perDay: 'per day',
     marketplaceNote: 'Marketplace has no public listing API, so this goes out through the Meta catalogue and Lead Ads.',
+    whereYouWork: 'Where you work',
+    whereYouWorkSub: 'Buyers find crafts by state, so this puts you on the map',
+    stateLabel: 'State',
+    districtLabel: 'District or city',
+    clusterLabel: 'Craft cluster',
+    craftLabel: 'What you make',
+    selectState: 'Choose your state',
+    required_: 'Please choose your state',
+    justListed: 'Just listed',
   );
 
   static const AppStrings od = AppStrings(
@@ -2343,6 +2433,15 @@ class AppStrings {
     budgetSub: 'Paid by the scheme, not by you',
     perDay: 'per day',
     marketplaceNote: 'Marketplace has no public listing API, so this goes out through the Meta catalogue and Lead Ads.',
+    whereYouWork: 'Where you work',
+    whereYouWorkSub: 'Buyers find crafts by state, so this puts you on the map',
+    stateLabel: 'State',
+    districtLabel: 'District or city',
+    clusterLabel: 'Craft cluster',
+    craftLabel: 'What you make',
+    selectState: 'Choose your state',
+    required_: 'Please choose your state',
+    justListed: 'Just listed',
   );
 
   static const AppStrings pa = AppStrings(
@@ -2552,6 +2651,15 @@ class AppStrings {
     budgetSub: 'Paid by the scheme, not by you',
     perDay: 'per day',
     marketplaceNote: 'Marketplace has no public listing API, so this goes out through the Meta catalogue and Lead Ads.',
+    whereYouWork: 'Where you work',
+    whereYouWorkSub: 'Buyers find crafts by state, so this puts you on the map',
+    stateLabel: 'State',
+    districtLabel: 'District or city',
+    clusterLabel: 'Craft cluster',
+    craftLabel: 'What you make',
+    selectState: 'Choose your state',
+    required_: 'Please choose your state',
+    justListed: 'Just listed',
   );
 
   static AppStrings of(Lang lang) => switch (lang) {

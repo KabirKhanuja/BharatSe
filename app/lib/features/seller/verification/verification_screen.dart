@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 
+import '../../../data/catalog.dart';
 import '../../../data/remote/api_client.dart';
 import '../../../data/remote/api_models.dart';
 import '../../../session/app_state.dart';
@@ -27,11 +28,23 @@ class VerificationScreen extends StatefulWidget {
 
 class _VerificationScreenState extends State<VerificationScreen> {
   String? _documentPath;
+  String? _stateCode;
+  final _district = TextEditingController();
+  final _cluster = TextEditingController();
+  final _craft = TextEditingController();
   bool _sending = false;
   bool _checking = false;
   String? _error;
 
   VerificationState get _state => context.app.verification.state;
+
+  @override
+  void dispose() {
+    _district.dispose();
+    _cluster.dispose();
+    _craft.dispose();
+    super.dispose();
+  }
 
   Future<void> _pickDocument({required bool fromCamera}) async {
     final capture = context.app.capture;
@@ -45,6 +58,13 @@ class _VerificationScreenState extends State<VerificationScreen> {
     final path = _documentPath;
     if (path == null || _sending) return;
 
+    // State is the one field that is not optional. Everything a buyer sees is
+    // grouped by it, so a listing without one is invisible on the map.
+    if (_stateCode == null) {
+      setState(() => _error = context.s.required_);
+      return;
+    }
+
     final app = context.app;
     setState(() {
       _sending = true;
@@ -53,7 +73,13 @@ class _VerificationScreenState extends State<VerificationScreen> {
 
     try {
       await app.ensureSession();
-      await app.api.submitVerification(documentPath: path);
+      await app.api.submitVerification(
+        documentPath: path,
+        stateCode: _stateCode ?? '',
+        craft: _craft.text.trim(),
+        district: _district.text.trim(),
+        cluster: _cluster.text.trim(),
+      );
       await app.refreshVerification();
     } on ApiException catch (error) {
       if (!mounted) return;
@@ -133,7 +159,20 @@ class _VerificationScreenState extends State<VerificationScreen> {
         const SizedBox(height: Gap.xl),
 
         _documentTile(),
+        const SizedBox(height: Gap.xl),
+
+        Text(s.whereYouWork, style: AppText.label),
+        const SizedBox(height: 2),
+        Text(s.whereYouWorkSub, style: AppText.caption),
         const SizedBox(height: Gap.md),
+        _statePicker(s),
+        const SizedBox(height: Gap.md),
+        _field(_district, s.districtLabel),
+        const SizedBox(height: Gap.md),
+        _field(_cluster, s.clusterLabel),
+        const SizedBox(height: Gap.md),
+        _field(_craft, s.craftLabel),
+        const SizedBox(height: Gap.lg),
 
         Row(
           children: [
@@ -163,6 +202,78 @@ class _VerificationScreenState extends State<VerificationScreen> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _statePicker(dynamic s) {
+    final selected = _stateCode == null
+        ? null
+        : Catalog.states.where((st) => st.id == _stateCode).firstOrNull;
+
+    return InkWell(
+      onTap: _chooseState,
+      borderRadius: Radii.md,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: Gap.lg, vertical: Gap.md),
+        decoration: BoxDecoration(
+          color: AppColors.white,
+          borderRadius: Radii.md,
+          border: Border.all(
+            color: _stateCode == null ? AppColors.line : AppColors.terracotta,
+          ),
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.location_on_outlined,
+                size: 18, color: AppColors.terracotta),
+            const SizedBox(width: Gap.md),
+            Expanded(
+              child: Text(
+                selected?.name(context.lang) ?? s.selectState,
+                style: AppText.body(15,
+                    color: selected == null ? AppColors.inkFaint : AppColors.ink),
+              ),
+            ),
+            const Icon(Icons.expand_more_rounded, color: AppColors.inkFaint),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _chooseState() async {
+    final chosen = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      builder: (sheetContext) => SafeArea(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.sizeOf(context).height * 0.7,
+          ),
+          child: ListView(
+            shrinkWrap: true,
+            children: [
+              for (final state in Catalog.states)
+                ListTile(
+                  title: Text(state.name(context.lang),
+                      style: AppText.body(15.5, weight: FontWeight.w500)),
+                  subtitle: Text(state.crafts(context.lang),
+                      style: AppText.caption),
+                  onTap: () => Navigator.of(sheetContext).pop(state.id),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+    if (chosen != null && mounted) setState(() => _stateCode = chosen);
+  }
+
+  Widget _field(TextEditingController controller, String label) {
+    return TextField(
+      controller: controller,
+      style: AppText.body(15),
+      decoration: InputDecoration(labelText: label),
     );
   }
 

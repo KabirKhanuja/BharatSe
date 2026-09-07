@@ -36,22 +36,24 @@ class HomeScreen extends StatelessWidget {
         _StateStrip(onState: onState),
         const SizedBox(height: Gap.xxl),
         SectionHeader(
-          title: context.s.curatedForYou,
-          actionLabel: context.s.seeAll,
-          onAction: onExplore,
-          devanagari: context.lang.name == 'hi',
-        ),
-        _ProductStrip(onProduct: onProduct),
-        const SizedBox(height: Gap.xxl),
-        const _TrustBanner(),
-        const SizedBox(height: Gap.xxl),
-        SectionHeader(
           title: context.s.newArrivals,
           actionLabel: context.s.seeAll,
           onAction: onExplore,
           devanagari: context.lang.name == 'hi',
         ),
-        _ProductStrip(onProduct: onProduct, skip: 4),
+        // Newest first, straight off the API's ordering, so an artisan who
+        // publishes during a demo appears at the front of this row.
+        _ProductStrip(onProduct: onProduct),
+        const SizedBox(height: Gap.xxl),
+        const _TrustBanner(),
+        const SizedBox(height: Gap.xxl),
+        SectionHeader(
+          title: context.s.curatedForYou,
+          actionLabel: context.s.seeAll,
+          onAction: onExplore,
+          devanagari: context.lang.name == 'hi',
+        ),
+        _ProductStrip(onProduct: onProduct, skip: 6),
       ],
     );
   }
