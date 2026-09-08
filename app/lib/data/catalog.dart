@@ -241,6 +241,185 @@ abstract final class Catalog {
         'ढोकरा चार हज़ार साल से ढाला जा रहा है। मोम का नमूना बनाते समय ही नष्ट हो जाता है, इसलिए वही चीज़ दोबारा नहीं बन सकती।',
       ),
     ),
+
+    // States present in the catalogue that were not in the original
+    // twelve. Same shape, so nothing downstream changes.
+    CraftState(
+      id: 'ap',
+      name: T('Andhra Pradesh', 'Andhra Pradesh'),
+      crafts: T('Kalamkari, Kondapalli Toys', 'कलमकारी, कोंडापल्ली खिलौने'),
+      seed: 0,
+      count: 0,
+      heritage: T(
+        'Andhra Pradesh has an ancient tradition of craft production rooted in rural communities. Kalamkari involves natural dye hand-painting or block printing on cotton fabric, practised mainly in Machilipatnam and Srikalahasti. Kondapalli artisans carve light softwood into figures, animals, and mythological representations using local vegetable dyes. These crafts continue to be sustained through cooperative societies and village clusters.',
+        'आंध्र प्रदेश में ग्रामीण समुदायों से जुड़ी शिल्प निर्माण की एक प्राचीन परंपरा है। कलमकारी में सूती कपड़े पर प्राकृतिक रंगों से हाथ से चित्रकारी या ब्लॉक प्रिंटिंग की जाती है, जो मुख्य रूप से मछलीपट्टनम और श्रीकालहस्ती में प्रचलित है। कोंडापल्ली के कारीगर हल्की नरम लकड़ी को तराशकर देवी-देवताओं, इंसानों और जानवरों के खिलौने बनाते हैं। ये पारंपरिक कलाएं आज भी सहकारी समितियों और ग्रामीण केंद्रों के माध्यम से जारी हैं।',
+      ),
+    ),
+    CraftState(
+      id: 'ar',
+      name: T('Arunachal Pradesh', 'Arunachal Pradesh'),
+      crafts: T('Monpa Wood Carving, Apatani Weaving', 'मोनपा लकड़ी की नक्काशी, अपातानी बुनाई'),
+      seed: 1,
+      count: 0,
+      heritage: T(
+        'The craft practices of Arunachal Pradesh reflect the daily needs and cultural identities of its diverse tribes. Monpa artisans in Tawang carve bowls, masks, and low tables from local timber, often painting them with traditional motifs. Weavers in the Apatani valley produce textiles with distinctive geometric patterns on backstrap tension looms. These crafts utilize forest resources like bamboo, cane, and wood without mechanized processes.',
+        'अरुणाचल प्रदेश की शिल्प परंपराएं यहां की विभिन्न जनजातियों की दैनिक जरूरतों और सांस्कृतिक पहचान को दर्शाती हैं। तवांग में मोनपा कारीगर स्थानीय लकड़ी से कटोरे, मुखौटे और छोटी मेजें तराशते हैं और उन पर पारंपरिक रूपांकन उकेरते हैं। अपातानी घाटी के बुनकर बैकस्ट्रैप लूम पर विशिष्ट ज्यामितीय आकृतियों वाले वस्त्र तैयार करते हैं। इन शिल्पों में बांस, बेंत और लकड़ी जैसे वन संसाधनों का बिना मशीनों के उपयोग किया जाता है।',
+      ),
+    ),
+    CraftState(
+      id: 'as',
+      name: T('Assam', 'Assam'),
+      crafts: T('Muga Silk Weaving, Cane and Bamboo Crafts', 'मूगा रेशम बुनाई, बेंत और बांस शिल्प'),
+      seed: 2,
+      count: 0,
+      heritage: T(
+        'Assam has a widespread culture of domestic weaving where handlooms are found in many rural homes. Muga silk, known for its natural golden sheen, is woven into traditional garments such as the Mekhela Chador. The state also possesses vast bamboo and cane reserves which artisans fashion into domestic utensils, fishing traps, and furniture. Most of these goods are produced using simple hand tools passed down through generations.',
+        'असम में घरेलू बुनाई की व्यापक संस्कृति है जहां कई ग्रामीण घरों में हथकरघे पाए जाते हैं। मूगा रेशम अपनी प्राकृतिक सुनहरी चमक के लिए जाना जाता है, जिससे मेखेला चादर जैसे पारंपरिक परिधान बुने जाते हैं। राज्य में बांस और बेंत का भी प्रचुर भंडार है, जिसे कारीगर घरेलू बर्तनों, मछली पकड़ने के औजारों और फर्नीचर में ढालते हैं। इनमें से अधिकांश वस्तुएं पीढ़ियों से चले आ रहे साधारण औजारों से बनाई जाती हैं।',
+      ),
+    ),
+    CraftState(
+      id: 'br',
+      name: T('Bihar', 'Bihar'),
+      crafts: T('Madhubani Painting, Sikki Grass Craft', 'मधुबनी पेंटिंग, सिक्की घास शिल्प'),
+      seed: 3,
+      count: 0,
+      heritage: T(
+        'Craft traditions in Bihar are closely linked to ritual practices and domestic life. Madhubani painting originated as wall murals created by women during festivals and rites of passage, using natural pigments. Sikki grass craft involves collecting wild golden grass and coiling it into storage containers, baskets, and decorative figures. Both crafts provide non-farm livelihoods for women in northern Bihar.',
+        'बिहार की शिल्प परंपराएं रीति-रिवाजों और घरेलू जीवन से गहराई से जुड़ी हुई हैं। मधुबनी पेंटिंग की शुरुआत महिलाओं द्वारा त्योहारों और शुभ अवसरों पर दीवारों पर प्राकृतिक रंगों से चित्र बनाने से हुई थी। सिक्की घास शिल्प में सुनहरी घास को इकट्ठा करके उससे टोकरियां, भंडारण पात्र और आकृतियां बनाई जाती हैं। ये दोनों शिल्प उत्तर बिहार की महिलाओं को आजीविका के साधन प्रदान करते हैं।',
+      ),
+    ),
+    CraftState(
+      id: 'cg',
+      name: T('Chhattisgarh', 'Chhattisgarh'),
+      crafts: T('Dhokra Metal Casting, Terracotta Craft', 'ढोकरा धातु ढलाई, टेराकोटा शिल्प'),
+      seed: 4,
+      count: 0,
+      heritage: T(
+        'Chhattisgarh has a strong tribal craft base centered around forest and earth materials. Dhokra casting uses the ancient lost-wax technique with brass scrap to produce figures of deities, musicians, and animals. Terracotta pottery in regions like Bastar is crafted into ritual vessels, roof tiles, and votive animals. Artisans rely on local clay, firewood, and beeswax for their production.',
+        'छत्तीसगढ़ की जनजातीय शिल्प परंपराएं जंगल और मिट्टी से जुड़े संसाधनों पर आधारित हैं। ढोकरा ढलाई में पीतल की धातु से मोम-पिघलाने की प्राचीन विधि द्वारा देवी-देवताओं और पशुओं की मूर्तियां बनाई जाती हैं। बस्तर जैसे क्षेत्रों में टेराकोटा कारीगर अनुष्ठानिक बर्तन, खपरैल और मन्नत की आकृतियां तैयार करते हैं। कारीगर इन शिल्पों के लिए स्थानीय मिट्टी, लकड़ी और मधुमक्खी के मोम का उपयोग करते हैं।',
+      ),
+    ),
+    CraftState(
+      id: 'ga',
+      name: T('Goa', 'Goa'),
+      crafts: T('Coconut Shell Craft, Terracotta Pottery', 'नारियल के खोल का शिल्प, टेराकोटा मिट्टी के बर्तन'),
+      seed: 5,
+      count: 0,
+      heritage: T(
+        'Goan crafts draw upon coastal materials and local village utility needs. Coconut shell carving utilizes discarded shells to make bowls, spoons, and carved decorative items. Terracotta potters shape earthenware cooking pots, water pitchers, and roofing tiles. These utilitarian items continue to be sold at local weekly village markets across the state.',
+        'गोवा के शिल्प तटीय संसाधनों और स्थानीय ग्रामीण आवश्यकताओं पर आधारित हैं। नारियल के खोल से कटोरे, चम्मच और नक्काशीदार सजावटी वस्तुएं बनाई जाती हैं। टेराकोटा कुम्हार मिट्टी के खाना पकाने के बर्तन, मटके और छत के खपरैल तैयार करते हैं। ये उपयोगी वस्तुएं आज भी राज्य भर के स्थानीय साप्ताहिक ग्रामीण बाजारों में बेची जाती हैं।',
+      ),
+    ),
+    CraftState(
+      id: 'hr',
+      name: T('Haryana', 'Haryana'),
+      crafts: T('Panja Dhurrie, Clay Pottery', 'पंजा दरी, मिट्टी के बर्तन'),
+      seed: 0,
+      count: 0,
+      heritage: T(
+        'The craft tradition of Haryana is primarily rural and utility-focused. Panja dhurries are flat-woven cotton rugs crafted on horizontal frames using a heavy iron fork called a panja. Village potters across districts like Jhajjar produce clay water coolers and domestic pots suited to the dry climate. Woodworkers also create agricultural implements and basic domestic furniture for local use.',
+        'हरियाणा की शिल्प परंपरा मुख्य रूप से ग्रामीण और व्यावहारिक उपयोग पर केंद्रित है। पंजा दरियां लोहे के पंजे जैसे औजार की मदद से क्षैतिज करघों पर बुनी जाने वाली सूती दरियां हैं। झज्जर जैसे जिलों के ग्रामीण कुम्हार शुष्क मौसम के अनुकूल मिट्टी के मटके और अन्य घरेलू बर्तन बनाते हैं। इसके अलावा स्थानीय बढ़ई खेती के औजार और सामान्य घरेलू फर्नीचर का निर्माण करते हैं।',
+      ),
+    ),
+    CraftState(
+      id: 'jh',
+      name: T('Jharkhand', 'Jharkhand'),
+      crafts: T('Sohrai Khovar Painting, Bamboo Basketry', 'सोहराई खोवर चित्रकला, बांस की टोकरी निर्माण'),
+      seed: 1,
+      count: 0,
+      heritage: T(
+        'Jharkhand\'s crafts are deeply intertwined with indigenous harvest and marriage ceremonies. Sohrai and Khovar paintings are done using natural earth pigments on mud walls, depicting flora, fauna, and geometric forms. Bamboo artisans weave varied baskets, winnowing trays, and grain containers for rural households. These items are made without chemical treatments or modern power machinery.',
+        'झारखंड के शिल्प स्थानीय जनजातियों के फसल और विवाह उत्सवों से गहराई से जुड़े हैं। सोहराई और खोवर चित्रकला मिट्टी की दीवारों पर प्राकृतिक रंगों से बनाई जाती है, जिसमें पेड़-पौधों और जानवरों के चित्र होते हैं। बांस कारीगर ग्रामीण घरों के लिए विभिन्न टोकरियां, सूप और अनाज रखने के पात्र बुनते हैं। ये वस्तुएं बिना किसी रासायनिक प्रक्रिया या आधुनिक मशीनों के बनाई जाती हैं।',
+      ),
+    ),
+    CraftState(
+      id: 'ml',
+      name: T('Meghalaya', 'Meghalaya'),
+      crafts: T('Ryndia Silk Weaving, Cane and Bamboo Mats', 'रिंदिया रेशम बुनाई, बेंत और बांस की चटाई'),
+      seed: 2,
+      count: 0,
+      heritage: T(
+        'Meghalaya utilizes its forest wealth and sericulture traditions to produce everyday goods. Ryndia, or Eri silk, is hand-spun and handwoven by Khasi and Ri-Bhoi weavers using plant-based natural dyes. Skilled craftspeople also weave fine cane mats and a variety of weather-resistant bamboo baskets. The craft production remains largely household-based and seasonal, fitted around agricultural work.',
+        'मेघालय दैनिक उपयोग की वस्तुएं बनाने के लिए अपने वन संसाधनों और रेशम परंपरा का उपयोग करता है। रिंदिया (एरी रेशम) को खासी और री-भोई की बुनकर महिलाएं हाथ से कातकर प्राकृतिक रंगों से बुनती हैं। इसके अलावा कारीगर बेंत की चटाइयों और मौसम रोधी बांस की टोकरियों का निर्माण करते हैं। यह शिल्प उत्पादन मुख्य रूप से घरेलू स्तर पर और खेती के मौसम के अनुसार किया जाता है।',
+      ),
+    ),
+    CraftState(
+      id: 'mz',
+      name: T('Mizoram', 'Mizoram'),
+      crafts: T('Puan Weaving, Bamboo Basketry', 'पुआन बुनाई, बांस की टोकरी निर्माण'),
+      seed: 3,
+      count: 0,
+      heritage: T(
+        'Mizo craft traditions focus strongly on handloom weaving and cane work. Women weave the Puan, a traditional wrap skirt, on loin looms using distinct geometric colour bands that indicate clan and occasion. Mizoram\'s dense bamboo forests provide raw material for making a variety of carrying baskets, including the conical Paikawng. Production is mostly home-based and manual, meeting local community requirements.',
+        'मिज़ो शिल्प परंपराएं मुख्य रूप से हथकरघा बुनाई और बेंत-बांस के काम पर केंद्रित हैं। महिलाएं कमर के करघे पर \'पुआन\' नामक पारंपरिक वस्त्र बुनती हैं, जिसमें विशेष रंग और ज्यामितीय पैटर्न होते हैं। मिज़ोरम के घने बांस के जंगलों से विभिन्न प्रकार की टोकरियां और सामान ले जाने वाले बर्तन बनाए जाते हैं। यह उत्पादन घर-घर में हाथ से किया जाता है और स्थानीय जरूरतों को पूरा करता है।',
+      ),
+    ),
+    CraftState(
+      id: 'nl',
+      name: T('Nagaland', 'Nagaland'),
+      crafts: T('Naga Shawl Weaving, Wood Carving', 'नागा शॉल बुनाई, लकड़ी की नक्काशी'),
+      seed: 4,
+      count: 0,
+      heritage: T(
+        'Nagaland\'s crafts are rooted in the cultural identities of its sixteen major tribes. Naga shawls are woven on body-tension backstrap looms, with patterns, colors, and motifs that historically signified social standing. Woodcarvers work with single blocks of wood to shape village gateposts, ceremonial cups, and animal heads. These craft skills are passed down orally and through observation in village settings.',
+        'नागालैंड की शिल्प परंपराएं यहां की सोलह प्रमुख जनजातियों की सांस्कृतिक पहचान से जुड़ी हैं। नागा शॉल बैकस्ट्रैप लूम पर बुने जाते हैं, जिनके पैटर्न और रंग सामाजिक स्थिति को दर्शाते हैं। लकड़ी तराशने वाले कारीगर लकड़ी के एक ही लट्ठे से गांव के द्वार, पारंपरिक कप और सजावटी आकृतियां बनाते हैं। यह शिल्प कौशल गांवों में मौखिक रूप से और देखकर सीखने के माध्यम से एक पीढ़ी से दूसरी पीढ़ी तक पहुंचता है।',
+      ),
+    ),
+    CraftState(
+      id: 'pb',
+      name: T('Punjab', 'Punjab'),
+      crafts: T('Phulkari Embroidery, Mudda Making', 'फुलकारी कढ़ाई, मुड्ढा निर्माण'),
+      seed: 5,
+      count: 0,
+      heritage: T(
+        'Punjab\'s domestic craft heritage is closely linked to village social life. Phulkari is a traditional embroidery technique where untwisted silk floss is worked on coarse khaddar cotton from the reverse side. Sarkanda grass and bamboo reeds are harvested locally to make durable low stools called muddas. These crafts were traditionally made for household use and wedding trousseaus rather than commercial trade.',
+        'पंजाब की घरेलू शिल्प परंपरा ग्रामीण सामाजिक जीवन से जुड़ी हुई है। फुलकारी एक पारंपरिक कढ़ाई कला है जिसमें मोटे खद्दर के कपड़े पर उल्टी तरफ से रेशमी धागे से कढ़ाई की जाती है। स्थानीय सरकंडा घास और बांस की मदद से टिकाऊ बैठने के मूढ़े बनाए जाते हैं। ये वस्तुएं पारंपरिक रूप से व्यावसायिक बिक्री के बजाय घरेलू उपयोग और शादी-ब्याह के लिए तैयार की जाती थीं।',
+      ),
+    ),
+    CraftState(
+      id: 'sk',
+      name: T('Sikkim', 'Sikkim'),
+      crafts: T('Thangka Painting, Choktse Wood Carving', 'थंगका चित्रकला, चोकत्से लकड़ी नक्काशी'),
+      seed: 0,
+      count: 0,
+      heritage: T(
+        'Sikkim\'s crafts are heavily influenced by Tibetan Buddhist traditions and monastic culture. Thangka painting involves rendering Buddhist deities and mandalas on cotton or silk canvas according to exact iconographic rules. Choktse artisans hand-carve foldable wooden tables with relief motifs like dragons and lotus flowers before painting them. These crafts are taught systematically in traditional state-run institutes to ensure standard preservation.',
+        'सिक्किम की शिल्प कलाएं तिब्बती बौद्ध परंपराओं और मठ संस्कृति से काफी प्रभावित हैं। थंगका चित्रकला में सूती या रेशमी कपड़े पर तय धार्मिक नियमों के अनुसार बौद्ध देवी-देवताओं और मंडलों के चित्र बनाए जाते हैं। चोकत्से कारीगर लकड़ी की तह होने वाली छोटी मेजों पर ड्रैगन और कमल जैसी नक्काशी करते हैं और उन्हें रंगते हैं। इन शिल्पों को संरक्षित रखने के लिए पारंपरिक संस्थानों में व्यवस्थित रूप से सिखाया जाता है।',
+      ),
+    ),
+    CraftState(
+      id: 'tr',
+      name: T('Tripura', 'Tripura'),
+      crafts: T('Cane and Bamboo Furniture, Risa Handloom Weaving', 'बेंत और बांस का फर्नीचर, रीसा हथकरघा बुनाई'),
+      seed: 1,
+      count: 0,
+      heritage: T(
+        'Crafts in Tripura are defined by the widespread abundance of bamboo species and indigenous weaving methods. Artisans make partitions, screens, baskets, and lightweight furniture using split cane and treated bamboo. Women from tribal communities weave Risa, a traditional narrow cloth, on loin looms using cotton yarns. Craft production serves both rural utility and organised cottage enterprise across the state.',
+        'त्रिपुरा के शिल्प प्रचुर मात्रा में मिलने वाले बांस और पारंपरिक बुनाई तकनीकों पर आधारित हैं। कारीगर बांस और बेंत की तीलियों से पर्दे, टोकरियां और हल्का फर्नीचर तैयार करते हैं। जनजातीय समुदायों की महिलाएं कमर के करघे पर \'रीसा\' नामक पारंपरिक सूती कपड़ा बुनती हैं। यह शिल्प उत्पादन राज्य में घरेलू उपयोग और कुटीर उद्योगों दोनों का एक महत्वपूर्ण हिस्सा है।',
+      ),
+    ),
+    CraftState(
+      id: 'ts',
+      name: T('Telangana', 'Telangana'),
+      crafts: T('Pochampally Ikat, Bidriware', 'पोचमपल्ली इकत, बिदरी क्राफ्ट'),
+      seed: 2,
+      count: 0,
+      heritage: T(
+        'Telangana has distinct regional craft hubs with long commercial histories. Pochampally Ikat is a resist-dyeing weaving technique where warp and weft threads are precisely dyed before being woven on pit looms. Bidriware, practised in and around Hyderabad, involves inlaying pure silver wire or sheet into an alloy of zinc and copper, which is then blackened with soil containing sal ammoniac. These trades operate through hereditary master artisan networks and handloom cooperatives.',
+        'तेलंगाना में लंबे व्यापारिक इतिहास वाले कई शिल्प केंद्र मौजूद हैं। पोचमपल्ली इकत एक ऐसी बुनाई तकनीक है जिसमें ताने और बाने के धागों को पहले से रंगकर गड्ढा करघे पर बुना जाता है। हैदराबाद और आसपास प्रचलित बिदरी कला में जस्ता और तांबे की मिश्र धातु पर चांदी के तारों की जड़ाई की जाती है और फिर उसे विशेष मिट्टी से काला किया जाता है। ये शिल्प वंशानुगत कारीगरों और हथकरघा सहकारी समितियों द्वारा संचालित होते हैं।',
+      ),
+    ),
+    CraftState(
+      id: 'uk',
+      name: T('Uttarakhand', 'Uttarakhand'),
+      crafts: T('Ringal Bamboo Craft, Aipan Art', 'रिंगाल बांस शिल्प, ऐपण कला'),
+      seed: 3,
+      count: 0,
+      heritage: T(
+        'Uttarakhand\'s craft traditions reflect the geography of the Himalayan foothills and domestic rituals. Ringal, a dwarf hill bamboo, is harvested in Garhwal and Kumaon to weave durable mats, grain baskets, and household utilities. Aipan is a ritualistic floor and wall art practised by women using a red clay base and white rice paste. These crafts depend entirely on seasonal mountain resources and household participation.',
+        'उत्तराखंड की शिल्प परंपराएं हिमालयी भूगोल और घरेलू अनुष्ठानों को दर्शाती हैं। गढ़वाल और कुमाऊं में रिंगाल (पहाड़ी बांस) से मजबूत चटाइयां, अनाज की टोकरियां और घरेलू बर्तन बुने जाते हैं। ऐपण महिलाओं द्वारा गेरू की लाल पृष्ठभूमि पर चावल के घोल से बनाई जाने वाली पारंपरिक फर्श और दीवार कला है। ये शिल्प पूरी तरह से मौसमी पहाड़ी संसाधनों और घरेलू भागीदारी पर निर्भर हैं।',
+      ),
+    ),
   ];
 
   static const categories = <CraftCategory>[

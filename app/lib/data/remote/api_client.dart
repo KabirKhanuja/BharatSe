@@ -13,11 +13,22 @@ import 'api_models.dart';
 /// or renames a field, this file is the entire blast radius, and a contract
 /// drift is one diff rather than a hunt through the widget tree.
 class ApiClient {
-  ApiClient({String? baseUrl, http.Client? client})
+  ApiClient({String? baseUrl, String? fallbackUrl, http.Client? client})
       : baseUrl = baseUrl ?? defaultBaseUrl,
+        fallbackUrl = fallbackUrl ?? defaultFallbackUrl,
         _client = client ?? http.Client();
 
-  final String baseUrl;
+  String baseUrl;
+
+  /// Tried once when [baseUrl] cannot be reached at all.
+  ///
+  /// On a tethered device the app talks to the host over an `adb reverse`
+  /// tunnel, and that tunnel dies whenever the cable is replugged. Every
+  /// request then fails as a connection error and the app honestly reports
+  /// itself offline, which is indistinguishable from real signal loss. Falling
+  /// back to the machine's LAN address means one dropped cable does not look
+  /// like a broken app.
+  final String fallbackUrl;
   final http.Client _client;
   String? _token;
 
@@ -30,6 +41,10 @@ class ApiClient {
     if (kIsWeb) return 'http://localhost:8000';
     return 'http://10.0.2.2:8000';
   }
+
+  /// Set at build time, e.g. --dart-define=API_FALLBACK_URL=http://192.168.1.14:8000
+  static String get defaultFallbackUrl =>
+      const String.fromEnvironment('API_FALLBACK_URL');
 
   static const _prefix = '/api/v1';
 
@@ -77,9 +92,32 @@ class ApiClient {
     try {
       return await run();
     } on SocketException catch (e) {
-      throw ApiException('No connection', isOffline: true, cause: e);
+      return _retryOnFallback(run, e);
     } on http.ClientException catch (e) {
-      throw ApiException('No connection', isOffline: true, cause: e);
+      return _retryOnFallback(run, e);
+    }
+  }
+
+  /// Swap to the fallback host and try once more before declaring us offline.
+  ///
+  /// Only on a connection error, never on a status code: a server that
+  /// answered with a 4xx is reachable, and retrying it elsewhere would just
+  /// ask a second machine the same rejected question.
+  Future<T> _retryOnFallback<T>(Future<T> Function() run, Object cause) async {
+    if (fallbackUrl.isEmpty || baseUrl == fallbackUrl) {
+      throw ApiException('No connection', isOffline: true, cause: cause);
+    }
+
+    final previous = baseUrl;
+    baseUrl = fallbackUrl;
+    try {
+      return await run();
+    } on SocketException {
+      baseUrl = previous;
+      throw ApiException('No connection', isOffline: true, cause: cause);
+    } on http.ClientException {
+      baseUrl = previous;
+      throw ApiException('No connection', isOffline: true, cause: cause);
     }
   }
 

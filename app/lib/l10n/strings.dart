@@ -221,6 +221,13 @@ class AppStrings {
     required this.selectState,
     required this.required_,
     required this.justListed,
+    required this.byTechnique,
+    required this.byTechniqueSub,
+    required this.theTradition,
+    required this.practisedIn,
+    required this.whyItCosts,
+    required this.piecesUsing,
+    required this.noPiecesYet,
   });
 
   final String tagline;
@@ -464,6 +471,13 @@ class AppStrings {
   final String selectState;
   final String required_;
   final String justListed;
+  final String byTechnique;
+  final String byTechniqueSub;
+  final String theTradition;
+  final String practisedIn;
+  final String whyItCosts;
+  final String piecesUsing;
+  final String noPiecesYet;
 
   static const AppStrings en = AppStrings(
     tagline: 'From the people of Bharat, for Bharat',
@@ -686,6 +700,13 @@ class AppStrings {
     selectState: 'Choose your state',
     required_: 'Please choose your state',
     justListed: 'Just listed',
+    byTechnique: 'Crafts by technique',
+    byTechniqueSub: 'How each piece is actually made, and where it comes from',
+    theTradition: 'The tradition',
+    practisedIn: 'Practised in',
+    whyItCosts: 'Why it takes time',
+    piecesUsing: 'Pieces made this way',
+    noPiecesYet: 'Nothing listed with this technique yet',
   );
 
   static const AppStrings hi = AppStrings(
@@ -909,6 +930,13 @@ class AppStrings {
     selectState: 'अपना राज्य चुनिए',
     required_: 'कृपया अपना राज्य चुनिए',
     justListed: 'अभी डाला गया',
+    byTechnique: 'तकनीक के अनुसार शिल्प',
+    byTechniqueSub: 'हर चीज़ असल में कैसे बनती है, और कहाँ से आती है',
+    theTradition: 'परंपरा',
+    practisedIn: 'कहाँ होता है',
+    whyItCosts: 'समय क्यों लगता है',
+    piecesUsing: 'इसी तरह बने सामान',
+    noPiecesYet: 'इस तकनीक से अभी कुछ नहीं डाला गया',
   );
 
   /// English is the reviewed fallback while additional UI translations are
@@ -1134,6 +1162,13 @@ class AppStrings {
     selectState: 'Choose your state',
     required_: 'Please choose your state',
     justListed: 'Just listed',
+    byTechnique: 'Crafts by technique',
+    byTechniqueSub: 'How each piece is actually made, and where it comes from',
+    theTradition: 'The tradition',
+    practisedIn: 'Practised in',
+    whyItCosts: 'Why it takes time',
+    piecesUsing: 'Pieces made this way',
+    noPiecesYet: 'Nothing listed with this technique yet',
   );
 
   static const AppStrings bn = AppStrings(
@@ -1352,6 +1387,13 @@ class AppStrings {
     selectState: 'Choose your state',
     required_: 'Please choose your state',
     justListed: 'Just listed',
+    byTechnique: 'Crafts by technique',
+    byTechniqueSub: 'How each piece is actually made, and where it comes from',
+    theTradition: 'The tradition',
+    practisedIn: 'Practised in',
+    whyItCosts: 'Why it takes time',
+    piecesUsing: 'Pieces made this way',
+    noPiecesYet: 'Nothing listed with this technique yet',
   );
 
   static const AppStrings ta = AppStrings(
@@ -1570,6 +1612,13 @@ class AppStrings {
     selectState: 'Choose your state',
     required_: 'Please choose your state',
     justListed: 'Just listed',
+    byTechnique: 'Crafts by technique',
+    byTechniqueSub: 'How each piece is actually made, and where it comes from',
+    theTradition: 'The tradition',
+    practisedIn: 'Practised in',
+    whyItCosts: 'Why it takes time',
+    piecesUsing: 'Pieces made this way',
+    noPiecesYet: 'Nothing listed with this technique yet',
   );
 
   static const AppStrings te = AppStrings(
@@ -1788,6 +1837,13 @@ class AppStrings {
     selectState: 'Choose your state',
     required_: 'Please choose your state',
     justListed: 'Just listed',
+    byTechnique: 'Crafts by technique',
+    byTechniqueSub: 'How each piece is actually made, and where it comes from',
+    theTradition: 'The tradition',
+    practisedIn: 'Practised in',
+    whyItCosts: 'Why it takes time',
+    piecesUsing: 'Pieces made this way',
+    noPiecesYet: 'Nothing listed with this technique yet',
   );
 
   static const AppStrings gu = AppStrings(
@@ -2006,6 +2062,13 @@ class AppStrings {
     selectState: 'Choose your state',
     required_: 'Please choose your state',
     justListed: 'Just listed',
+    byTechnique: 'Crafts by technique',
+    byTechniqueSub: 'How each piece is actually made, and where it comes from',
+    theTradition: 'The tradition',
+    practisedIn: 'Practised in',
+    whyItCosts: 'Why it takes time',
+    piecesUsing: 'Pieces made this way',
+    noPiecesYet: 'Nothing listed with this technique yet',
   );
 
   static const AppStrings kn = AppStrings(
@@ -2224,6 +2287,13 @@ class AppStrings {
     selectState: 'Choose your state',
     required_: 'Please choose your state',
     justListed: 'Just listed',
+    byTechnique: 'Crafts by technique',
+    byTechniqueSub: 'How each piece is actually made, and where it comes from',
+    theTradition: 'The tradition',
+    practisedIn: 'Practised in',
+    whyItCosts: 'Why it takes time',
+    piecesUsing: 'Pieces made this way',
+    noPiecesYet: 'Nothing listed with this technique yet',
   );
 
   static const AppStrings od = AppStrings(
@@ -2442,6 +2512,13 @@ class AppStrings {
     selectState: 'Choose your state',
     required_: 'Please choose your state',
     justListed: 'Just listed',
+    byTechnique: 'Crafts by technique',
+    byTechniqueSub: 'How each piece is actually made, and where it comes from',
+    theTradition: 'The tradition',
+    practisedIn: 'Practised in',
+    whyItCosts: 'Why it takes time',
+    piecesUsing: 'Pieces made this way',
+    noPiecesYet: 'Nothing listed with this technique yet',
   );
 
   static const AppStrings pa = AppStrings(
@@ -2660,6 +2737,13 @@ class AppStrings {
     selectState: 'Choose your state',
     required_: 'Please choose your state',
     justListed: 'Just listed',
+    byTechnique: 'Crafts by technique',
+    byTechniqueSub: 'How each piece is actually made, and where it comes from',
+    theTradition: 'The tradition',
+    practisedIn: 'Practised in',
+    whyItCosts: 'Why it takes time',
+    piecesUsing: 'Pieces made this way',
+    noPiecesYet: 'Nothing listed with this technique yet',
   );
 
   static AppStrings of(Lang lang) => switch (lang) {
