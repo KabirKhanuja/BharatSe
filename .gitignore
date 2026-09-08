@@ -4,3 +4,5 @@ app/lib/features/buyer/explore/explore_screen.dart
 app/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved
 app/ios/Runner.xcworkspace/xcshareddata/swiftpm/Package.resolved
 *.resolved
+
+output/

@@ -1,3 +1,5 @@
+import 'dart:async' show unawaited;
+
 import 'package:flutter/foundation.dart' show debugPrint, kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -52,6 +54,10 @@ class _BharatSeAppState extends State<BharatSeApp> {
   @override
   void initState() {
     super.initState();
+    // Fire and forget. A suspended host takes about a minute to come back,
+    // and starting that clock now means the wait happens behind the landing
+    // screen instead of behind the sign in button.
+    unawaited(_state.api.warmUp());
     _openDurableOutbox();
   }
 

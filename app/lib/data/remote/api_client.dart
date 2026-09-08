@@ -413,6 +413,22 @@ class ApiClient {
         return PassportIssue.fromJson(jsonDecode(response.body));
       });
 
+  /// Wake a sleeping host before the user needs it.
+  ///
+  /// A free tier service is suspended after inactivity and the first request
+  /// pays a cold start of roughly a minute, far beyond any timeout a screen
+  /// can sit behind. Called once at launch, this absorbs that wait while the
+  /// landing screen is still on show, so sign in meets a server that is
+  /// already awake. Failure is not interesting: the real request will report
+  /// the problem properly.
+  Future<void> warmUp() async {
+    try {
+      await _client.get(_uri('/health')).timeout(const Duration(seconds: 90));
+    } catch (_) {
+      // Nothing to do. This call exists only for its side effect on the host.
+    }
+  }
+
   Future<bool> health() async {
     try {
       final response =
