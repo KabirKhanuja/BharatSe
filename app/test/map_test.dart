@@ -44,7 +44,10 @@ void main() {
   });
 
   test('every state we stock crafts from exists on the map', () {
-    const aliases = {'or': 'od'};
+    // Must stay in step with _idAliases in india_map.dart. The map file
+    // predates the 2019 reorganisation, and each unaliased code is a state
+    // nobody can tap.
+    const aliases = {'or': 'od', 'ct': 'cg', 'tg': 'ts', 'ut': 'uk'};
     final mapIds = {
       for (final s in json['states'] as List)
         aliases[s['id'] as String] ?? s['id'] as String,

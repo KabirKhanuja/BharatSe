@@ -7,7 +7,10 @@ import '../../../theme/app_text.dart';
 import '../../../widgets/craft_image.dart';
 import '../../../widgets/india_map.dart';
 import '../../../widgets/ornament.dart';
+import '../../../data/techniques.dart';
+import '../../../l10n/lang.dart';
 import '../../../widgets/top_bar.dart';
+import '../technique/technique_screen.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key, this.controller, this.onState});
@@ -97,6 +100,16 @@ class _ExploreScreenState extends State<ExploreScreen> {
         const SizedBox(height: Gap.xxl),
 
         _MapBlock(onState: widget.onState),
+        const SizedBox(height: Gap.xxl),
+
+        _SectionLabel(s.byTechnique),
+        const SizedBox(height: 2),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Gap.page),
+          child: Text(s.byTechniqueSub, style: AppText.caption),
+        ),
+        const SizedBox(height: Gap.md),
+        const _TechniqueList(),
         const SizedBox(height: Gap.xxl),
 
         _SectionLabel(s.browseByCraft),
@@ -307,6 +320,95 @@ class _SectionLabel extends StatelessWidget {
             ? AppText.sectionTitleHi
             : AppText.sectionTitleEn,
       ),
+    );
+  }
+}
+
+/// Techniques that actually have work behind them, biggest first.
+///
+/// Built from the live catalogue rather than a fixed list, so a technique with
+/// nothing listed never appears and a new one shows up on its own.
+class _TechniqueList extends StatelessWidget {
+  const _TechniqueList();
+
+  @override
+  Widget build(BuildContext context) {
+    final counts = <String, int>{};
+    for (final product in context.app.catalogProducts) {
+      final key = product.technique(Lang.en).trim().toLowerCase();
+      if (key.isEmpty) continue;
+      counts[key] = (counts[key] ?? 0) + 1;
+    }
+
+    final entries = [
+      for (final entry in counts.entries)
+        if (Techniques.byKey(entry.key) case final technique?)
+          (technique, entry.value),
+    ]..sort((a, b) => b.$2.compareTo(a.$2));
+
+    if (entries.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      children: [
+        for (final (technique, count) in entries)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(Gap.page, 0, Gap.page, Gap.sm),
+            child: InkWell(
+              borderRadius: Radii.md,
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => TechniqueScreen(technique: technique),
+                ),
+              ),
+              child: Container(
+                padding: const EdgeInsets.all(Gap.md),
+                decoration: BoxDecoration(
+                  color: AppColors.white,
+                  borderRadius: Radii.md,
+                  border: Border.all(color: AppColors.line),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        color: AppColors.creamAlt,
+                        borderRadius: Radii.sm,
+                      ),
+                      child: const Icon(Icons.auto_stories_outlined,
+                          size: 20, color: AppColors.terracotta),
+                    ),
+                    const SizedBox(width: Gap.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(technique.title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppText.body(14.5,
+                                  weight: FontWeight.w600)),
+                          const SizedBox(height: 2),
+                          Text(technique.region,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: AppText.caption),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: Gap.sm),
+                    Text('$count',
+                        style: AppText.body(12.5, color: AppColors.inkFaint)),
+                    const SizedBox(width: 4),
+                    const Icon(Icons.chevron_right_rounded,
+                        size: 20, color: AppColors.inkFaint),
+                  ],
+                ),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

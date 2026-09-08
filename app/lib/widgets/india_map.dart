@@ -30,8 +30,21 @@ class IndiaMapData {
   static IndiaMapData? _cached;
   static Future<IndiaMapData>? _loading;
 
-  /// Map file uses pre-2019 state ids. Ours differ in one place.
-  static const _idAliases = {'or': 'od'};
+  /// The map file predates the 2019 reorganisation and uses older two letter
+  /// codes. Four of them differ from what the database stores, and each
+  /// mismatch silently makes a whole state untappable, so they are aliased
+  /// rather than left to chance.
+  ///
+  ///   or -> od   Odisha
+  ///   ct -> cg   Chhattisgarh
+  ///   tg -> ts   Telangana
+  ///   ut -> uk   Uttarakhand
+  static const _idAliases = {
+    'or': 'od',
+    'ct': 'cg',
+    'tg': 'ts',
+    'ut': 'uk',
+  };
 
   static String canonical(String mapId) => _idAliases[mapId] ?? mapId;
 
