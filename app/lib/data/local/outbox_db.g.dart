@@ -547,6 +547,17 @@ class $LocalProductsTable extends LocalProducts
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _ownerIdMeta = const VerificationMeta(
+    'ownerId',
+  );
+  @override
+  late final GeneratedColumn<String> ownerId = GeneratedColumn<String>(
+    'owner_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _titleEnMeta = const VerificationMeta(
     'titleEn',
   );
@@ -678,6 +689,18 @@ class $LocalProductsTable extends LocalProducts
     requiredDuringInsert: false,
     defaultValue: const Constant(''),
   );
+  static const VerificationMeta _remoteImageUrlsMeta = const VerificationMeta(
+    'remoteImageUrls',
+  );
+  @override
+  late final GeneratedColumn<String> remoteImageUrls = GeneratedColumn<String>(
+    'remote_image_urls',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
   static const VerificationMeta _syncedMeta = const VerificationMeta('synced');
   @override
   late final GeneratedColumn<bool> synced = GeneratedColumn<bool>(
@@ -706,6 +729,7 @@ class $LocalProductsTable extends LocalProducts
   List<GeneratedColumn> get $columns => [
     clientId,
     serverId,
+    ownerId,
     titleEn,
     titleHi,
     descriptionEn,
@@ -718,6 +742,7 @@ class $LocalProductsTable extends LocalProducts
     priceFloor,
     price,
     imagePaths,
+    remoteImageUrls,
     synced,
     createdAt,
   ];
@@ -745,6 +770,12 @@ class $LocalProductsTable extends LocalProducts
       context.handle(
         _serverIdMeta,
         serverId.isAcceptableOrUnknown(data['server_id']!, _serverIdMeta),
+      );
+    }
+    if (data.containsKey('owner_id')) {
+      context.handle(
+        _ownerIdMeta,
+        ownerId.isAcceptableOrUnknown(data['owner_id']!, _ownerIdMeta),
       );
     }
     if (data.containsKey('title_en')) {
@@ -831,6 +862,15 @@ class $LocalProductsTable extends LocalProducts
         imagePaths.isAcceptableOrUnknown(data['image_paths']!, _imagePathsMeta),
       );
     }
+    if (data.containsKey('remote_image_urls')) {
+      context.handle(
+        _remoteImageUrlsMeta,
+        remoteImageUrls.isAcceptableOrUnknown(
+          data['remote_image_urls']!,
+          _remoteImageUrlsMeta,
+        ),
+      );
+    }
     if (data.containsKey('synced')) {
       context.handle(
         _syncedMeta,
@@ -861,6 +901,10 @@ class $LocalProductsTable extends LocalProducts
       serverId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}server_id'],
+      ),
+      ownerId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}owner_id'],
       ),
       titleEn: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
@@ -910,6 +954,10 @@ class $LocalProductsTable extends LocalProducts
         DriftSqlType.string,
         data['${effectivePrefix}image_paths'],
       )!,
+      remoteImageUrls: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}remote_image_urls'],
+      )!,
       synced: attachedDatabase.typeMapping.read(
         DriftSqlType.bool,
         data['${effectivePrefix}synced'],
@@ -930,6 +978,12 @@ class $LocalProductsTable extends LocalProducts
 class LocalProduct extends DataClass implements Insertable<LocalProduct> {
   final String clientId;
   final String? serverId;
+
+  /// Which account made this. Nullable only because rows written before this
+  /// column existed have no answer, and those are hidden from everyone rather
+  /// than guessed at: two accounts sharing a phone must not see each other's
+  /// catalogue.
+  final String? ownerId;
   final String? titleEn;
   final String? titleHi;
   final String? descriptionEn;
@@ -942,11 +996,17 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
   final int? priceFloor;
   final int? price;
   final String imagePaths;
+
+  /// Photographs that live on the server rather than on this phone, for rows
+  /// rebuilt after a reinstall. Kept separate from [imagePaths] so a local
+  /// file is never confused for a URL.
+  final String remoteImageUrls;
   final bool synced;
   final DateTime createdAt;
   const LocalProduct({
     required this.clientId,
     this.serverId,
+    this.ownerId,
     this.titleEn,
     this.titleHi,
     this.descriptionEn,
@@ -959,6 +1019,7 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
     this.priceFloor,
     this.price,
     required this.imagePaths,
+    required this.remoteImageUrls,
     required this.synced,
     required this.createdAt,
   });
@@ -968,6 +1029,9 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
     map['client_id'] = Variable<String>(clientId);
     if (!nullToAbsent || serverId != null) {
       map['server_id'] = Variable<String>(serverId);
+    }
+    if (!nullToAbsent || ownerId != null) {
+      map['owner_id'] = Variable<String>(ownerId);
     }
     if (!nullToAbsent || titleEn != null) {
       map['title_en'] = Variable<String>(titleEn);
@@ -1003,6 +1067,7 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
       map['price'] = Variable<int>(price);
     }
     map['image_paths'] = Variable<String>(imagePaths);
+    map['remote_image_urls'] = Variable<String>(remoteImageUrls);
     map['synced'] = Variable<bool>(synced);
     map['created_at'] = Variable<DateTime>(createdAt);
     return map;
@@ -1014,6 +1079,9 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
       serverId: serverId == null && nullToAbsent
           ? const Value.absent()
           : Value(serverId),
+      ownerId: ownerId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(ownerId),
       titleEn: titleEn == null && nullToAbsent
           ? const Value.absent()
           : Value(titleEn),
@@ -1048,6 +1116,7 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
           ? const Value.absent()
           : Value(price),
       imagePaths: Value(imagePaths),
+      remoteImageUrls: Value(remoteImageUrls),
       synced: Value(synced),
       createdAt: Value(createdAt),
     );
@@ -1061,6 +1130,7 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
     return LocalProduct(
       clientId: serializer.fromJson<String>(json['clientId']),
       serverId: serializer.fromJson<String?>(json['serverId']),
+      ownerId: serializer.fromJson<String?>(json['ownerId']),
       titleEn: serializer.fromJson<String?>(json['titleEn']),
       titleHi: serializer.fromJson<String?>(json['titleHi']),
       descriptionEn: serializer.fromJson<String?>(json['descriptionEn']),
@@ -1073,6 +1143,7 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
       priceFloor: serializer.fromJson<int?>(json['priceFloor']),
       price: serializer.fromJson<int?>(json['price']),
       imagePaths: serializer.fromJson<String>(json['imagePaths']),
+      remoteImageUrls: serializer.fromJson<String>(json['remoteImageUrls']),
       synced: serializer.fromJson<bool>(json['synced']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
@@ -1083,6 +1154,7 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
     return <String, dynamic>{
       'clientId': serializer.toJson<String>(clientId),
       'serverId': serializer.toJson<String?>(serverId),
+      'ownerId': serializer.toJson<String?>(ownerId),
       'titleEn': serializer.toJson<String?>(titleEn),
       'titleHi': serializer.toJson<String?>(titleHi),
       'descriptionEn': serializer.toJson<String?>(descriptionEn),
@@ -1095,6 +1167,7 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
       'priceFloor': serializer.toJson<int?>(priceFloor),
       'price': serializer.toJson<int?>(price),
       'imagePaths': serializer.toJson<String>(imagePaths),
+      'remoteImageUrls': serializer.toJson<String>(remoteImageUrls),
       'synced': serializer.toJson<bool>(synced),
       'createdAt': serializer.toJson<DateTime>(createdAt),
     };
@@ -1103,6 +1176,7 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
   LocalProduct copyWith({
     String? clientId,
     Value<String?> serverId = const Value.absent(),
+    Value<String?> ownerId = const Value.absent(),
     Value<String?> titleEn = const Value.absent(),
     Value<String?> titleHi = const Value.absent(),
     Value<String?> descriptionEn = const Value.absent(),
@@ -1115,11 +1189,13 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
     Value<int?> priceFloor = const Value.absent(),
     Value<int?> price = const Value.absent(),
     String? imagePaths,
+    String? remoteImageUrls,
     bool? synced,
     DateTime? createdAt,
   }) => LocalProduct(
     clientId: clientId ?? this.clientId,
     serverId: serverId.present ? serverId.value : this.serverId,
+    ownerId: ownerId.present ? ownerId.value : this.ownerId,
     titleEn: titleEn.present ? titleEn.value : this.titleEn,
     titleHi: titleHi.present ? titleHi.value : this.titleHi,
     descriptionEn: descriptionEn.present
@@ -1136,6 +1212,7 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
     priceFloor: priceFloor.present ? priceFloor.value : this.priceFloor,
     price: price.present ? price.value : this.price,
     imagePaths: imagePaths ?? this.imagePaths,
+    remoteImageUrls: remoteImageUrls ?? this.remoteImageUrls,
     synced: synced ?? this.synced,
     createdAt: createdAt ?? this.createdAt,
   );
@@ -1143,6 +1220,7 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
     return LocalProduct(
       clientId: data.clientId.present ? data.clientId.value : this.clientId,
       serverId: data.serverId.present ? data.serverId.value : this.serverId,
+      ownerId: data.ownerId.present ? data.ownerId.value : this.ownerId,
       titleEn: data.titleEn.present ? data.titleEn.value : this.titleEn,
       titleHi: data.titleHi.present ? data.titleHi.value : this.titleHi,
       descriptionEn: data.descriptionEn.present
@@ -1167,6 +1245,9 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
       imagePaths: data.imagePaths.present
           ? data.imagePaths.value
           : this.imagePaths,
+      remoteImageUrls: data.remoteImageUrls.present
+          ? data.remoteImageUrls.value
+          : this.remoteImageUrls,
       synced: data.synced.present ? data.synced.value : this.synced,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
@@ -1177,6 +1258,7 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
     return (StringBuffer('LocalProduct(')
           ..write('clientId: $clientId, ')
           ..write('serverId: $serverId, ')
+          ..write('ownerId: $ownerId, ')
           ..write('titleEn: $titleEn, ')
           ..write('titleHi: $titleHi, ')
           ..write('descriptionEn: $descriptionEn, ')
@@ -1189,6 +1271,7 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
           ..write('priceFloor: $priceFloor, ')
           ..write('price: $price, ')
           ..write('imagePaths: $imagePaths, ')
+          ..write('remoteImageUrls: $remoteImageUrls, ')
           ..write('synced: $synced, ')
           ..write('createdAt: $createdAt')
           ..write(')'))
@@ -1199,6 +1282,7 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
   int get hashCode => Object.hash(
     clientId,
     serverId,
+    ownerId,
     titleEn,
     titleHi,
     descriptionEn,
@@ -1211,6 +1295,7 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
     priceFloor,
     price,
     imagePaths,
+    remoteImageUrls,
     synced,
     createdAt,
   );
@@ -1220,6 +1305,7 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
       (other is LocalProduct &&
           other.clientId == this.clientId &&
           other.serverId == this.serverId &&
+          other.ownerId == this.ownerId &&
           other.titleEn == this.titleEn &&
           other.titleHi == this.titleHi &&
           other.descriptionEn == this.descriptionEn &&
@@ -1232,6 +1318,7 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
           other.priceFloor == this.priceFloor &&
           other.price == this.price &&
           other.imagePaths == this.imagePaths &&
+          other.remoteImageUrls == this.remoteImageUrls &&
           other.synced == this.synced &&
           other.createdAt == this.createdAt);
 }
@@ -1239,6 +1326,7 @@ class LocalProduct extends DataClass implements Insertable<LocalProduct> {
 class LocalProductsCompanion extends UpdateCompanion<LocalProduct> {
   final Value<String> clientId;
   final Value<String?> serverId;
+  final Value<String?> ownerId;
   final Value<String?> titleEn;
   final Value<String?> titleHi;
   final Value<String?> descriptionEn;
@@ -1251,12 +1339,14 @@ class LocalProductsCompanion extends UpdateCompanion<LocalProduct> {
   final Value<int?> priceFloor;
   final Value<int?> price;
   final Value<String> imagePaths;
+  final Value<String> remoteImageUrls;
   final Value<bool> synced;
   final Value<DateTime> createdAt;
   final Value<int> rowid;
   const LocalProductsCompanion({
     this.clientId = const Value.absent(),
     this.serverId = const Value.absent(),
+    this.ownerId = const Value.absent(),
     this.titleEn = const Value.absent(),
     this.titleHi = const Value.absent(),
     this.descriptionEn = const Value.absent(),
@@ -1269,6 +1359,7 @@ class LocalProductsCompanion extends UpdateCompanion<LocalProduct> {
     this.priceFloor = const Value.absent(),
     this.price = const Value.absent(),
     this.imagePaths = const Value.absent(),
+    this.remoteImageUrls = const Value.absent(),
     this.synced = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -1276,6 +1367,7 @@ class LocalProductsCompanion extends UpdateCompanion<LocalProduct> {
   LocalProductsCompanion.insert({
     required String clientId,
     this.serverId = const Value.absent(),
+    this.ownerId = const Value.absent(),
     this.titleEn = const Value.absent(),
     this.titleHi = const Value.absent(),
     this.descriptionEn = const Value.absent(),
@@ -1288,6 +1380,7 @@ class LocalProductsCompanion extends UpdateCompanion<LocalProduct> {
     this.priceFloor = const Value.absent(),
     this.price = const Value.absent(),
     this.imagePaths = const Value.absent(),
+    this.remoteImageUrls = const Value.absent(),
     this.synced = const Value.absent(),
     required DateTime createdAt,
     this.rowid = const Value.absent(),
@@ -1296,6 +1389,7 @@ class LocalProductsCompanion extends UpdateCompanion<LocalProduct> {
   static Insertable<LocalProduct> custom({
     Expression<String>? clientId,
     Expression<String>? serverId,
+    Expression<String>? ownerId,
     Expression<String>? titleEn,
     Expression<String>? titleHi,
     Expression<String>? descriptionEn,
@@ -1308,6 +1402,7 @@ class LocalProductsCompanion extends UpdateCompanion<LocalProduct> {
     Expression<int>? priceFloor,
     Expression<int>? price,
     Expression<String>? imagePaths,
+    Expression<String>? remoteImageUrls,
     Expression<bool>? synced,
     Expression<DateTime>? createdAt,
     Expression<int>? rowid,
@@ -1315,6 +1410,7 @@ class LocalProductsCompanion extends UpdateCompanion<LocalProduct> {
     return RawValuesInsertable({
       if (clientId != null) 'client_id': clientId,
       if (serverId != null) 'server_id': serverId,
+      if (ownerId != null) 'owner_id': ownerId,
       if (titleEn != null) 'title_en': titleEn,
       if (titleHi != null) 'title_hi': titleHi,
       if (descriptionEn != null) 'description_en': descriptionEn,
@@ -1327,6 +1423,7 @@ class LocalProductsCompanion extends UpdateCompanion<LocalProduct> {
       if (priceFloor != null) 'price_floor': priceFloor,
       if (price != null) 'price': price,
       if (imagePaths != null) 'image_paths': imagePaths,
+      if (remoteImageUrls != null) 'remote_image_urls': remoteImageUrls,
       if (synced != null) 'synced': synced,
       if (createdAt != null) 'created_at': createdAt,
       if (rowid != null) 'rowid': rowid,
@@ -1336,6 +1433,7 @@ class LocalProductsCompanion extends UpdateCompanion<LocalProduct> {
   LocalProductsCompanion copyWith({
     Value<String>? clientId,
     Value<String?>? serverId,
+    Value<String?>? ownerId,
     Value<String?>? titleEn,
     Value<String?>? titleHi,
     Value<String?>? descriptionEn,
@@ -1348,6 +1446,7 @@ class LocalProductsCompanion extends UpdateCompanion<LocalProduct> {
     Value<int?>? priceFloor,
     Value<int?>? price,
     Value<String>? imagePaths,
+    Value<String>? remoteImageUrls,
     Value<bool>? synced,
     Value<DateTime>? createdAt,
     Value<int>? rowid,
@@ -1355,6 +1454,7 @@ class LocalProductsCompanion extends UpdateCompanion<LocalProduct> {
     return LocalProductsCompanion(
       clientId: clientId ?? this.clientId,
       serverId: serverId ?? this.serverId,
+      ownerId: ownerId ?? this.ownerId,
       titleEn: titleEn ?? this.titleEn,
       titleHi: titleHi ?? this.titleHi,
       descriptionEn: descriptionEn ?? this.descriptionEn,
@@ -1367,6 +1467,7 @@ class LocalProductsCompanion extends UpdateCompanion<LocalProduct> {
       priceFloor: priceFloor ?? this.priceFloor,
       price: price ?? this.price,
       imagePaths: imagePaths ?? this.imagePaths,
+      remoteImageUrls: remoteImageUrls ?? this.remoteImageUrls,
       synced: synced ?? this.synced,
       createdAt: createdAt ?? this.createdAt,
       rowid: rowid ?? this.rowid,
@@ -1381,6 +1482,9 @@ class LocalProductsCompanion extends UpdateCompanion<LocalProduct> {
     }
     if (serverId.present) {
       map['server_id'] = Variable<String>(serverId.value);
+    }
+    if (ownerId.present) {
+      map['owner_id'] = Variable<String>(ownerId.value);
     }
     if (titleEn.present) {
       map['title_en'] = Variable<String>(titleEn.value);
@@ -1418,6 +1522,9 @@ class LocalProductsCompanion extends UpdateCompanion<LocalProduct> {
     if (imagePaths.present) {
       map['image_paths'] = Variable<String>(imagePaths.value);
     }
+    if (remoteImageUrls.present) {
+      map['remote_image_urls'] = Variable<String>(remoteImageUrls.value);
+    }
     if (synced.present) {
       map['synced'] = Variable<bool>(synced.value);
     }
@@ -1435,6 +1542,7 @@ class LocalProductsCompanion extends UpdateCompanion<LocalProduct> {
     return (StringBuffer('LocalProductsCompanion(')
           ..write('clientId: $clientId, ')
           ..write('serverId: $serverId, ')
+          ..write('ownerId: $ownerId, ')
           ..write('titleEn: $titleEn, ')
           ..write('titleHi: $titleHi, ')
           ..write('descriptionEn: $descriptionEn, ')
@@ -1447,6 +1555,7 @@ class LocalProductsCompanion extends UpdateCompanion<LocalProduct> {
           ..write('priceFloor: $priceFloor, ')
           ..write('price: $price, ')
           ..write('imagePaths: $imagePaths, ')
+          ..write('remoteImageUrls: $remoteImageUrls, ')
           ..write('synced: $synced, ')
           ..write('createdAt: $createdAt, ')
           ..write('rowid: $rowid')
@@ -1731,6 +1840,7 @@ typedef $$LocalProductsTableCreateCompanionBuilder =
     LocalProductsCompanion Function({
       required String clientId,
       Value<String?> serverId,
+      Value<String?> ownerId,
       Value<String?> titleEn,
       Value<String?> titleHi,
       Value<String?> descriptionEn,
@@ -1743,6 +1853,7 @@ typedef $$LocalProductsTableCreateCompanionBuilder =
       Value<int?> priceFloor,
       Value<int?> price,
       Value<String> imagePaths,
+      Value<String> remoteImageUrls,
       Value<bool> synced,
       required DateTime createdAt,
       Value<int> rowid,
@@ -1751,6 +1862,7 @@ typedef $$LocalProductsTableUpdateCompanionBuilder =
     LocalProductsCompanion Function({
       Value<String> clientId,
       Value<String?> serverId,
+      Value<String?> ownerId,
       Value<String?> titleEn,
       Value<String?> titleHi,
       Value<String?> descriptionEn,
@@ -1763,6 +1875,7 @@ typedef $$LocalProductsTableUpdateCompanionBuilder =
       Value<int?> priceFloor,
       Value<int?> price,
       Value<String> imagePaths,
+      Value<String> remoteImageUrls,
       Value<bool> synced,
       Value<DateTime> createdAt,
       Value<int> rowid,
@@ -1784,6 +1897,11 @@ class $$LocalProductsTableFilterComposer
 
   ColumnFilters<String> get serverId => $composableBuilder(
     column: $table.serverId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get ownerId => $composableBuilder(
+    column: $table.ownerId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -1847,6 +1965,11 @@ class $$LocalProductsTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get remoteImageUrls => $composableBuilder(
+    column: $table.remoteImageUrls,
+    builder: (column) => ColumnFilters(column),
+  );
+
   ColumnFilters<bool> get synced => $composableBuilder(
     column: $table.synced,
     builder: (column) => ColumnFilters(column),
@@ -1874,6 +1997,11 @@ class $$LocalProductsTableOrderingComposer
 
   ColumnOrderings<String> get serverId => $composableBuilder(
     column: $table.serverId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get ownerId => $composableBuilder(
+    column: $table.ownerId,
     builder: (column) => ColumnOrderings(column),
   );
 
@@ -1937,6 +2065,11 @@ class $$LocalProductsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get remoteImageUrls => $composableBuilder(
+    column: $table.remoteImageUrls,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<bool> get synced => $composableBuilder(
     column: $table.synced,
     builder: (column) => ColumnOrderings(column),
@@ -1962,6 +2095,9 @@ class $$LocalProductsTableAnnotationComposer
 
   GeneratedColumn<String> get serverId =>
       $composableBuilder(column: $table.serverId, builder: (column) => column);
+
+  GeneratedColumn<String> get ownerId =>
+      $composableBuilder(column: $table.ownerId, builder: (column) => column);
 
   GeneratedColumn<String> get titleEn =>
       $composableBuilder(column: $table.titleEn, builder: (column) => column);
@@ -2011,6 +2147,11 @@ class $$LocalProductsTableAnnotationComposer
     builder: (column) => column,
   );
 
+  GeneratedColumn<String> get remoteImageUrls => $composableBuilder(
+    column: $table.remoteImageUrls,
+    builder: (column) => column,
+  );
+
   GeneratedColumn<bool> get synced =>
       $composableBuilder(column: $table.synced, builder: (column) => column);
 
@@ -2051,6 +2192,7 @@ class $$LocalProductsTableTableManager
               ({
                 Value<String> clientId = const Value.absent(),
                 Value<String?> serverId = const Value.absent(),
+                Value<String?> ownerId = const Value.absent(),
                 Value<String?> titleEn = const Value.absent(),
                 Value<String?> titleHi = const Value.absent(),
                 Value<String?> descriptionEn = const Value.absent(),
@@ -2063,12 +2205,14 @@ class $$LocalProductsTableTableManager
                 Value<int?> priceFloor = const Value.absent(),
                 Value<int?> price = const Value.absent(),
                 Value<String> imagePaths = const Value.absent(),
+                Value<String> remoteImageUrls = const Value.absent(),
                 Value<bool> synced = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => LocalProductsCompanion(
                 clientId: clientId,
                 serverId: serverId,
+                ownerId: ownerId,
                 titleEn: titleEn,
                 titleHi: titleHi,
                 descriptionEn: descriptionEn,
@@ -2081,6 +2225,7 @@ class $$LocalProductsTableTableManager
                 priceFloor: priceFloor,
                 price: price,
                 imagePaths: imagePaths,
+                remoteImageUrls: remoteImageUrls,
                 synced: synced,
                 createdAt: createdAt,
                 rowid: rowid,
@@ -2089,6 +2234,7 @@ class $$LocalProductsTableTableManager
               ({
                 required String clientId,
                 Value<String?> serverId = const Value.absent(),
+                Value<String?> ownerId = const Value.absent(),
                 Value<String?> titleEn = const Value.absent(),
                 Value<String?> titleHi = const Value.absent(),
                 Value<String?> descriptionEn = const Value.absent(),
@@ -2101,12 +2247,14 @@ class $$LocalProductsTableTableManager
                 Value<int?> priceFloor = const Value.absent(),
                 Value<int?> price = const Value.absent(),
                 Value<String> imagePaths = const Value.absent(),
+                Value<String> remoteImageUrls = const Value.absent(),
                 Value<bool> synced = const Value.absent(),
                 required DateTime createdAt,
                 Value<int> rowid = const Value.absent(),
               }) => LocalProductsCompanion.insert(
                 clientId: clientId,
                 serverId: serverId,
+                ownerId: ownerId,
                 titleEn: titleEn,
                 titleHi: titleHi,
                 descriptionEn: descriptionEn,
@@ -2119,6 +2267,7 @@ class $$LocalProductsTableTableManager
                 priceFloor: priceFloor,
                 price: price,
                 imagePaths: imagePaths,
+                remoteImageUrls: remoteImageUrls,
                 synced: synced,
                 createdAt: createdAt,
                 rowid: rowid,

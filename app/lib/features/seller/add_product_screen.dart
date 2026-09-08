@@ -335,6 +335,7 @@ class _AddProductScreenState extends State<AddProductScreen>
       clientId: _clientId,
       createdAt: DateTime.now(),
       synced: false,
+      ownerId: app.userId,
       titleEn: _listing?.titleEn,
       titleHi: _listing?.titleHi,
       descriptionEn: _listing?.descriptionEn,

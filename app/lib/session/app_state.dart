@@ -94,6 +94,7 @@ class AppState extends ChangeNotifier {
       as: Role.fromApi(token.role),
       name: token.name.isEmpty ? name : token.name,
       token: token.accessToken,
+      userId: token.userId,
     );
 
     if (role == Role.seller) await refreshVerification();
@@ -275,8 +276,22 @@ class AppState extends ChangeNotifier {
     }
   }
 
-  void signIn({required Role as, String name = 'Meena Chaudhary', String? token}) {
+  /// Who is signed in, as the server knows them.
+  ///
+  /// Everything written to the phone is filed under this. Two artisans sharing
+  /// a handset is normal, and without an owner on each row the second one to
+  /// sign in sees the first one's catalogue.
+  String? _userId;
+  String? get userId => _userId;
+
+  void signIn({
+    required Role as,
+    String name = 'Meena Chaudhary',
+    String? token,
+    String? userId,
+  }) {
     if (token != null) api.token = token;
+    _userId = userId;
     _signedIn = true;
     _role = as;
     _name = name;
@@ -285,6 +300,7 @@ class AppState extends ChangeNotifier {
 
   void signOut() {
     api.token = null;
+    _userId = null;
     _verification = VerificationStatus.unknown;
     _signedIn = false;
     _role = Role.buyer;

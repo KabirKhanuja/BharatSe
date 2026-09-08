@@ -25,10 +25,19 @@ class CraftState {
 
   /// Photograph used anywhere this state is previewed.
   ///
-  /// The cover set follows the map's legacy `or` code for Odisha, while the
-  /// catalogue uses the current `od` code.
+  /// The cover set is named with the map's legacy codes while the catalogue
+  /// uses the current ones. Four states differ, and without this they show a
+  /// missing asset rather than a photograph. Same mismatch the map hit, so the
+  /// table is deliberately identical to the one in `india_map.dart`.
+  static const _coverAliases = {
+    'od': 'or',
+    'cg': 'ct',
+    'ts': 'tg',
+    'uk': 'ut',
+  };
+
   String get coverAsset =>
-      'assets/images/state_covers/${id == 'od' ? 'or' : id}.jpg';
+      'assets/images/state_covers/${_coverAliases[id] ?? id}.jpg';
 
   /// What the craft is and where it came from.
   final T heritage;

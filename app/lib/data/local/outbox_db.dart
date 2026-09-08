@@ -27,6 +27,12 @@ class OutboxEntries extends Table {
 class LocalProducts extends Table {
   TextColumn get clientId => text()();
   TextColumn get serverId => text().nullable()();
+
+  /// Which account made this. Nullable only because rows written before this
+  /// column existed have no answer, and those are hidden from everyone rather
+  /// than guessed at: two accounts sharing a phone must not see each other's
+  /// catalogue.
+  TextColumn get ownerId => text().nullable()();
   TextColumn get titleEn => text().nullable()();
   TextColumn get titleHi => text().nullable()();
   TextColumn get descriptionEn => text().nullable()();
@@ -39,6 +45,11 @@ class LocalProducts extends Table {
   IntColumn get priceFloor => integer().nullable()();
   IntColumn get price => integer().nullable()();
   TextColumn get imagePaths => text().withDefault(const Constant(''))();
+
+  /// Photographs that live on the server rather than on this phone, for rows
+  /// rebuilt after a reinstall. Kept separate from [imagePaths] so a local
+  /// file is never confused for a URL.
+  TextColumn get remoteImageUrls => text().withDefault(const Constant(''))();
   BoolColumn get synced => boolean().withDefault(const Constant(false))();
   DateTimeColumn get createdAt => dateTime()();
 
@@ -52,7 +63,21 @@ class OutboxDb extends _$OutboxDb {
   OutboxDb.forTesting(super.executor);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration => MigrationStrategy(
+        onCreate: (m) => m.createAll(),
+        onUpgrade: (m, from, to) async {
+          // Existing rows keep a null owner and stop being visible. They are
+          // already on the server under whoever made them, so nothing is lost
+          // that a sign in does not bring back.
+          if (from < 2) {
+            await m.addColumn(localProducts, localProducts.ownerId);
+            await m.addColumn(localProducts, localProducts.remoteImageUrls);
+          }
+        },
+      );
 
   static QueryExecutor _open() =>
       driftDatabase(name: 'bharatse_outbox');

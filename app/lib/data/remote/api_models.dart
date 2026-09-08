@@ -190,28 +190,40 @@ class RemoteProduct {
     required this.id,
     required this.clientId,
     required this.status,
+    required this.createdAt,
     this.titleEn,
     this.titleHi,
     this.price,
     this.priceFloor,
+    this.imageUrls = const [],
   });
 
   final String id;
   final String clientId;
   final String status;
+  final DateTime createdAt;
   final String? titleEn;
   final String? titleHi;
   final int? price;
   final int? priceFloor;
+  final List<String> imageUrls;
 
   factory RemoteProduct.fromJson(Map<String, dynamic> json) => RemoteProduct(
         id: json['id'] as String,
         clientId: json['client_id'] as String,
         status: json['status'] as String? ?? 'draft',
+        // Falling back to now keeps ordering sane rather than throwing. A
+        // listing with no timestamp is still a listing the artisan made.
+        createdAt: DateTime.tryParse(json['created_at'] as String? ?? '') ??
+            DateTime.now(),
         titleEn: json['title_en'] as String?,
         titleHi: json['title_hi'] as String?,
         price: (json['price'] as num?)?.toInt(),
         priceFloor: (json['price_floor'] as num?)?.toInt(),
+        imageUrls: [
+          for (final url in (json['image_urls'] as List?) ?? const [])
+            if (url is String && url.isNotEmpty) url,
+        ],
       );
 }
 

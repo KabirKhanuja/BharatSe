@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';
 
+import 'package:bharatse/data/catalog.dart';
 import 'package:bharatse/data/remote/api_client.dart';
 
 import 'package:bharatse/features/buyer/buyer_shell.dart';
@@ -271,6 +274,16 @@ void main() {
     expect(state.catalogLoaded, isTrue);
     expect(state.catalogProducts, hasLength(2));
     expect(state.catalogProducts.first.name(Lang.en), 'Pashmina Shawl');
+  });
+
+  test('every state cover asset actually exists on disk', () {
+    // Four states are named with the map's legacy codes in the asset folder.
+    // A mismatch here is invisible in analysis and shows up as a grey box.
+    final missing = [
+      for (final state in Catalog.states)
+        if (!File(state.coverAsset).existsSync()) '${state.id} -> ${state.coverAsset}',
+    ];
+    expect(missing, isEmpty);
   });
 
   testWidgets('uppercase state codes from the database match our lowercase ids',
