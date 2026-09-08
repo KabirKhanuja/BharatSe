@@ -56,6 +56,7 @@ class StateScreen extends StatelessWidget {
                     seed: state.seed,
                     icon: Icons.landscape_outlined,
                     borderRadius: BorderRadius.zero,
+                    asset: state.coverAsset,
                   ),
                   DecoratedBox(
                     decoration: BoxDecoration(

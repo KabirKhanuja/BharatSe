@@ -393,6 +393,7 @@ class _StateList extends StatelessWidget {
                         seed: st.seed,
                         icon: Icons.landscape_outlined,
                         borderRadius: Radii.sm,
+                        asset: st.coverAsset,
                       ),
                     ),
                     const SizedBox(width: Gap.md),

@@ -1,0 +1,294 @@
+﻿{
+    "generated_at":  "2026-09-08T04:16:05.1882877Z",
+    "note":  "Cover images downloaded from Wikimedia Commons via Wikipedia page images. Preserve this manifest for attribution.",
+    "covers":  [
+                   {
+                       "id":  "an",
+                       "state":  "Andaman and Nicobar Islands",
+                       "asset":  "assets/images/state_covers/an.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:The_Coral_Reef_at_the_Andaman_Islands.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "ap",
+                       "state":  "Andhra Pradesh",
+                       "asset":  "assets/images/state_covers/ap.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Tirumala_090615.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "ar",
+                       "state":  "Arunachal Pradesh",
+                       "asset":  "assets/images/state_covers/ar.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:TawangMonastery-ArunachalPradesh-1.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "as",
+                       "state":  "Assam",
+                       "asset":  "assets/images/state_covers/as.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Beauty_of_Kaziranga_National_Park.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "br",
+                       "state":  "Bihar",
+                       "asset":  "assets/images/state_covers/br.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Mahabodhi_temple_complex%2C_Bodhgaya_27.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "ch",
+                       "state":  "Chandigarh",
+                       "asset":  "assets/images/state_covers/ch.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Open_Hand_monument%2C_Chandigarh.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "ct",
+                       "state":  "Chhattisgarh",
+                       "asset":  "assets/images/state_covers/ct.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Bhoramdeo_Temple%2C_Kawardha.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "dn",
+                       "state":  "Dadra and Nagar Haveli",
+                       "asset":  "assets/images/state_covers/dn.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Dadra_and_Nagar_Haveli_Silvassa_3.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "dd",
+                       "state":  "Daman and Diu",
+                       "asset":  "assets/images/state_covers/dd.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Diu%2CGujarat%2CIndia_(37).jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "dl",
+                       "state":  "Delhi",
+                       "asset":  "assets/images/state_covers/dl.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Jama_Masjid_2011.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "ga",
+                       "state":  "Goa",
+                       "asset":  "assets/images/state_covers/ga.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:BeachFun.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "gj",
+                       "state":  "Gujarat",
+                       "asset":  "assets/images/state_covers/gj.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Rani_ki_vav_02.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "hr",
+                       "state":  "Haryana",
+                       "asset":  "assets/images/state_covers/hr.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Cyber_City_View.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "hp",
+                       "state":  "Himachal Pradesh",
+                       "asset":  "assets/images/state_covers/hp.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Kullu_Valley_near_Manali%2C_Himachal_Pradesh%2C_India.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "jk",
+                       "state":  "Jammu and Kashmir",
+                       "asset":  "assets/images/state_covers/jk.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Pahalgam_Valley.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "jh",
+                       "state":  "Jharkhand",
+                       "asset":  "assets/images/state_covers/jh.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Views_of_Shikharji_on_way_to_Anantnatha_Tonk_3.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "ka",
+                       "state":  "Karnataka",
+                       "asset":  "assets/images/state_covers/ka.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Hampi_virupaksha_temple.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "kl",
+                       "state":  "Kerala",
+                       "asset":  "assets/images/state_covers/kl.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Boathouse_(7063399547).jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "ld",
+                       "state":  "Lakshadweep",
+                       "asset":  "assets/images/state_covers/ld.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:A_beach_side_resort_at_Kadmat_Island%2C_Lakshadweep.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "mp",
+                       "state":  "Madhya Pradesh",
+                       "asset":  "assets/images/state_covers/mp.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:India-5749_-_Visvanatha_Temple_-_Flickr_-_archer10_(Dennis).jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "mh",
+                       "state":  "Maharashtra",
+                       "asset":  "assets/images/state_covers/mh.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Cave_26%2C_Ajanta.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "mn",
+                       "state":  "Manipur",
+                       "asset":  "assets/images/state_covers/mn.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:%EA%AF%85%EA%AF%A3%EA%AF%A1%EA%AF%83%EA%AF%A5%EA%AF%8F%EA%AF%86%EA%AF%A4%EA%AF%A1_%EA%AF%86%EA%AF%A4%EA%AF%A1%EA%AF%92%EA%AF%A4_%EA%AF%82%EA%AF%A5%EA%AF%8F%EA%AF%85%EA%AF%A4%EA%AF%A1%EA%AF%8A%EA%AF%A7_%EA%AF%81%EA%AF%85%EA%AF%A5%EA%AF%83%EA%AF%8D%EA%AF%A4_%EA%AF%82%EA%AF%A5%EA%AF%8F%EA%AF%81%EA%AF%AA_(%EA%AF%81%EA%AF%85%EA%AF%A5%EA%AF%83%EA%AF%8D%EA%AF%A4_%EA%AF%80%EA%AF%A4%EA%AF%8C%EA%AF%A3%EA%AF%A1)%EA%AF%92%EA%AF%A4_%EA%AF%91%EA%AF%8B%EA%AF%A5%EA%AF%A1_%EA%AF%85%EA%AF%A3%EA%AF%A1%EA%AF%86%EA%AF%A8%EA%AF%9E_%EA%AF%8A%EA%AF%AA%EA%AF%95_%EA%AF%83%EA%AF%A5%EA%AF%8F%EA%AF%80%EA%AF%A9%EA%AF%97%EA%AF%92%EA%AF%A4_%EA%AF%80%EA%AF%A5%EA%AF%9E%EA%AF%84_%EA%AF%83%EA%AF%83%EA%AF%A4.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "ml",
+                       "state":  "Meghalaya",
+                       "asset":  "assets/images/state_covers/ml.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Dawki_River%2C_Meghalaya%2C_India.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "mz",
+                       "state":  "Mizoram",
+                       "asset":  "assets/images/state_covers/mz.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Embossed_Figures_Kawtchhuah_Ropui_Vangchhia_Mapuia_Hnamte_(1).JPG",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "nl",
+                       "state":  "Nagaland",
+                       "asset":  "assets/images/state_covers/nl.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Kapamodzu.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "or",
+                       "state":  "Odisha",
+                       "asset":  "assets/images/state_covers/or.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Brahmeswar_Temple%2C_Bhubaneswar.JPG",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "py",
+                       "state":  "Puducherry",
+                       "asset":  "assets/images/state_covers/py.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Pondicherry-Rock_beach_aerial_view.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "pb",
+                       "state":  "Punjab",
+                       "asset":  "assets/images/state_covers/pb.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:The_Golden_Temple_of_Amrithsar_7.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "rj",
+                       "state":  "Rajasthan",
+                       "asset":  "assets/images/state_covers/rj.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Thar_Khuri.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "sk",
+                       "state":  "Sikkim",
+                       "asset":  "assets/images/state_covers/sk.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Gurudongmar_Lake_Sikkim%2C_India_(edit).jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "tn",
+                       "state":  "Tamil Nadu",
+                       "asset":  "assets/images/state_covers/tn.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Mamallapuram_view.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "tg",
+                       "state":  "Telangana",
+                       "asset":  "assets/images/state_covers/tg.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Kakatiyas_well_at_warangal.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "tr",
+                       "state":  "Tripura",
+                       "asset":  "assets/images/state_covers/tr.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Ujjayanta_palace_Tripura_State_Museum_Agartala_India.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "up",
+                       "state":  "Uttar Pradesh",
+                       "asset":  "assets/images/state_covers/up.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Taj_Mahal_(Edited).jpeg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "ut",
+                       "state":  "Uttarakhand",
+                       "asset":  "assets/images/state_covers/ut.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Nanda_Devi_-_Hidden_Summit%2C_Uttarakhand_India_2013.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   },
+                   {
+                       "id":  "wb",
+                       "state":  "West Bengal",
+                       "asset":  "assets/images/state_covers/wb.jpg",
+                       "source_page":  null,
+                       "source_file":  "https://commons.wikimedia.org/wiki/File:Howrah_bridge_betwixt_Lights.jpg",
+                       "license":  "See source_file for the file-specific license and attribution requirements"
+                   }
+               ]
+}

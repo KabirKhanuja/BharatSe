@@ -204,6 +204,7 @@ class _StateStrip extends StatelessWidget {
                           seed: st.seed,
                           icon: Icons.landscape_outlined,
                           borderRadius: Radii.pill,
+                          asset: st.coverAsset,
                         ),
                       ),
                       Positioned(

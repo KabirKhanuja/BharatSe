@@ -23,6 +23,13 @@ class CraftState {
   final int seed;
   final int count;
 
+  /// Photograph used anywhere this state is previewed.
+  ///
+  /// The cover set follows the map's legacy `or` code for Odisha, while the
+  /// catalogue uses the current `od` code.
+  String get coverAsset =>
+      'assets/images/state_covers/${id == 'od' ? 'or' : id}.jpg';
+
   /// What the craft is and where it came from.
   final T heritage;
 }
